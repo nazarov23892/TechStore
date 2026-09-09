@@ -1,4 +1,4 @@
-﻿namespace TechStore.AL.DTOs;
+﻿namespace TechStore.Contracts.DTOs;
 
 /// <summary>
 /// Модель запрашиваемой постраничной навигации.

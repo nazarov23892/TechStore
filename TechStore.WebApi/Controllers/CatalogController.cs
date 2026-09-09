@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TechStore.AL.Catalog;
-using TechStore.AL.DTOs;
+using TechStore.Contracts.DTOs;
 
 namespace TechStore.WebApi.Controllers;
 

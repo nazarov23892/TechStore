@@ -1,4 +1,4 @@
-﻿namespace TechStore.AL.DTOs;
+﻿namespace TechStore.Contracts.DTOs;
 
 /// <summary>
 /// Списочный ответ с данными постраничной навигации.

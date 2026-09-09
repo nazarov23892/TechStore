@@ -1,9 +1,8 @@
-using Azure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using TechStore.AL.Catalog.Concrete;
-using TechStore.AL.DTOs;
 using TechStore.BLL.Entities;
+using TechStore.Contracts.DTOs;
 using TechStore.DAL.DbContexts;
 
 namespace TechStore.Tests.Services;

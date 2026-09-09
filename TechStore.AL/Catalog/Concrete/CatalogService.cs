@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TechStore.AL.Abstractions;
-using TechStore.AL.DTOs;
+using TechStore.Contracts.DTOs;
 
 namespace TechStore.AL.Catalog.Concrete;
 

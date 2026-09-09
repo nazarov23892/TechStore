@@ -1,4 +1,4 @@
-﻿using TechStore.AL.DTOs;
+﻿using TechStore.Contracts.DTOs;
 
 namespace TechStore.AL.Catalog;
 

@@ -1,6 +1,7 @@
 <Solution>
   <Project Path="TechStore.AL/TechStore.AL.csproj" />
   <Project Path="TechStore.BLL/TechStore.BLL.csproj" />
+  <Project Path="TechStore.Contracts/TechStore.Contracts.csproj" Id="07dc8373-a918-4135-a3ff-e0435e654a08" />
   <Project Path="TechStore.DAL/TechStore.DAL.csproj" />
   <Project Path="TechStore.Tests/TechStore.Tests.csproj" />
   <Project Path="TechStore.WebApi/TechStore.WebApi.csproj" />

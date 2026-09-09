@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TechStore.BLL\TechStore.BLL.csproj" />
+    <ProjectReference Include="..\TechStore.Contracts\TechStore.Contracts.csproj" />
   </ItemGroup>
 
 </Project>
