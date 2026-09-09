@@ -24,10 +24,25 @@ builder.Services.AddScoped<ICatalogService, CatalogService>();
 builder.Services.AddScoped<IApplicationDbContext>(
     provider => provider.GetRequiredService<ApplicationDbContext>());
 
+// CORS.
+builder.Services.AddCors(
+    options =>
+    {
+        options.AddPolicy(
+            "AllowBlazorClient", 
+            policy =>
+            {
+                policy.WithOrigins("http://localhost:5005")
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials();
+            });
+    });
 builder.Services.AddControllers();
 
 var app = builder.Build();
 
+app.UseCors("AllowBlazorClient"); // Между UseRouting и UseAuthorization
 app.MapDefaultControllerRoute();
 
 if (app.Environment.IsDevelopment())
