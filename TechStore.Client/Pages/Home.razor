@@ -1,0 +1,47 @@
+﻿@page "/"
+@using TechStore.Contracts.DTOs
+@inject HttpClient HttpClient
+
+<h3>Каталог товаров</h3>
+
+@if (products == null)
+{
+    <p><em>Загрузка товаров...</em></p>
+}
+else if (!products?.Items.Any() == true)
+{
+    <p>Товары не найдены.</p>
+}
+else
+{
+    <div style="display: flex; flex-direction: column; gap: 15px;">
+        @foreach (var product in products.Items)
+        {
+            <div style="border: 1px solid #ccc; padding: 15px; border-radius: 5px; max-width: 400px;">
+                <h4>@product.Name</h4>
+                <p><small style="color: gray;">Категория: @product.Category</small></p>
+                <p>@product.Description</p>
+                <p><strong>Цена: @product.Price.ToString("C2")</strong></p>
+                <a href="/product/@product.Id">Подробнее</a>
+            </div>
+        }
+    </div>
+}
+
+@code {
+    private PagedListResponseDto<ProductCatalogListItemDto>? products;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            products = await HttpClient.GetFromJsonAsync<PagedListResponseDto<ProductCatalogListItemDto>>(
+                "api/catalog");
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Ошибка загрузки: {ex.Message}");
+        }
+    }
+}
