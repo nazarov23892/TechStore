@@ -1,5 +1,6 @@
 <Solution>
   <Project Path="TechStore.AL/TechStore.AL.csproj" />
   <Project Path="TechStore.BLL/TechStore.BLL.csproj" />
+  <Project Path="TechStore.DAL/TechStore.DAL.csproj" />
   <Project Path="TechStore.WebApi/TechStore.WebApi.csproj" />
 </Solution>
