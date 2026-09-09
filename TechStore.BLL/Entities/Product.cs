@@ -1,5 +1,8 @@
 ﻿namespace TechStore.BLL.Entities;
 
+/// <summary>
+/// Товар.
+/// </summary>
 public class Product
 {
     public int Id { get; set; }
