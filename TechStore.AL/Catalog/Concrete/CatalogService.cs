@@ -17,9 +17,8 @@ public class CatalogService : ICatalogService
     }
 
     /// <inheritdoc/>
-    public async Task<IEnumerable<ProductCatalogListItemDto>> GetProductListAsync(
-        PagingRequestDto pagingRequest,
-        CancellationToken cancellationToken = default)
+    public async Task<PagedListResponseDto<ProductCatalogListItemDto>> GetProductPagedListAsync(
+        PagingRequestDto pagingRequest, CancellationToken cancellationToken = default)
     {
         var pagingStartsZero = pagingRequest.Page - 1;
         var products = await _context.Products
@@ -37,6 +36,13 @@ public class CatalogService : ICatalogService
                 Price = p.Price,
                 Category = p.Category,
             }).ToList();
-        return dtos;
+
+        var result = new PagedListResponseDto<ProductCatalogListItemDto>()
+        {
+            Items = dtos,
+            Page = pagingRequest.Page,
+            PerPage = pagingRequest.PerPage,
+        };
+        return result;
     }
 }

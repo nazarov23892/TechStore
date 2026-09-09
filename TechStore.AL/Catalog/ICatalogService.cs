@@ -8,10 +8,10 @@ namespace TechStore.AL.Catalog;
 public interface ICatalogService
 {
     /// <summary>
-    /// Возвращает списочные модели товаров для каталога.
+    /// Возвращает модель для списка товаров каталога.
     /// </summary>
     /// <param name="pagingRequest">Модель постраничной навигации.</param>
     /// <param name="cancellationToken">Токен отмены операции.</param> 
-    Task<IEnumerable<ProductCatalogListItemDto>> GetProductListAsync(
-        PagingRequestDto pagingRequest, CancellationToken cancellationToken = default );
+    Task<PagedListResponseDto<ProductCatalogListItemDto>> GetProductPagedListAsync(
+        PagingRequestDto pagingRequest, CancellationToken cancellationToken = default);
 }
