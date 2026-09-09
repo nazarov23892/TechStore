@@ -1,4 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using TechStore.AL.Abstractions;
+using TechStore.AL.Catalog;
+using TechStore.AL.Catalog.Concrete;
 using TechStore.DAL.DbContexts;
 using TechStore.DAL.SeedData;
 
@@ -11,15 +14,28 @@ builder.Services.AddDbContext<ApplicationDbContext>(
         opts.UseSqlServer(connectionString);
     });
 
+builder.Services.AddLogging(
+    configure =>
+    {
+        configure.AddConsole();
+    });
+
+builder.Services.AddScoped<ICatalogService, CatalogService>();
+builder.Services.AddScoped<IApplicationDbContext>(
+    provider => provider.GetRequiredService<ApplicationDbContext>());
+
+builder.Services.AddControllers();
+
 var app = builder.Build();
 
-if(app.Environment.IsDevelopment())
+app.MapDefaultControllerRoute();
+
+if (app.Environment.IsDevelopment())
 {
     using var scope = app.Services.CreateScope();
+    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
     var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    await SeedData.RunSeed(dbContext, 100);
+    await SeedData.RunSeed(dbContext, 100, logger);
 }
 
-app.MapGet("/", () => "Hello World!");
-
-app.Run();
+await app.RunAsync();
