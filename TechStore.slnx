@@ -1,1 +1,3 @@
-<Solution />
+<Solution>
+  <Project Path="TechStore.BLL/TechStore.BLL.csproj" />
+</Solution>
