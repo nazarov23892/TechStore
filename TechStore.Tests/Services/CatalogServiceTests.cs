@@ -50,6 +50,10 @@ public class CatalogServiceTests
         Assert.NotNull(result);
         Assert.NotEmpty(result);
         Assert.Equal(4, result.Count);
+        Assert.Equal(1, result[0].Id);
+        Assert.Equal(2, result[1].Id);
+        Assert.Equal(3, result[2].Id);
+        Assert.Equal(4, result[3].Id);
     }
 
     static async Task SeedData(ApplicationDbContext dbContext, int count)
@@ -58,14 +62,14 @@ public class CatalogServiceTests
         for (var i = 0; i < count; i++)
         {
             dbContext.Products.Add(
-            new Product()
-            {
-                Id = 1 + i,
-                Name = $"product-{1 + i}",
-                Description = $"description-{1 + i}",
-                Price = 1 + i,
-                Category = category1,
-            });
+                new Product()
+                {
+                    Id = 1 + i,
+                    Name = $"product-{1 + i}",
+                    Description = $"description-{1 + i}",
+                    Price = 1 + i,
+                    Category = category1,
+                });
         }
         await dbContext.SaveChangesAsync();
     }
