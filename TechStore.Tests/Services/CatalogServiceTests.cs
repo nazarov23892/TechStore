@@ -1,3 +1,4 @@
+using Azure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using TechStore.AL.Catalog.Concrete;
@@ -37,23 +38,24 @@ public class CatalogServiceTests
             Page = 1,
             PerPage = 4,
         };
-        List<ProductCatalogListItemDto>? result;
+        PagedListResponseDto<ProductCatalogListItemDto>? result;
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
         {
             var productService = new CatalogService(dbContext);
 
             // Act.
-            result = (await productService.GetProductListAsync(pagingDto)).ToList();
+            result = await productService.GetProductPagedListAsync(pagingDto);
         }
 
         // Assert.
         Assert.NotNull(result);
-        Assert.NotEmpty(result);
-        Assert.Equal(4, result.Count);
-        Assert.Equal(1, result[0].Id);
-        Assert.Equal(2, result[1].Id);
-        Assert.Equal(3, result[2].Id);
-        Assert.Equal(4, result[3].Id);
+        var items = result.Items.ToList();
+        Assert.NotEmpty(items);
+        Assert.Equal(4, items.Count);
+        Assert.Equal(1, items[0].Id);
+        Assert.Equal(2, items[1].Id);
+        Assert.Equal(3, items[2].Id);
+        Assert.Equal(4, items[3].Id);
     }
 
     static async Task SeedData(ApplicationDbContext dbContext, int count)
