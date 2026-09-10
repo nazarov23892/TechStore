@@ -8,12 +8,12 @@ namespace TechStore.Contracts.DTOs;
 public class ProductPostDto
 {
     [Required]
-    public required string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
     public string? Description { get; set; }
 
     [Range(0, 1_000_000)]
     public decimal Price { get; set; }
 
     [Required]
-    public required string Category { get; set; }
+    public string Category { get; set; } = string.Empty;
 }

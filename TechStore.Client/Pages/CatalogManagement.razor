@@ -1,0 +1,81 @@
+﻿@page "/management"
+@using TechStore.Client.Components
+@using TechStore.Contracts.DTOs
+@inject HttpClient HttpClient
+
+<div class="container my-3">
+    <h3>Управление каталогом товаров</h3>
+
+    @if (Response == null)
+    {
+        <p>Загрузка товаров...</p>
+    }
+    else if (!Response.Items.Any())
+    {
+        <p>Товары не найдены.</p>
+    }
+    else
+    {
+        <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-2">
+            <!-- Ссылка на страницу создания -->
+            <NavLink class="btn btn-sm btn-primary" href="management/create">
+                ➕ Добавить товар
+            </NavLink>
+        </div>
+        <div class="d-flex flex-column gap-2">
+            @foreach (var product in Response.Items)
+            {
+                <div class="p-3 border rounded bg-white shadow-sm d-flex justify-content-between align-items-center">
+
+                    <div>
+                        <span class="badge bg-secondary mb-1">@product.Category</span>
+                        <h5 class="mb-1 fs-6 fw-bold">@product.Name</h5>
+                        <p class="text-muted small mb-1 text-truncate" style="max-width: 500px;">@product.Description</p>
+                        <span class="fw-bold text-primary small">@product.Price.ToString("N0") ₽</span>
+                    </div>
+
+                    <div>
+                        <button class="btn btn-sm btn-outline-danger"
+                                @onclick="() => { }">
+                            Удалить
+                        </button>
+                    </div>
+                </div>
+            }
+        </div>
+        
+
+        <PaginationPanel Page="@Response.Page"
+                         TotalPages="@Response.TotalPages"
+                         PageSelected="PagingPanelPageSelected" />
+    }
+</div>
+
+@code {
+    const string CatalogUri = "api/products";
+    const int PerPage = 5;
+
+    PagedListResponseDto<ProductListItemDto>? Response = null;
+
+    /// <inheritdoc/>
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadProducts(1);
+    }
+
+    Task PagingPanelPageSelected(int page) => LoadProducts(page);
+
+    async Task LoadProducts(int page)
+    {
+        var uri = $"{CatalogUri}?page={page}&perPage={PerPage}";
+        try
+        {
+            Response = await HttpClient.GetFromJsonAsync<PagedListResponseDto<ProductListItemDto>>(
+                uri);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Ошибка загрузки: {ex.Message}");
+        }
+    }
+}
