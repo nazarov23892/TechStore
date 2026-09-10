@@ -32,6 +32,17 @@
                 </div>
             }
         </div>
+
+        int itemPage = 1;
+        <div class="d-flex justify-content-center gap-1 mt-3">
+            @do
+            {
+                <button class="btn btn-sm btn-secondary">
+                    @itemPage
+                </button>
+                itemPage++;
+            } while (itemPage < Response.TotalCount);
+        </div>
     }
 </div>
 
