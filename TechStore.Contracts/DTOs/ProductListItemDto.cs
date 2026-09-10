@@ -1,9 +1,9 @@
 ﻿namespace TechStore.Contracts.DTOs;
 
 /// <summary>
-/// Списочная модель товара для каталога.
+/// Списочная модель товара.
 /// </summary>
-public class ProductCatalogListItemDto
+public class ProductListItemDto
 {
     public int Id { get; set; }
     public string Name { get; set; } = string.Empty;

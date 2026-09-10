@@ -16,10 +16,18 @@ public class CatalogController : Controller
     }
 
     [HttpGet]
-    public async Task<PagedListResponseDto<ProductCatalogListItemDto>> GetProductList(
+    public async Task<PagedListResponseDto<ProductListItemDto>> GetProductList(
         [FromQuery] PagingRequestDto request, CancellationToken cancellationToken)
     {
         var result = await _catalogService.GetProductPagedListAsync(request, cancellationToken);
+        return result;
+    }
+
+    [HttpPost]
+    public async Task<ProductDto> CreateProduct(
+        ProductPostDto request, CancellationToken cancellationToken)
+    {
+        var result = await _catalogService.CreateProductAsync(request, cancellationToken);
         return result;
     }
 }

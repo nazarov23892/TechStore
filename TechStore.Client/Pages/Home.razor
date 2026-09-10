@@ -1,4 +1,5 @@
 ﻿@page "/"
+@page "/catalog"
 @using TechStore.Client.Components
 @using TechStore.Contracts.DTOs
 @inject HttpClient HttpClient
@@ -45,7 +46,7 @@
     const string CatalogUri = "api/catalog";
     const int PerPage = 5;
 
-    PagedListResponseDto<ProductCatalogListItemDto>? Response = null;
+    PagedListResponseDto<ProductListItemDto>? Response = null;
 
     /// <inheritdoc/>
     protected override async Task OnInitializedAsync()
@@ -60,7 +61,7 @@
         var uri = $"{CatalogUri}?page={page}&perPage={PerPage}";
         try
         {
-            Response = await HttpClient.GetFromJsonAsync<PagedListResponseDto<ProductCatalogListItemDto>>(
+            Response = await HttpClient.GetFromJsonAsync<PagedListResponseDto<ProductListItemDto>>(
                 uri);
         }
         catch (Exception ex)

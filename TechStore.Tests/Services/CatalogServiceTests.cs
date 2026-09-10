@@ -37,7 +37,7 @@ public class CatalogServiceTests
             Page = 1,
             PerPage = 4,
         };
-        PagedListResponseDto<ProductCatalogListItemDto>? result;
+        PagedListResponseDto<ProductListItemDto>? result;
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
         {
             var productService = new CatalogService(dbContext);

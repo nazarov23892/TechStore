@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TechStore.AL.Abstractions;
+using TechStore.BLL.Entities;
 using TechStore.Contracts.DTOs;
 
 namespace TechStore.AL.Catalog.Concrete;
@@ -17,7 +18,31 @@ public class CatalogService : ICatalogService
     }
 
     /// <inheritdoc/>
-    public async Task<PagedListResponseDto<ProductCatalogListItemDto>> GetProductPagedListAsync(
+    public async Task<ProductDto> CreateProductAsync(
+        ProductPostDto request, CancellationToken cancellationToken = default)
+    {
+        var product = new Product()
+        {
+            Name = request.Name,
+            Description = request.Description,
+            Price = request.Price,
+            Category = request.Category,
+        };
+        _context.Products.Add(product);
+        await _context.SaveChangesAsync(cancellationToken);
+        var dto = new ProductDto()
+        {
+            Id = product.Id,
+            Name = request.Name,
+            Description = product.Description,
+            Category = product.Category,
+            Price = product.Price,
+        };
+        return dto;
+    }
+
+    /// <inheritdoc/>
+    public async Task<PagedListResponseDto<ProductListItemDto>> GetProductPagedListAsync(
         PagingRequestDto pagingRequest, CancellationToken cancellationToken = default)
     {
         var pagingStartsZero = pagingRequest.Page - 1;
@@ -30,7 +55,7 @@ public class CatalogService : ICatalogService
             .ToListAsync(cancellationToken);
 
         var dtos = products.Select(
-            p => new ProductCatalogListItemDto()
+            p => new ProductListItemDto()
             {
                 Id = p.Id,
                 Name = p.Name,
@@ -39,7 +64,7 @@ public class CatalogService : ICatalogService
                 Category = p.Category,
             }).ToList();
 
-        var result = new PagedListResponseDto<ProductCatalogListItemDto>()
+        var result = new PagedListResponseDto<ProductListItemDto>()
         {
             Items = dtos,
             Page = pagingRequest.Page,
