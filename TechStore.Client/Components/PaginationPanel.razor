@@ -1,15 +1,17 @@
 ﻿
-@{
-    int itemPage = 1;
-}
 <div class="d-flex justify-content-center gap-1 mt-3">
-    @do
-    {
-        <button class="btn btn-sm btn-secondary">
-            @itemPage
-        </button>
-        itemPage++;
-    } while (itemPage < TotalPages);
+    @{
+        int itemPage = 1;
+        do
+        {
+            var i = itemPage;
+            <button class="btn btn-sm btn-secondary"
+                    @onclick="() => OnButtonClicked(i)">
+                @itemPage
+            </button>
+            itemPage++;
+        } while (itemPage < TotalPages);
+    }
 </div>
 
 @code {
@@ -27,4 +29,15 @@
     [EditorRequired]
     [Parameter]
     public int Page { get; set; } = 1;
+
+    [Parameter]
+    public EventCallback<int> PageSelected { get; set; }
+
+    Task OnButtonClicked(int page)
+    {
+        Console.WriteLine($">> OnButtonClicked {page}");
+        if (PageSelected.HasDelegate)
+            return PageSelected.InvokeAsync(page);
+        return Task.CompletedTask; 
+    }
 }

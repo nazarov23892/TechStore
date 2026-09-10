@@ -34,21 +34,34 @@
             }
         </div>
 
-        <PaginationPanel Page="@Response.Page" TotalPages="@Response.TotalPages"/>
+        <PaginationPanel 
+            Page="@Response.Page" 
+            TotalPages="@Response.TotalPages"
+            PageSelected="PagingPanelPageSelected" />
     }
 </div>
 
 @code {
+    const string CatalogUri = "api/catalog";
+    const int PerPage = 5;
 
     PagedListResponseDto<ProductCatalogListItemDto>? Response = null;
 
     /// <inheritdoc/>
     protected override async Task OnInitializedAsync()
     {
+        await LoadProducts(1);
+    }
+
+    Task PagingPanelPageSelected(int page) => LoadProducts(page);
+
+    async Task LoadProducts(int page)
+    {
+        var uri = $"{CatalogUri}?page={page}&perPage={PerPage}";
         try
         {
             Response = await HttpClient.GetFromJsonAsync<PagedListResponseDto<ProductCatalogListItemDto>>(
-                "api/catalog");
+                uri);
         }
         catch (Exception ex)
         {
