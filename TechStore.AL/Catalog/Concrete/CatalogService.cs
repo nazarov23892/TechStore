@@ -21,6 +21,8 @@ public class CatalogService : ICatalogService
         PagingRequestDto pagingRequest, CancellationToken cancellationToken = default)
     {
         var pagingStartsZero = pagingRequest.Page - 1;
+        var totalCount = await _context.Products
+            .CountAsync(cancellationToken);
         var products = await _context.Products
             .AsNoTracking()
             .Skip(pagingStartsZero * pagingRequest.PerPage)
@@ -42,6 +44,7 @@ public class CatalogService : ICatalogService
             Items = dtos,
             Page = pagingRequest.Page,
             PerPage = pagingRequest.PerPage,
+            TotalCount = totalCount,
         };
         return result;
     }
