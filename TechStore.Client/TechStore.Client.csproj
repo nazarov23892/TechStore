@@ -15,4 +15,8 @@
     <ProjectReference Include="..\TechStore.Contracts\TechStore.Contracts.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\lib\" />
+  </ItemGroup>
+
 </Project>
