@@ -5,7 +5,7 @@
         do
         {
             var i = itemPage;
-            <button class="btn btn-sm btn-secondary"
+            <button class="btn btn-sm @(itemPage == Page ? "btn-primary" : "btn-secondary")"
                     @onclick="() => OnButtonClicked(i)">
                 @itemPage
             </button>
