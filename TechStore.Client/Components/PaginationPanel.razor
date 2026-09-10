@@ -1,13 +1,13 @@
 ﻿
 <div class="d-flex justify-content-center gap-1 mt-3">
     @{
-        int itemPage = 1;
+        int itemPage = 0;
         do
         {
-            var i = itemPage;
-            <button class="btn btn-sm @(itemPage == Page ? "btn-primary" : "btn-secondary")"
+            var i = itemPage + 1;
+            <button class="btn btn-sm @(i == Page ? "btn-primary" : "btn-secondary")"
                     @onclick="() => OnButtonClicked(i)">
-                @itemPage
+                @i
             </button>
             itemPage++;
         } while (itemPage < TotalPages);
@@ -38,6 +38,6 @@
         Console.WriteLine($">> OnButtonClicked {page}");
         if (PageSelected.HasDelegate)
             return PageSelected.InvokeAsync(page);
-        return Task.CompletedTask; 
+        return Task.CompletedTask;
     }
 }
