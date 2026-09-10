@@ -55,6 +55,8 @@ public class CatalogServiceTests
         Assert.Equal(2, items[1].Id);
         Assert.Equal(3, items[2].Id);
         Assert.Equal(4, items[3].Id);
+        Assert.Equal(10, result.TotalCount);
+        Assert.Equal(3, result.TotalPages);
     }
 
     static async Task SeedData(ApplicationDbContext dbContext, int count)
