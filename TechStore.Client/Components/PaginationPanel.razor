@@ -1,0 +1,30 @@
+﻿
+@{
+    int itemPage = 1;
+}
+<div class="d-flex justify-content-center gap-1 mt-3">
+    @do
+    {
+        <button class="btn btn-sm btn-secondary">
+            @itemPage
+        </button>
+        itemPage++;
+    } while (itemPage < TotalPages);
+</div>
+
+@code {
+
+    /// <summary>
+    /// Общее количество страниц.
+    /// </summary>
+    [EditorRequired]
+    [Parameter]
+    public int TotalPages { get; set; } = 1;
+
+    /// <summary>
+    /// Текущая страница.
+    /// </summary>
+    [EditorRequired]
+    [Parameter]
+    public int Page { get; set; } = 1;
+}
