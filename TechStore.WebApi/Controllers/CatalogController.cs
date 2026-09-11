@@ -5,7 +5,7 @@ using TechStore.Contracts.DTOs;
 namespace TechStore.WebApi.Controllers;
 
 [ApiController]
-[Route("api/catalog")]
+[Route("api/products")]
 public class CatalogController : Controller
 {
     readonly ICatalogService _catalogService;
@@ -30,4 +30,10 @@ public class CatalogController : Controller
         var result = await _catalogService.CreateProductAsync(request, cancellationToken);
         return result;
     }
+
+    [HttpDelete]
+    public Task DeleteProduct(
+        [FromQuery] long id, CancellationToken cancellationToken)
+        => _catalogService.DeleteProductAsync(id, cancellationToken);
+
 }

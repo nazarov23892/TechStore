@@ -22,4 +22,12 @@ public interface ICatalogService
     /// <param name="cancellationToken">Токен отмены операции.</param> 
     Task<ProductDto> CreateProductAsync(
         ProductPostDto request, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Удаляет товар.
+    /// </summary>
+    /// <param name="id">Идентификатор товара.</param>
+    /// <param name="cancellationToken">Токен отмены операции.</param> 
+    Task DeleteProductAsync(
+        long id, CancellationToken cancellationToken = default);
 }

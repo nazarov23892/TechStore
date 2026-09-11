@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TechStore.AL.Abstractions;
 using TechStore.BLL.Entities;
+using TechStore.BLL.Exceptions;
 using TechStore.Contracts.DTOs;
 
 namespace TechStore.AL.Catalog.Concrete;
@@ -73,4 +74,17 @@ public class CatalogService : ICatalogService
         };
         return result;
     }
+
+    /// <inheritdoc/>
+    public async Task DeleteProductAsync(
+        long id, CancellationToken cancellationToken = default)
+    {
+        var product = await _context.Products
+            .FirstOrDefaultAsync(p => p.Id == id, cancellationToken: cancellationToken)
+            ?? throw new NotFoundException($"The product with Id {id} not found.");
+
+        _context.Products.Remove(product);
+        await _context.SaveChangesAsync(cancellationToken);
+    }
+
 }
