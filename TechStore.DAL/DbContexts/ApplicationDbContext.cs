@@ -23,14 +23,18 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
         modelBuilder.Entity<Product>(
             entity =>
             {
-                entity.Property(e => e.Price)
+                entity.Property(p => p.Price)
                     .HasPrecision(18, 2);
+                entity.HasOne(p => p.Category)
+                    .WithMany()
+                    .HasForeignKey(p => p.CategoryId)
+                    .OnDelete(DeleteBehavior.Restrict);
             });
 
         modelBuilder.Entity<Category>(
           entity =>
           {
-              entity.HasIndex(e => e.Name)
+              entity.HasIndex(c => c.Name)
               .IsUnique();
           });
     }

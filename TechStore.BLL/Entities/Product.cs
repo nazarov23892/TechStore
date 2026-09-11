@@ -13,7 +13,7 @@ public class Product
     /// <summary>
     /// Идентификатор категории товара.
     /// </summary>
-    public int CategoryId { get; set; }
+    public long CategoryId { get; set; }
 
     /// <summary>
     /// Категория товара.
