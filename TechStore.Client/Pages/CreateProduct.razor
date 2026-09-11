@@ -1,0 +1,53 @@
+﻿@page "/management/create"
+@using TechStore.Contracts.DTOs
+@inject HttpClient HttpClient
+@inject NavigationManager Navigation
+
+<div class="container my-3" >
+    <h3 class="mb-3">Создание товара</h3>
+
+    <div class="p-3 border rounded bg-light">
+        <div class="mb-2">
+            <label class="form-label mb-1">Название устройства</label>
+            <input type="text" class="form-control form-control-sm" @bind="newProduct.Name" placeholder="Например: Процессор AMD Ryzen 5" />
+        </div>
+
+        <div class="mb-2">
+            <label class="form-label mb-1">Категория</label>
+            <input type="text" class="form-control form-control-sm" @bind="newProduct.Category" placeholder="Например: Процессоры" />
+        </div>
+
+        <div class="mb-2">
+            <label class="form-label mb-1">Цена (₽)</label>
+            <input type="number" class="form-control form-control-sm" @bind="newProduct.Price" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label mb-1">Описание характеристик</label>
+            <textarea class="form-control form-control-sm" rows="3" @bind="newProduct.Description"></textarea>
+        </div>
+
+        <div class="d-flex gap-2">
+            <button class="btn btn-sm btn-primary flex-grow-1" @onclick="AddProduct">Сохранить</button>
+            <button class="btn btn-sm btn-outline-secondary" @onclick="Cancel">Отмена</button>
+        </div>
+    </div>
+</div>
+
+@code {
+    ProductPostDto newProduct = new();
+
+    async Task AddProduct()
+    {
+        var response = await HttpClient.PostAsJsonAsync("api/products", newProduct);
+        if (response.IsSuccessStatusCode)
+        {
+            Navigation.NavigateTo("/management");
+        }
+    }
+
+    void Cancel()
+    {
+        Navigation.NavigateTo("/management");
+    }
+}
