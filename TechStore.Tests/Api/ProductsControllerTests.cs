@@ -1,17 +1,19 @@
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using TechStore.AL.Catalog.Concrete;
 using TechStore.BLL.Entities;
 using TechStore.Contracts.DTOs;
 using TechStore.DAL.DbContexts;
+using TechStore.WebApi.Controllers;
 
-namespace TechStore.Tests.Services;
+namespace TechStore.Tests.Api;
 
-public class CatalogServiceTests
+public class ProductsControllerTests
 {
     readonly DbContextOptions<ApplicationDbContext> _dbContextOptions;
 
-    public CatalogServiceTests()
+    public ProductsControllerTests()
     {
         var serviceCollection = new ServiceCollection();
         serviceCollection.AddEntityFrameworkInMemoryDatabase()
@@ -24,39 +26,43 @@ public class CatalogServiceTests
         _dbContextOptions = builder.Options;
     }
 
-    [Fact(DisplayName = "Формирование постраничного списка товаров успешно.")]
-    public async Task Can_Form_PagedProductList()
+    [Fact(DisplayName = "Получение постраничного списка товаров успешно.")]
+    public async Task GetPagedProducts_ReturnsOk()
     {
         // Arrange.
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
         {
             await SeedData(dbContext, 10);
         }
-        var pagingDto = new PagingRequestDto()
+        var paging = new PagingRequestDto()
         {
             Page = 1,
-            PerPage = 4,
+            PerPage = 3,
         };
-        PagedListResponseDto<ProductListItemDto>? result;
+        PagedListResponseDto<ProductListItemDto>? response = null;
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
         {
-            var productService = new CatalogService(dbContext);
-
-            // Act.
-            result = await productService.GetProductPagedListAsync(pagingDto);
+            var catalogService = new CatalogService(dbContext);
+            var controller = new ProductsController(catalogService);
+            
+            //Act.
+            var actionResult = await controller.GetProductList(paging, default);
+            Assert.IsType<ActionResult<PagedListResponseDto<ProductListItemDto>>>(actionResult);
+            response = actionResult.Value;
         }
 
         // Assert.
-        Assert.NotNull(result);
-        var items = result.Items.ToList();
-        Assert.NotEmpty(items);
-        Assert.Equal(4, items.Count);
+        Assert.NotNull(response);
+        Assert.NotEmpty(response.Items);
+        Assert.Equal(4, response.TotalPages);
+        Assert.Equal(1, response.Page);
+        Assert.Equal(3, response.PerPage);
+
+        var items = response.Items.ToList();
+        Assert.Equal(3, items.Count);
         Assert.Equal(1, items[0].Id);
         Assert.Equal(2, items[1].Id);
         Assert.Equal(3, items[2].Id);
-        Assert.Equal(4, items[3].Id);
-        Assert.Equal(10, result.TotalCount);
-        Assert.Equal(3, result.TotalPages);
     }
 
     static async Task SeedData(ApplicationDbContext dbContext, int count)

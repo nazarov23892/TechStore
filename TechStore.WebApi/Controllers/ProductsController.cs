@@ -16,7 +16,7 @@ public class ProductsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<PagedListResponseDto<ProductListItemDto>> GetProductList(
+    public async Task<ActionResult<PagedListResponseDto<ProductListItemDto>>> GetProductList(
         [FromQuery] PagingRequestDto request, CancellationToken cancellationToken)
     {
         var result = await _catalogService.GetProductPagedListAsync(request, cancellationToken);
