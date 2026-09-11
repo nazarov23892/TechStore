@@ -15,6 +15,8 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     /// <inheritdoc/>
     public DbSet<Product> Products => Set<Product>();
 
+    public DbSet<Category> Categories => Set<Category>();
+
     /// <inheritdoc/>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -24,5 +26,12 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
                 entity.Property(e => e.Price)
                     .HasPrecision(18, 2);
             });
+
+        modelBuilder.Entity<Category>(
+          entity =>
+          {
+              entity.HasIndex(e => e.Name)
+              .IsUnique();
+          });
     }
 }

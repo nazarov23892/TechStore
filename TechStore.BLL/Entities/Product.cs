@@ -9,5 +9,14 @@ public class Product
     public required string Name { get; set; }
     public string? Description { get; set; }
     public decimal Price { get; set; }
-    public required string Category { get; set; }
+
+    /// <summary>
+    /// Идентификатор категории товара.
+    /// </summary>
+    public int CategoryId { get; set; }
+
+    /// <summary>
+    /// Категория товара.
+    /// </summary>
+    public Category? Category { get; set; }
 }

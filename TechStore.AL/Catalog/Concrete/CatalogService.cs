@@ -22,12 +22,16 @@ public class CatalogService : ICatalogService
     public async Task<ProductDto> CreateProductAsync(
         ProductPostDto request, CancellationToken cancellationToken = default)
     {
+        var category = await _context.Categories
+            .FirstOrDefaultAsync(c => c.Id == request.CategoryId, cancellationToken)
+            ?? throw new NotFoundException($"Category {request.CategoryId} not found.");
+
         var product = new Product()
         {
             Name = request.Name,
             Description = request.Description,
             Price = request.Price,
-            Category = request.Category,
+            Category = category,
         };
         _context.Products.Add(product);
         await _context.SaveChangesAsync(cancellationToken);
@@ -36,7 +40,7 @@ public class CatalogService : ICatalogService
             Id = product.Id,
             Name = request.Name,
             Description = product.Description,
-            Category = product.Category,
+            Category = product.Category.Name,
             Price = product.Price,
         };
         return dto;
@@ -62,7 +66,7 @@ public class CatalogService : ICatalogService
                 Name = p.Name,
                 Description = p.Description,
                 Price = p.Price,
-                Category = p.Category,
+                Category = p.Category?.Name ?? string.Empty,
             }).ToList();
 
         var result = new PagedListResponseDto<ProductListItemDto>()

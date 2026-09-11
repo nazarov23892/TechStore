@@ -14,6 +14,6 @@ public class ProductPostDto
     [Range(0, 1_000_000)]
     public decimal Price { get; set; }
 
-    [Required]
-    public string Category { get; set; } = string.Empty;
+    [Range(1, long.MaxValue)]
+    public long CategoryId { get; set; }
 }

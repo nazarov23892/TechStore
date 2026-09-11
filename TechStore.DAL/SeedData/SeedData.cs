@@ -16,7 +16,10 @@ public static class SeedData
             return;
         }
 
-        var category1 = "category1";
+        var category1 = new Category() 
+        { 
+            Name = "category1" 
+        };
         for (var i = 0; i < count; i++)
         {
             dbContext.Products.Add(
