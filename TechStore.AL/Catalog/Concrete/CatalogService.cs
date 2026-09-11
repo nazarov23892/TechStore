@@ -55,6 +55,7 @@ public class CatalogService : ICatalogService
             .CountAsync(cancellationToken);
         var products = await _context.Products
             .AsNoTracking()
+            .Include(p => p.Category)
             .Skip(pagingStartsZero * pagingRequest.PerPage)
             .Take(pagingRequest.PerPage)
             .ToListAsync(cancellationToken);
