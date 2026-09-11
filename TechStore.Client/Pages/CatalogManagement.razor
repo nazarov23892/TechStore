@@ -1,6 +1,7 @@
 ﻿@page "/management"
 
 @using TechStore.Client.Components
+@using TechStore.Contracts.Configuration
 @using TechStore.Contracts.DTOs
 
 @inject HttpClient HttpClient
@@ -46,7 +47,6 @@
             }
         </div>
 
-        
         <PaginationPanel @ref="paginationPanelRef"
                          Page="@Response.Page"
                          TotalPages="@Response.TotalPages"
@@ -55,7 +55,6 @@
 </div>
 
 @code {
-    const string CatalogUri = "api/products";
     const int PerPage = 5;
 
     PaginationPanel? paginationPanelRef;
@@ -72,7 +71,7 @@
 
     async Task LoadProducts(int page)
     {
-        var uri = $"{CatalogUri}?page={page}&perPage={PerPage}";
+        var uri = $"{SharedConstants.BaseUri.Products}?page={page}&perPage={PerPage}";
         try
         {
             Response = await HttpClient.GetFromJsonAsync<PagedListResponseDto<ProductListItemDto>>(
@@ -93,7 +92,7 @@
         if (!isConfirmed)
             return;
 
-        var response = await HttpClient.DeleteAsync($"api/products/{id}");
+        var response = await HttpClient.DeleteAsync($"{SharedConstants.BaseUri.Products}/{id}");
         if (response.IsSuccessStatusCode)
         {
             var page = paginationPanelRef?.Page ?? 1;

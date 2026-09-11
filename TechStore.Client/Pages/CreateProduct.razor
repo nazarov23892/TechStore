@@ -1,9 +1,10 @@
 ﻿@page "/management/create"
+@using TechStore.Contracts.Configuration
 @using TechStore.Contracts.DTOs
 @inject HttpClient HttpClient
 @inject NavigationManager Navigation
 
-<div class="container my-3" >
+<div class="container my-3">
     <h3 class="mb-3">Создание товара</h3>
 
     <div class="p-3 border rounded bg-light">
@@ -39,7 +40,7 @@
 
     async Task AddProduct()
     {
-        var response = await HttpClient.PostAsJsonAsync("api/products", newProduct);
+        var response = await HttpClient.PostAsJsonAsync(SharedConstants.BaseUri.Products, newProduct);
         if (response.IsSuccessStatusCode)
         {
             Navigation.NavigateTo("/management");
