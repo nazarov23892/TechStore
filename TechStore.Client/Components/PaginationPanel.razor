@@ -35,7 +35,6 @@
 
     Task OnButtonClicked(int page)
     {
-        Console.WriteLine($">> OnButtonClicked {page}");
         if (PageSelected.HasDelegate)
             return PageSelected.InvokeAsync(page);
         return Task.CompletedTask;
