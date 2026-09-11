@@ -40,7 +40,11 @@ public class CatalogService : ICatalogService
             Id = product.Id,
             Name = request.Name,
             Description = product.Description,
-            Category = product.Category.Name,
+            Category = new CategoryShortDto()
+            {
+                Id = product.CategoryId,
+                Name = product.Category?.Name ?? string.Empty,
+            },
             Price = product.Price,
         };
         return dto;

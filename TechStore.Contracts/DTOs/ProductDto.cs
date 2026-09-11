@@ -9,5 +9,9 @@ public class ProductDto
     public string Name { get; set; } = string.Empty;
     public string? Description { get; set; }
     public decimal Price { get; set; }
-    public string Category { get; set; } = string.Empty;
+    
+    /// <summary>
+    /// Категория.
+    /// </summary>
+    public CategoryShortDto? Category { get; set; }
 }
