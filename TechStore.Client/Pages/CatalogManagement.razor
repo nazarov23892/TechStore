@@ -1,11 +1,13 @@
 ﻿@page "/management"
 
 @using TechStore.Client.Components
+@using TechStore.Client.HttpServices
 @using TechStore.Contracts.Configuration
 @using TechStore.Contracts.DTOs
 
 @inject HttpClient HttpClient
 @inject IJSRuntime JS
+@inject IProductHttpService ProductsHttpService
 
 <div class="container my-3">
     <h3>Управление каталогом товаров</h3>
@@ -71,11 +73,9 @@
 
     async Task LoadProducts(int page)
     {
-        var uri = $"{SharedConstants.BaseUri.Products}?page={page}&perPage={PerPage}";
         try
         {
-            Response = await HttpClient.GetFromJsonAsync<PagedListResponseDto<ProductListItemDto>>(
-                uri);
+            Response = await ProductsHttpService.GetPagedListAsync(page, PerPage);
         }
         catch (Exception ex)
         {
