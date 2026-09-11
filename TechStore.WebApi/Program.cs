@@ -4,6 +4,7 @@ using TechStore.AL.Catalog;
 using TechStore.AL.Catalog.Concrete;
 using TechStore.DAL.DbContexts;
 using TechStore.DAL.SeedData;
+using TechStore.WebApi.ExceptionHandlers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +21,10 @@ builder.Services.AddLogging(
         configure.AddConsole();
     });
 
+// Exception handlers.
+builder.Services.AddExceptionHandler<NotFoundExceptionHandler>();
+
+// Services.
 builder.Services.AddScoped<ICatalogService, CatalogService>();
 builder.Services.AddScoped<IApplicationDbContext>(
     provider => provider.GetRequiredService<ApplicationDbContext>());
@@ -42,7 +47,7 @@ builder.Services.AddControllers();
 
 var app = builder.Build();
 
-app.UseCors("AllowBlazorClient"); // Между UseRouting и UseAuthorization
+app.UseCors("AllowBlazorClient"); // Между UseRouting и UseAuthorization.
 app.MapDefaultControllerRoute();
 
 if (app.Environment.IsDevelopment())
