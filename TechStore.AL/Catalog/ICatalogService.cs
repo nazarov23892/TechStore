@@ -30,4 +30,12 @@ public interface ICatalogService
     /// <param name="cancellationToken">Токен отмены операции.</param> 
     Task DeleteProductAsync(
         long id, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Возвращает ответ со списком моделей категорий.
+    /// </summary>
+    /// <param name="pagingRequest">Модель постраничной навигации.</param>
+    /// <param name="cancellationToken">Токен отмены операции.</param> 
+    Task<PagedListResponseDto<CategoryListDto>> GetCategoriesAsync(
+        PagingRequestDto pagingRequest, CancellationToken cancellationToken = default);
 }

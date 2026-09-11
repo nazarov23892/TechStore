@@ -96,4 +96,33 @@ public class CatalogService : ICatalogService
         await _context.SaveChangesAsync(cancellationToken);
     }
 
+    /// <inheritdoc/>
+    public async Task<PagedListResponseDto<CategoryListDto>> GetCategoriesAsync(
+        PagingRequestDto pagingRequest, CancellationToken cancellationToken = default)
+    {
+        var pagingStartsZero = pagingRequest.Page - 1;
+        var totalCount = await _context.Categories
+            .CountAsync(cancellationToken);
+        var models = await _context.Categories
+            .AsNoTracking()
+            .Skip(pagingStartsZero * pagingRequest.PerPage)
+            .Take(pagingRequest.PerPage)
+            .ToListAsync(cancellationToken);
+
+        var dtos = models.Select(
+            m => new CategoryListDto()
+            {
+                Id = m.Id,
+                Name = m.Name,
+            }).ToList();
+
+        var result = new PagedListResponseDto<CategoryListDto>()
+        {
+            Items = dtos,
+            Page = pagingRequest.Page,
+            PerPage = pagingRequest.PerPage,
+            TotalCount = totalCount,
+        };
+        return result;
+    }
 }

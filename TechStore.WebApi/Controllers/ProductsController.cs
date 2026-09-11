@@ -6,11 +6,11 @@ namespace TechStore.WebApi.Controllers;
 
 [ApiController]
 [Route("api/products")]
-public class CatalogController : Controller
+public class ProductsController : ControllerBase
 {
     readonly ICatalogService _catalogService;
 
-    public CatalogController(ICatalogService catalogService)
+    public ProductsController(ICatalogService catalogService)
     {
         _catalogService = catalogService;
     }
