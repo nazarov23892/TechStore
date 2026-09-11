@@ -31,9 +31,9 @@ public class CatalogController : Controller
         return result;
     }
 
-    [HttpDelete]
+    [HttpDelete("{id:long}")]
     public Task DeleteProduct(
-        [FromQuery] long id, CancellationToken cancellationToken)
+        long id, CancellationToken cancellationToken)
         => _catalogService.DeleteProductAsync(id, cancellationToken);
 
 }
