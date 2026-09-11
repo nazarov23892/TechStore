@@ -21,6 +21,8 @@ builder.Services.AddLogging(
         configure.AddConsole();
     });
 
+builder.Services.AddProblemDetails();
+
 // Exception handlers.
 builder.Services.AddExceptionHandler<NotFoundExceptionHandler>();
 
@@ -48,7 +50,9 @@ builder.Services.AddControllers();
 var app = builder.Build();
 
 app.UseCors("AllowBlazorClient"); // Между UseRouting и UseAuthorization.
+
 app.MapDefaultControllerRoute();
+app.UseExceptionHandler();
 
 if (app.Environment.IsDevelopment())
 {
