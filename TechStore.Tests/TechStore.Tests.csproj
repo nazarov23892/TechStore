@@ -20,6 +20,7 @@
   <ItemGroup>
     <ProjectReference Include="..\TechStore.AL\TechStore.AL.csproj" />
     <ProjectReference Include="..\TechStore.DAL\TechStore.DAL.csproj" />
+    <ProjectReference Include="..\TechStore.WebApi\TechStore.WebApi.csproj" />
   </ItemGroup>
 
   <ItemGroup>
