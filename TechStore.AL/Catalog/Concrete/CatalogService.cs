@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TechStore.AL.Abstractions;
+using TechStore.AL.Extensions;
 using TechStore.BLL.Entities;
 using TechStore.BLL.Exceptions;
 using TechStore.Contracts.DTOs;
@@ -60,8 +61,7 @@ public class CatalogService : ICatalogService
         var products = await _context.Products
             .AsNoTracking()
             .Include(p => p.Category)
-            .Skip(pagingStartsZero * pagingRequest.PerPage)
-            .Take(pagingRequest.PerPage)
+            .WithPaging(pagingStartsZero, pagingRequest.PerPage)
             .ToListAsync(cancellationToken);
 
         var dtos = products.Select(
@@ -105,8 +105,7 @@ public class CatalogService : ICatalogService
             .CountAsync(cancellationToken);
         var models = await _context.Categories
             .AsNoTracking()
-            .Skip(pagingStartsZero * pagingRequest.PerPage)
-            .Take(pagingRequest.PerPage)
+            .WithPaging(pagingStartsZero, pagingRequest.PerPage)
             .ToListAsync(cancellationToken);
 
         var dtos = models.Select(
