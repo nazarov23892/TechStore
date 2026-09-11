@@ -1,7 +1,7 @@
 ﻿@page "/management/create"
-@using TechStore.Contracts.Configuration
+@using TechStore.Client.HttpServices
 @using TechStore.Contracts.DTOs
-@inject HttpClient HttpClient
+@inject IProductHttpService ProductsHttpService
 @inject NavigationManager Navigation
 
 <div class="container my-3">
@@ -40,11 +40,16 @@
 
     async Task AddProduct()
     {
-        var response = await HttpClient.PostAsJsonAsync(SharedConstants.BaseUri.Products, newProduct);
-        if (response.IsSuccessStatusCode)
+        try
         {
-            Navigation.NavigateTo("/management");
+            _ = await ProductsHttpService.CreateAsync(newProduct);
         }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Ошибка загрузки: {ex.Message}");
+            return;
+        }
+        Navigation.NavigateTo("/management");
     }
 
     void Cancel()
