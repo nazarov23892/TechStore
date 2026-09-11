@@ -21,4 +21,11 @@ public interface IProductHttpService
     /// <param name="cancellationToken">Токен отмены операции.</param>
     Task<ProductDto?> CreateAsync(
         ProductPostDto createRequest, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Выполняет запрос удаления товара.
+    /// </summary>
+    /// <param name="id">Идентификатор.</param>
+    /// <param name="cancellationToken">Токен отмены операции.</param>
+    Task DeleteAsync(int id, CancellationToken cancellationToken = default);
 }

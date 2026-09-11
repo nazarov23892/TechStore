@@ -2,10 +2,8 @@
 
 @using TechStore.Client.Components
 @using TechStore.Client.HttpServices
-@using TechStore.Contracts.Configuration
 @using TechStore.Contracts.DTOs
 
-@inject HttpClient HttpClient
 @inject IJSRuntime JS
 @inject IProductHttpService ProductsHttpService
 
@@ -92,11 +90,8 @@
         if (!isConfirmed)
             return;
 
-        var response = await HttpClient.DeleteAsync($"{SharedConstants.BaseUri.Products}/{id}");
-        if (response.IsSuccessStatusCode)
-        {
-            var page = paginationPanelRef?.Page ?? 1;
-            await LoadProducts(page);
-        }
+        await ProductsHttpService.DeleteAsync(id);
+        var page = paginationPanelRef?.Page ?? 1;
+        await LoadProducts(page);
     }
 }
