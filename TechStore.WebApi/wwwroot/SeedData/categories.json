@@ -1,0 +1,14 @@
+[
+  {
+    "key": "processors",
+    "displayName": "Процессоры"
+  },
+  {
+    "key": "hdd-3-5",
+    "displayName": "Жесткие диски 3,5\""
+  },
+  {
+    "key": "ram",
+    "displayName": "Оперативная память"
+  }
+]

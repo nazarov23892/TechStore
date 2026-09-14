@@ -59,7 +59,10 @@ if (app.Environment.IsDevelopment())
     using var scope = app.Services.CreateScope();
     var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
     var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    await SeedData.RunSeed(dbContext, 100, logger);
+    var env = scope.ServiceProvider.GetRequiredService<IWebHostEnvironment>();
+    var seedDataDir = Path.Combine(env.WebRootPath, "SeedData");
+
+    await SeedData.RunSeed(dbContext, seedDataDir, 100, logger);
 }
 
 await app.RunAsync();
