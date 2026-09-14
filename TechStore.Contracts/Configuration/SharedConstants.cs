@@ -8,5 +8,10 @@ public static class SharedConstants
         /// Базовый URI апи товаров.
         /// </summary>
         public const string Products = "api/products";
+
+        /// <summary>
+        /// Базовый URI апи категорий товаров.
+        /// </summary>
+        public const string Categories = "api/categories";
     }
 }

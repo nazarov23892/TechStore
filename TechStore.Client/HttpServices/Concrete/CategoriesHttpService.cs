@@ -1,0 +1,28 @@
+﻿using System.Net.Http.Json;
+using TechStore.Contracts.Configuration;
+using TechStore.Contracts.DTOs;
+
+namespace TechStore.Client.HttpServices.Concrete;
+
+/// <summary>
+/// Http-сервис категорий товаров.
+/// </summary>
+public class CategoriesHttpService : ICategoriesHttpService
+{
+    readonly HttpClient _httpClient;
+    const string BasePath = SharedConstants.BaseUri.Categories;
+
+    public CategoriesHttpService(HttpClient httpClient)
+    {
+        _httpClient = httpClient;
+    }
+
+    /// <inheritdoc/>
+    public Task<PagedListResponseDto<CategoryListDto>?> GetPagedListAsync(
+        int page, int perPage, CancellationToken cancellationToken = default)
+    {
+        var uri = $"{BasePath}?page={page}&perPage={perPage}";
+        return _httpClient.GetFromJsonAsync<PagedListResponseDto<CategoryListDto>>(
+            uri, cancellationToken);
+    }
+}

@@ -2,6 +2,7 @@
 @using TechStore.Client.HttpServices
 @using TechStore.Contracts.DTOs
 @inject IProductHttpService ProductsHttpService
+@inject ICategoriesHttpService CategoriesHttpService;
 @inject NavigationManager Navigation
 
 <div class="container my-3">
@@ -15,7 +16,14 @@
 
         <div class="mb-2">
             <label class="form-label mb-1">Категория</label>
-            <input type="text" class="form-control form-control-sm" @bind="newProduct.CategoryId" placeholder="Например: Процессоры" />
+            <select class="form-select form-select-sm"
+                    @bind="newProduct.CategoryId">
+                @foreach (var item in categories?.Items ?? Enumerable.Empty<CategoryListDto>())
+                {
+                    <option value="0" disabled selected>Выберите категорию</option>
+                    <option value="@item.Id">@item.Name</option>
+                }
+            </select>
         </div>
 
         <div class="mb-2">
@@ -37,6 +45,19 @@
 
 @code {
     ProductPostDto newProduct = new();
+    PagedListResponseDto<CategoryListDto>? categories;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadCategories();
+    }
+
+    async Task LoadCategories()
+    {
+        var response = await CategoriesHttpService.GetPagedListAsync(
+            page: 1, perPage: 1000);
+        categories = response;
+    }
 
     async Task AddProduct()
     {
