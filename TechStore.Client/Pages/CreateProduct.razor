@@ -54,9 +54,16 @@
 
     async Task LoadCategories()
     {
-        var response = await CategoriesHttpService.GetPagedListAsync(
-            page: 1, perPage: 1000);
-        categories = response;
+        try
+        {
+            var response = await CategoriesHttpService.GetPagedListAsync(
+              page: 1, perPage: 1000);
+            categories = response;
+        }
+        catch(Exception ex)
+        {
+            Console.WriteLine($"Ошибка загрузки: {ex.Message}");
+        }
     }
 
     async Task AddProduct()
