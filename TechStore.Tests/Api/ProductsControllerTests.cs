@@ -32,7 +32,7 @@ public class ProductsControllerTests
         // Arrange.
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
         {
-            await SeedData(dbContext, 10);
+            await SeedData(dbContext, 20);
         }
         var paging = new PagingRequestDto()
         {
@@ -165,6 +165,10 @@ public class ProductsControllerTests
         {
             Key = "category1"
         };
+        var category2 = new Category()
+        {
+            Key = "category2"
+        };
         for (var i = 0; i < count; i++)
         {
             dbContext.Products.Add(
@@ -174,7 +178,7 @@ public class ProductsControllerTests
                     Name = $"product-{1 + i}",
                     Description = $"description-{1 + i}",
                     Price = 1 + i,
-                    Category = category1,
+                    Category = i <= count / 2 ? category1 : category2,
                 });
         }
         await dbContext.SaveChangesAsync();
