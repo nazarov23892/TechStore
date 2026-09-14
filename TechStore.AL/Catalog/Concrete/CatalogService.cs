@@ -53,7 +53,9 @@ public class CatalogService : ICatalogService
 
     /// <inheritdoc/>
     public async Task<PagedListResponseDto<ProductListItemDto>> GetProductPagedListAsync(
-        PagingRequestDto pagingRequest, CancellationToken cancellationToken = default)
+        PagingRequestDto pagingRequest,
+        string? category = null,
+        CancellationToken cancellationToken = default)
     {
         var pagingStartsZero = pagingRequest.Page - 1;
         var totalCount = await _context.Products
@@ -61,6 +63,7 @@ public class CatalogService : ICatalogService
         var products = await _context.Products
             .AsNoTracking()
             .Include(p => p.Category)
+            .Where(p => !string.IsNullOrEmpty(category) && p.Category!.Name == category)
             .WithPaging(pagingStartsZero, pagingRequest.PerPage)
             .ToListAsync(cancellationToken);
 

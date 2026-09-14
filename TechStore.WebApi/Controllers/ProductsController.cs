@@ -17,9 +17,12 @@ public class ProductsController : ControllerBase
 
     [HttpGet]
     public async Task<ActionResult<PagedListResponseDto<ProductListItemDto>>> GetProductList(
-        [FromQuery] PagingRequestDto request, CancellationToken cancellationToken)
+        [FromQuery] PagingRequestDto request,
+        [FromQuery] string? category,
+        CancellationToken cancellationToken)
     {
-        var result = await _catalogService.GetProductPagedListAsync(request, cancellationToken);
+        var result = await _catalogService.GetProductPagedListAsync(
+            request, category, cancellationToken);
         return result;
     }
 
@@ -34,7 +37,7 @@ public class ProductsController : ControllerBase
     [HttpDelete("{id:long}")]
     public async Task<ActionResult> DeleteProduct(
         long id, CancellationToken cancellationToken)
-    { 
+    {
         await _catalogService.DeleteProductAsync(id, cancellationToken);
         return NoContent();
     }

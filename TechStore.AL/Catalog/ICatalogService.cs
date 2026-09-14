@@ -11,9 +11,12 @@ public interface ICatalogService
     /// Возвращает модель для списка товаров каталога.
     /// </summary>
     /// <param name="pagingRequest">Модель постраничной навигации.</param>
+    /// <param name="category">Категория товаров.</param>
     /// <param name="cancellationToken">Токен отмены операции.</param> 
     Task<PagedListResponseDto<ProductListItemDto>> GetProductPagedListAsync(
-        PagingRequestDto pagingRequest, CancellationToken cancellationToken = default);
+        PagingRequestDto pagingRequest, 
+        string? category,
+        CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Создает новый товар.

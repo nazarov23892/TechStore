@@ -26,8 +26,8 @@ public class ProductsControllerTests
         _dbContextOptions = builder.Options;
     }
 
-    [Fact(DisplayName = "Получение постраничного списка товаров успешно.")]
-    public async Task GetPagedProducts_ReturnsOk()
+    [Fact(DisplayName = "Получение постраничного списка товаров выбранной категории успешно.")]
+    public async Task GetPagedProductsByCategory_ReturnsOk()
     {
         // Arrange.
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
@@ -39,6 +39,7 @@ public class ProductsControllerTests
             Page = 1,
             PerPage = 3,
         };
+        var category = "category1";
         PagedListResponseDto<ProductListItemDto>? response = null;
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
         {
@@ -46,7 +47,8 @@ public class ProductsControllerTests
             var controller = new ProductsController(catalogService);
             
             //Act.
-            var actionResult = await controller.GetProductList(paging, default);
+            var actionResult = await controller.GetProductList(
+                paging, category, default);
             Assert.IsType<ActionResult<PagedListResponseDto<ProductListItemDto>>>(actionResult);
             response = actionResult.Value;
         }
