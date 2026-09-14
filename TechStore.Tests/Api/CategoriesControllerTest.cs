@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Azure;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using System.Net.NetworkInformation;
 using TechStore.AL.Catalog.Concrete;
 using TechStore.BLL.Entities;
 using TechStore.Contracts.DTOs;
@@ -63,6 +65,30 @@ public class CategoriesControllerTest
         Assert.Equal("display-name-1", categories[0].DisplayName);
         Assert.Equal("display-name-2", categories[1].DisplayName);
         Assert.Equal("display-name-3", categories[2].DisplayName);
+    }
+
+    [Fact(DisplayName = "Категории: создание категории успешно.")]
+    public async Task CreateCategory_Successfully()
+    {
+        var request = new CategoryPostDto()
+        {
+            Key = "cat1",
+            DisplayName = "name1",
+        };
+        CategoryDto? response = null;
+        using (var dbContext = new ApplicationDbContext(_dbContextOptions))
+        {
+            var catalogService = new CatalogService(dbContext);
+            var controller = new CategoriesController(catalogService);
+
+            //Act.
+            var actionResult = await controller.CreateCategory(request, default);
+            Assert.IsType<ActionResult<CategoryDto>>(actionResult);
+            response = actionResult.Value;
+        }
+        Assert.NotNull(response);
+        Assert.Equal("cat1", response.Key);
+        Assert.Equal("name1", response.DisplayName);
     }
 
     static async Task SeedData(ApplicationDbContext dbContext, int count)
