@@ -7,6 +7,14 @@ namespace TechStore.Contracts.DTOs;
 /// </summary>
 public class CategoryPostDto
 {
+    /// <summary>
+    /// Ключевое/техническое название (обозначение).
+    /// </summary>
     [Required]
-    public string Name { get; set; } = string.Empty;
+    public string Key { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Отображаемое в интерфейсе название.
+    /// </summary>
+    public string? DisplayName { get; set; }
 }

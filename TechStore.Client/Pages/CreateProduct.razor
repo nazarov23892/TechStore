@@ -21,7 +21,7 @@
                 @foreach (var item in categories?.Items ?? Enumerable.Empty<CategoryListDto>())
                 {
                     <option value="0" disabled selected>Выберите категорию</option>
-                    <option value="@item.Id">@item.Name</option>
+                    <option value="@item.Id">@item.Key</option>
                 }
             </select>
         </div>

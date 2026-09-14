@@ -11,7 +11,12 @@ public class CategoryListDto
     public long Id { get; set; }
 
     /// <summary>
-    /// Название.
+    /// Ключевое/техническое название (обозначение).
     /// </summary>
-    public string Name { get; set; } = string.Empty;
+    public string Key { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Отображаемое в интерфейсе название.
+    /// </summary>
+    public string? DisplayName { get; set; }
 }

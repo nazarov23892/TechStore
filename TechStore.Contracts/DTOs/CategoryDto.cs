@@ -6,5 +6,14 @@
 public class CategoryDto
 {
     public long Id { get; set; }
-    public string Name { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Ключевое/техническое название (обозначение).
+    /// </summary>
+    public string Key { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Отображаемое в интерфейсе название.
+    /// </summary>
+    public string? DisplayName { get; set; }
 }

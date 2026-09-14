@@ -20,7 +20,7 @@
             @foreach (var cat in categories.Items)
             {
                 <li>
-                    <NavLink href="@($"catalog/{@cat.Name}")">@cat.Name</NavLink>
+                    <NavLink href="@($"catalog/{@cat.Key}")">@cat.Key</NavLink>
                 </li>
             }
         </ul>

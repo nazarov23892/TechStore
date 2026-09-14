@@ -57,9 +57,9 @@ public class CategoriesControllerTest
         Assert.Equal(1, response.Page);
         Assert.Equal(3, response.PerPage);
         var categories = response.Items.ToList();
-        Assert.Equal("category-1", categories[0].Name);
-        Assert.Equal("category-2", categories[1].Name);
-        Assert.Equal("category-3", categories[2].Name);
+        Assert.Equal("category-1", categories[0].Key);
+        Assert.Equal("category-2", categories[1].Key);
+        Assert.Equal("category-3", categories[2].Key);
     }
 
     static async Task SeedData(ApplicationDbContext dbContext, int count)

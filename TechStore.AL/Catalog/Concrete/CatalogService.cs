@@ -115,7 +115,7 @@ public class CatalogService : ICatalogService
             m => new CategoryListDto()
             {
                 Id = m.Id,
-                Name = m.Key,
+                Key = m.Key,
             }).ToList();
 
         var result = new PagedListResponseDto<CategoryListDto>()
@@ -132,19 +132,19 @@ public class CatalogService : ICatalogService
     public async Task<CategoryDto> CreateCategoryAsync(
         CategoryPostDto request, CancellationToken cancellationToken = default)
     {
-        if (await _context.Categories.AnyAsync(c => c.Key == request.Name, cancellationToken))
-            throw new FailedPreconditionException($"Category {request.Name} already exists.");
+        if (await _context.Categories.AnyAsync(c => c.Key == request.Key, cancellationToken))
+            throw new FailedPreconditionException($"Category {request.Key} already exists.");
 
         var category = new Category()
         {
-            Key = request.Name,
+            Key = request.Key,
         };
         _context.Categories.Add(category);
         await _context.SaveChangesAsync(cancellationToken);
         var dto = new CategoryDto()
         {
             Id = category.Id,
-            Name = request.Name,
+            Key = request.Key,
         };
         return dto;
     }
