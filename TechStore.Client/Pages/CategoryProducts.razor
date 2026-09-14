@@ -1,0 +1,71 @@
+﻿@page "/catalog/{Category?}"
+@using TechStore.Client.Components
+@using TechStore.Client.HttpServices
+@using TechStore.Contracts.DTOs
+@inject IProductHttpService ProductsHttpService
+
+<div class="container my-3">
+    <h3>@Category</h3>
+
+    @if (Response == null)
+    {
+        <p>Загрузка товаров...</p>
+    }
+    else if (!Response.Items.Any())
+    {
+        <p>Товары не найдены.</p>
+    }
+    else
+    {
+        <div class="d-flex flex-column gap-2">
+            @foreach (var product in Response.Items)
+            {
+                <div class="p-3 border rounded bg-light">
+                    <span class="badge bg-secondary">@product.Category</span>
+                    <h5 class="my-1">@product.Name</h5>
+                    <p class="text-muted small mb-2">@product.Description</p>
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="fw-bold text-primary">@product.Price.ToString("N0") ₽</span>
+                        <NavLink class="btn btn-sm btn-primary" href="@($"product/{product.Id}")">
+                            Подробнее
+                        </NavLink>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <PaginationPanel Page="@Response.Page"
+                         TotalPages="@Response.TotalPages"
+                         PageSelected="PagingPanelPageSelected" />
+    }
+</div>
+
+@code {
+    const int PerPage = 5;
+
+    PagedListResponseDto<ProductListItemDto>? Response = null;
+
+    [Parameter]
+    public string? Category { get; set; }
+
+    /// <inheritdoc/>
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadProducts(1);
+    }
+
+    Task PagingPanelPageSelected(int page) => LoadProducts(page);
+
+    async Task LoadProducts(int page)
+    {
+        try
+        {
+            Response = await ProductsHttpService.GetPagedListAsync(page, PerPage, Category);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Ошибка загрузки: {ex.Message}");
+        }
+    }
+}
