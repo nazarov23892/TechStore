@@ -58,12 +58,14 @@ public class CatalogService : ICatalogService
         CancellationToken cancellationToken = default)
     {
         var pagingStartsZero = pagingRequest.Page - 1;
-        var totalCount = await _context.Products
+        var query = _context.Products
+            .AsNoTracking()
+            .Where(p => !string.IsNullOrEmpty(category) && p.Category!.Key == category);
+        var totalCount = await query
             .CountAsync(cancellationToken);
-        var products = await _context.Products
+        var products = await query
             .AsNoTracking()
             .Include(p => p.Category)
-            .Where(p => !string.IsNullOrEmpty(category) && p.Category!.Key == category)
             .WithPaging(pagingStartsZero, pagingRequest.PerPage)
             .ToListAsync(cancellationToken);
 
@@ -139,7 +141,7 @@ public class CatalogService : ICatalogService
         var category = new Category()
         {
             Key = request.Key,
-            DisplayName= request.DisplayName,
+            DisplayName = request.DisplayName,
         };
         _context.Categories.Add(category);
         await _context.SaveChangesAsync(cancellationToken);
