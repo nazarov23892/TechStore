@@ -22,4 +22,12 @@ public class CategoriesController: ControllerBase
         var result = await _catalogService.GetCategoriesAsync(request, cancellationToken);
         return result;
     }
+
+    [HttpPost]
+    public async Task<ActionResult<CategoryDto>> CreateCategory(
+        CategoryPostDto category, CancellationToken cancellationToken)
+    {
+        var result = await _catalogService.CreateCategoryAsync(category, cancellationToken);
+        return result;
+    }
 }

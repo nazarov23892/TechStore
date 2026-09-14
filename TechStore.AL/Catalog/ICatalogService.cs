@@ -38,4 +38,12 @@ public interface ICatalogService
     /// <param name="cancellationToken">Токен отмены операции.</param> 
     Task<PagedListResponseDto<CategoryListDto>> GetCategoriesAsync(
         PagingRequestDto pagingRequest, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Создает новую категорию товаров.
+    /// </summary>
+    /// <param name="request">Модель запроса на создание.</param>
+    /// <param name="cancellationToken">Токен отмены операции.</param> 
+    Task<CategoryDto> CreateCategoryAsync(
+        CategoryPostDto request, CancellationToken cancellationToken = default);
 }

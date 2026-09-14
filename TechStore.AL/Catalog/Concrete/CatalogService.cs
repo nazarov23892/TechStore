@@ -124,4 +124,25 @@ public class CatalogService : ICatalogService
         };
         return result;
     }
+
+    /// <inheritdoc/>
+    public async Task<CategoryDto> CreateCategoryAsync(
+        CategoryPostDto request, CancellationToken cancellationToken = default)
+    {
+        if (await _context.Categories.AnyAsync(c => c.Name == request.Name, cancellationToken))
+            throw new FailedPreconditionException($"Category {request.Name} already exists.");
+
+        var category = new Category()
+        {
+            Name = request.Name,
+        };
+        _context.Categories.Add(category);
+        await _context.SaveChangesAsync(cancellationToken);
+        var dto = new CategoryDto()
+        {
+            Id = category.Id,
+            Name = request.Name,
+        };
+        return dto;
+    }
 }
