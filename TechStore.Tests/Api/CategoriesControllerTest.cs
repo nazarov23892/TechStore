@@ -1,8 +1,6 @@
-﻿using Azure;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using System.Net.NetworkInformation;
 using TechStore.AL.Catalog.Concrete;
 using TechStore.BLL.Entities;
 using TechStore.Contracts.DTOs;
@@ -29,7 +27,7 @@ public class CategoriesControllerTest
         _dbContextOptions = builder.Options;
     }
 
-    [Fact(DisplayName = "Получение постраничного списка категорий успешно.")]
+    [Fact(DisplayName = "Категории: получение списка: успешно.")]
     public async Task GetPagedCategories_ReturnsOk()
     {
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
@@ -67,7 +65,7 @@ public class CategoriesControllerTest
         Assert.Equal("display-name-3", categories[2].DisplayName);
     }
 
-    [Fact(DisplayName = "Категории: создание категории успешно.")]
+    [Fact(DisplayName = "Категории: создание: успешно.")]
     public async Task CreateCategory_Successfully()
     {
         var request = new CategoryPostDto()

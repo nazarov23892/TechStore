@@ -45,7 +45,7 @@ public class ProductsControllerTests
         {
             var catalogService = new CatalogService(dbContext);
             var controller = new ProductsController(catalogService);
-            
+
             //Act.
             var actionResult = await controller.GetProductList(
                 paging, category, default);
@@ -80,7 +80,7 @@ public class ProductsControllerTests
             Page = 1,
             PerPage = 3,
         };
-        string? category = null; 
+        string? category = null;
         PagedListResponseDto<ProductListItemDto>? response = null;
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
         {
@@ -97,6 +97,66 @@ public class ProductsControllerTests
         // Assert.
         Assert.NotNull(response);
         Assert.Empty(response.Items);
+    }
+
+    [Fact(DisplayName = "Товары: создание: успешно.")]
+    public async Task CreateProduct_Successfully()
+    {
+        // Arrange.
+        long categoryId = 0;
+        using (var dbContext = new ApplicationDbContext(_dbContextOptions))
+        {
+            var category1 = new Category()
+            {
+                Key = "cat1",
+                DisplayName = "category1",
+            };
+            dbContext.Categories.Add(
+                category1);
+            await dbContext.SaveChangesAsync();
+            categoryId = category1.Id;
+        }
+
+        var request = new ProductPostDto()
+        {
+            Name = "product1",
+            Description = "description1",
+            Price = 999.9M,
+            CategoryId = categoryId,
+        };
+        ProductDto? response = null;
+        using (var dbContext = new ApplicationDbContext(_dbContextOptions))
+        {
+            var catalogService = new CatalogService(dbContext);
+            var controller = new ProductsController(catalogService);
+
+            //Act.
+            var actionResult = await controller.CreateProduct(request, default);
+            Assert.IsType<ActionResult<ProductDto>>(actionResult);
+            response = actionResult.Value;
+        }
+
+        // Assert.
+        Assert.NotNull(response);
+        Assert.Equal("product1", response.Name);
+        Assert.Equal("description1", response.Description);
+        Assert.Equal(999.9M, response.Price);
+        Assert.NotNull(response.Category);
+        Assert.Equal("cat1", response.Category!.Name);
+
+        Product? domainModel = null;
+        using (var dbContext = new ApplicationDbContext(_dbContextOptions))
+        {
+            domainModel = await dbContext.Products
+                .Include(p => p.Category)
+                .FirstOrDefaultAsync(p => p.Id == response.Id);
+        }
+        Assert.NotNull(domainModel);
+        Assert.Equal("product1", domainModel.Name);
+        Assert.Equal("description1", domainModel.Description);
+        Assert.Equal(999.9M, domainModel.Price);
+        Assert.NotNull(domainModel.Category);
+        Assert.Equal("cat1", domainModel.Category!.Key);
     }
 
     static async Task SeedData(ApplicationDbContext dbContext, int count)
