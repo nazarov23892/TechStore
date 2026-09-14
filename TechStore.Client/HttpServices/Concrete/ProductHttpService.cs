@@ -10,7 +10,7 @@ namespace TechStore.Client.HttpServices.Concrete;
 public class ProductHttpService : IProductHttpService
 {
     readonly HttpClient _httpClient;
-    const string BasePath = SharedConstants.BaseUri.Products;
+    const string BaseUri = SharedConstants.BaseUri.Products;
 
     public ProductHttpService(HttpClient httpClient)
     {
@@ -19,18 +19,21 @@ public class ProductHttpService : IProductHttpService
 
     /// <inheritdoc/>
     public Task<PagedListResponseDto<ProductListItemDto>?> GetPagedListAsync(
-        int page, int perPage, CancellationToken cancellationToken = default)
+        int page, int perPage, string? category, CancellationToken cancellationToken = default)
     {
-        var uri = $"{BasePath}?page={page}&perPage={perPage}";
+        var uri = !string.IsNullOrEmpty(category)
+            ? $"{BaseUri}/{category}"
+            : BaseUri;
+        var resultUri = $"{uri}?page={page}&perPage={perPage}";
         return _httpClient.GetFromJsonAsync<PagedListResponseDto<ProductListItemDto>>(
-            uri, cancellationToken);
+            resultUri, cancellationToken);
     }
 
     /// <inheritdoc/>
     public async Task<ProductDto?> CreateAsync(
         ProductPostDto createRequest, CancellationToken cancellationToken = default)
     {
-        var response = await _httpClient.PostAsJsonAsync(BasePath, createRequest, cancellationToken);
+        var response = await _httpClient.PostAsJsonAsync(BaseUri, createRequest, cancellationToken);
         response.EnsureSuccessStatusCode();
         var result = await response.Content.ReadFromJsonAsync<ProductDto>(cancellationToken);
         return result;
@@ -39,7 +42,7 @@ public class ProductHttpService : IProductHttpService
     /// <inheritdoc/>
     public async Task DeleteAsync(int id, CancellationToken cancellationToken = default)
     {
-        var response = await _httpClient.DeleteAsync($"{BasePath}/{id}", cancellationToken);
+        var response = await _httpClient.DeleteAsync($"{BaseUri}/{id}", cancellationToken);
         response.EnsureSuccessStatusCode();
     }
 }

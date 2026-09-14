@@ -26,7 +26,7 @@ public class ProductsControllerTests
         _dbContextOptions = builder.Options;
     }
 
-    [Fact(DisplayName = "Получение постраничного списка товаров выбранной категории успешно.")]
+    [Fact(DisplayName = "Товары: получение списка: по выбранной категории успешно.")]
     public async Task GetPagedProductsByCategory_ReturnsOk()
     {
         // Arrange.
@@ -67,7 +67,7 @@ public class ProductsControllerTests
         Assert.Equal(3, items[2].Id);
     }
 
-    [Fact(DisplayName = "Получение постраничного списка товаров - пустой список без указания категории.")]
+    [Fact(DisplayName = "Товары: получение списка: без выбранной категории пустой список.")]
     public async Task GetPagedProductsWithoutCategory_ReturnsEmpty()
     {
         // Arrange.

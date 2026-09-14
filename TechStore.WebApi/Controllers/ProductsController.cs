@@ -15,10 +15,10 @@ public class ProductsController : ControllerBase
         _catalogService = catalogService;
     }
 
-    [HttpGet]
+    [HttpGet("{category?}")]
     public async Task<ActionResult<PagedListResponseDto<ProductListItemDto>>> GetProductList(
         [FromQuery] PagingRequestDto request,
-        [FromQuery] string? category,
+        string? category,
         CancellationToken cancellationToken)
     {
         var result = await _catalogService.GetProductPagedListAsync(

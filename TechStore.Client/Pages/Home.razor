@@ -1,5 +1,5 @@
-﻿@page "/"
-@page "/catalog"
+﻿@page "/{Category?}"
+@page "/catalog/{Category?}"
 @using TechStore.Client.Components
 @using TechStore.Client.HttpServices
 @using TechStore.Contracts.DTOs
@@ -48,8 +48,11 @@
 
     PagedListResponseDto<ProductListItemDto>? Response = null;
 
-    /// <inheritdoc/>
-    protected override async Task OnInitializedAsync()
+    [Parameter]
+    public string? Category { get; set; }
+
+        /// <inheritdoc/>
+        protected override async Task OnInitializedAsync()
     {
         await LoadProducts(1);
     }
@@ -60,7 +63,7 @@
     {
         try
         {
-            Response = await ProductsHttpService.GetPagedListAsync(page, PerPage);
+            Response = await ProductsHttpService.GetPagedListAsync(page, PerPage, Category);
         }
         catch (Exception ex)
         {

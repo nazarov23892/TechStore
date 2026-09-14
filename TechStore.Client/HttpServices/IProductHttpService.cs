@@ -12,7 +12,7 @@ public interface IProductHttpService
     /// </summary>
     /// <param name="cancellationToken">Токен отмены операции.</param>
     Task<PagedListResponseDto<ProductListItemDto>?> GetPagedListAsync(
-        int page, int perPage, CancellationToken cancellationToken = default);
+        int page, int perPage, string? category, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Выполняет запрос создания товара.
