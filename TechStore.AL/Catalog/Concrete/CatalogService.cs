@@ -116,6 +116,7 @@ public class CatalogService : ICatalogService
             {
                 Id = m.Id,
                 Key = m.Key,
+                DisplayName = m.DisplayName,
             }).ToList();
 
         var result = new PagedListResponseDto<CategoryListDto>()
