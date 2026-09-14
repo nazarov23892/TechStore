@@ -24,7 +24,7 @@ public class ProductsController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ProductDto> CreateProduct(
+    public async Task<ActionResult<ProductDto>> CreateProduct(
         ProductPostDto request, CancellationToken cancellationToken)
     {
         var result = await _catalogService.CreateProductAsync(request, cancellationToken);
@@ -32,8 +32,10 @@ public class ProductsController : ControllerBase
     }
 
     [HttpDelete("{id:long}")]
-    public Task DeleteProduct(
+    public async Task<ActionResult> DeleteProduct(
         long id, CancellationToken cancellationToken)
-        => _catalogService.DeleteProductAsync(id, cancellationToken);
-
+    { 
+        await _catalogService.DeleteProductAsync(id, cancellationToken);
+        return NoContent();
+    }
 }
