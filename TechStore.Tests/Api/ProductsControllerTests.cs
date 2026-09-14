@@ -67,6 +67,38 @@ public class ProductsControllerTests
         Assert.Equal(3, items[2].Id);
     }
 
+    [Fact(DisplayName = "Получение постраничного списка товаров - пустой список без указания категории.")]
+    public async Task GetPagedProductsWithoutCategory_ReturnsEmpty()
+    {
+        // Arrange.
+        using (var dbContext = new ApplicationDbContext(_dbContextOptions))
+        {
+            await SeedData(dbContext, 10);
+        }
+        var paging = new PagingRequestDto()
+        {
+            Page = 1,
+            PerPage = 3,
+        };
+        string? category = null; 
+        PagedListResponseDto<ProductListItemDto>? response = null;
+        using (var dbContext = new ApplicationDbContext(_dbContextOptions))
+        {
+            var catalogService = new CatalogService(dbContext);
+            var controller = new ProductsController(catalogService);
+
+            //Act.
+            var actionResult = await controller.GetProductList(
+                paging, category, default);
+            Assert.IsType<ActionResult<PagedListResponseDto<ProductListItemDto>>>(actionResult);
+            response = actionResult.Value;
+        }
+
+        // Assert.
+        Assert.NotNull(response);
+        Assert.Empty(response.Items);
+    }
+
     static async Task SeedData(ApplicationDbContext dbContext, int count)
     {
         var category1 = new Category()
