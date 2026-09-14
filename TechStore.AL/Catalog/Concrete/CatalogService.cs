@@ -139,6 +139,7 @@ public class CatalogService : ICatalogService
         var category = new Category()
         {
             Key = request.Key,
+            DisplayName= request.DisplayName,
         };
         _context.Categories.Add(category);
         await _context.SaveChangesAsync(cancellationToken);
@@ -146,6 +147,7 @@ public class CatalogService : ICatalogService
         {
             Id = category.Id,
             Key = request.Key,
+            DisplayName = request.DisplayName,
         };
         return dto;
     }

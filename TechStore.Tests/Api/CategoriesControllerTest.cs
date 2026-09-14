@@ -89,6 +89,15 @@ public class CategoriesControllerTest
         Assert.NotNull(response);
         Assert.Equal("cat1", response.Key);
         Assert.Equal("name1", response.DisplayName);
+
+        Category? domainModel = null;
+        using (var dbContext = new ApplicationDbContext(_dbContextOptions))
+        {
+            domainModel = await dbContext.Categories.FirstOrDefaultAsync(c => c.Id == response.Id);
+        }
+        Assert.NotNull(domainModel);
+        Assert.Equal("cat1", domainModel.Key);
+        Assert.Equal("name1", domainModel.DisplayName);
     }
 
     static async Task SeedData(ApplicationDbContext dbContext, int count)
