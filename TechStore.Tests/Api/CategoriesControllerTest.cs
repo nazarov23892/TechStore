@@ -60,6 +60,9 @@ public class CategoriesControllerTest
         Assert.Equal("category-1", categories[0].Key);
         Assert.Equal("category-2", categories[1].Key);
         Assert.Equal("category-3", categories[2].Key);
+        Assert.Equal("display-name-1", categories[0].DisplayName);
+        Assert.Equal("display-name-2", categories[1].DisplayName);
+        Assert.Equal("display-name-3", categories[2].DisplayName);
     }
 
     static async Task SeedData(ApplicationDbContext dbContext, int count)
@@ -71,6 +74,7 @@ public class CategoriesControllerTest
                 {
                     Id = 1 + i,
                     Key = $"category-{1 + i}",
+                    DisplayName = $"display-name-{1 + i}"
                 });
         }
         await dbContext.SaveChangesAsync();
