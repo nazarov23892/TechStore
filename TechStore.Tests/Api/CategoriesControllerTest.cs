@@ -70,7 +70,7 @@ public class CategoriesControllerTest
                 new Category()
                 {
                     Id = 1 + i,
-                    Name = $"category-{1 + i}",
+                    Key = $"category-{1 + i}",
                 });
         }
         await dbContext.SaveChangesAsync();

@@ -34,7 +34,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
         modelBuilder.Entity<Category>(
           entity =>
           {
-              entity.HasIndex(c => c.Name)
+              entity.HasIndex(c => c.Key)
               .IsUnique();
           });
     }

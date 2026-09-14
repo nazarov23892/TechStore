@@ -103,7 +103,7 @@ public class ProductsControllerTests
     {
         var category1 = new Category()
         {
-            Name = "category1"
+            Key = "category1"
         };
         for (var i = 0; i < count; i++)
         {

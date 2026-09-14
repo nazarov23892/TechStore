@@ -44,7 +44,7 @@ public class CatalogService : ICatalogService
             Category = new CategoryShortDto()
             {
                 Id = product.CategoryId,
-                Name = product.Category?.Name ?? string.Empty,
+                Name = product.Category?.Key ?? string.Empty,
             },
             Price = product.Price,
         };
@@ -63,7 +63,7 @@ public class CatalogService : ICatalogService
         var products = await _context.Products
             .AsNoTracking()
             .Include(p => p.Category)
-            .Where(p => !string.IsNullOrEmpty(category) && p.Category!.Name == category)
+            .Where(p => !string.IsNullOrEmpty(category) && p.Category!.Key == category)
             .WithPaging(pagingStartsZero, pagingRequest.PerPage)
             .ToListAsync(cancellationToken);
 
@@ -74,7 +74,7 @@ public class CatalogService : ICatalogService
                 Name = p.Name,
                 Description = p.Description,
                 Price = p.Price,
-                Category = p.Category?.Name ?? string.Empty,
+                Category = p.Category?.Key ?? string.Empty,
             }).ToList();
 
         var result = new PagedListResponseDto<ProductListItemDto>()
@@ -115,7 +115,7 @@ public class CatalogService : ICatalogService
             m => new CategoryListDto()
             {
                 Id = m.Id,
-                Name = m.Name,
+                Name = m.Key,
             }).ToList();
 
         var result = new PagedListResponseDto<CategoryListDto>()
@@ -132,12 +132,12 @@ public class CatalogService : ICatalogService
     public async Task<CategoryDto> CreateCategoryAsync(
         CategoryPostDto request, CancellationToken cancellationToken = default)
     {
-        if (await _context.Categories.AnyAsync(c => c.Name == request.Name, cancellationToken))
+        if (await _context.Categories.AnyAsync(c => c.Key == request.Name, cancellationToken))
             throw new FailedPreconditionException($"Category {request.Name} already exists.");
 
         var category = new Category()
         {
-            Name = request.Name,
+            Key = request.Name,
         };
         _context.Categories.Add(category);
         await _context.SaveChangesAsync(cancellationToken);
