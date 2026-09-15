@@ -35,7 +35,22 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
           entity =>
           {
               entity.HasIndex(c => c.Key)
-              .IsUnique();
+                .IsUnique();
+
+              entity.HasMany(c => c.Attributes)
+                  .WithOne()
+                  .HasForeignKey(a => a.CategoryId)
+                  .OnDelete(DeleteBehavior.Restrict);
           });
+
+        modelBuilder.Entity<CategoryAttribute>(
+            entity =>
+            {
+                entity.HasIndex(a => new { a.CategoryId, a.Key })
+                    .IsUnique();
+                entity.Property(a => a.DataType)
+                    .HasDefaultValue(CategoryAttributeDataTypes.String)
+                    .HasConversion<string>();
+            });
     }
 }

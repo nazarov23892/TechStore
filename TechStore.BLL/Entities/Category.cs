@@ -17,4 +17,9 @@ public class Category
     /// Отображаемое в интерфейсе название.
     /// </summary>
     public string? DisplayName { get; set; }
+
+    /// <summary>
+    /// Атрибуты товара данной категории.
+    /// </summary>
+    public ICollection<CategoryAttribute> Attributes { get; set; } = [];
 }
