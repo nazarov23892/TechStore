@@ -5,7 +5,7 @@
 /// </summary>
 public enum CategoryAttributeDataTypes
 {
+    String = 0,
     Numeric,
-    String,
     Boolean,
 }
