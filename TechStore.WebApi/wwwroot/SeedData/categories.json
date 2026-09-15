@@ -1,7 +1,25 @@
 [
   {
     "key": "processors",
-    "displayName": "Процессоры"
+    "displayName": "Процессоры",
+    "attributes": [
+      {
+        "key": "Количество ядер",
+        "dataType": "Numeric"
+      },
+      {
+        "key": "Частота",
+        "dataType": "Numeric"
+      },
+      {
+        "key": "Сокет",
+        "dataType": "String"
+      },
+      {
+        "key": "Интегрированное графическое ядро",
+        "dataType": "Boolean"
+      }
+    ]
   },
   {
     "key": "hdd-3-5",

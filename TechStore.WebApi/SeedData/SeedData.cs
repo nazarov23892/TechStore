@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using TechStore.BLL.Entities;
@@ -14,6 +13,7 @@ public static class SeedData
 
     static JsonSerializerOptions _jsonSerializerOptions = new()
     {
+        Converters = { new JsonStringEnumConverter() },
         PropertyNameCaseInsensitive = true,
     };
 
@@ -38,11 +38,11 @@ public static class SeedData
             logger.LogInformation("Seedeng failed. The file '{File}' not exists.", fileName);
             return;
         }
-        ICollection<CategoryInfoJson>? items;
+        ICollection<CategoryInfo>? items;
         try
         {
             var content = File.ReadAllText(fileName);
-            items = JsonSerializer.Deserialize<ICollection<CategoryInfoJson>>(
+            items = JsonSerializer.Deserialize<ICollection<CategoryInfo>>(
                 content, _jsonSerializerOptions);
         }
         catch (Exception ex)
@@ -51,13 +51,19 @@ public static class SeedData
             return;
         }
 
-        foreach (var item in items ?? Enumerable.Empty<CategoryInfoJson>())
+        foreach (var item in items ?? Enumerable.Empty<CategoryInfo>())
         {
             dbContext.Categories.Add(
                 new Category()
                 {
                     Key = item.Key,
                     DisplayName = item.DisplayName,
+                    Attributes = item.Attributes?.Select(
+                        a => new CategoryAttribute()
+                        {
+                            Key = a.Key,
+                            DataType = a.DataType,
+                        }).ToList() ?? []
                 });
         }
         var total = await dbContext.SaveChangesAsync(cancellationToken);
@@ -73,11 +79,11 @@ public static class SeedData
             logger.LogInformation("Seedeng failed. The file '{File}' not exists.", fileName);
             return;
         }
-        ICollection<ProductInfoJson> items = [];
+        ICollection<ProductInfo> items = [];
         try
         {
             var content = File.ReadAllText(fileName);
-            items = JsonSerializer.Deserialize<ICollection<ProductInfoJson>>(
+            items = JsonSerializer.Deserialize<ICollection<ProductInfo>>(
                 content, _jsonSerializerOptions) ?? [];
         }
         catch (Exception ex)
@@ -88,6 +94,7 @@ public static class SeedData
 
         var categoryKeys = items.Select(p => p.CategoryKey).Distinct().ToList();
         var categoryMap = await dbContext.Categories
+            .Include(c => c.Attributes)
             .Where(c => categoryKeys.Contains(c.Key))
             .ToDictionaryAsync(
                 c => c.Key,
@@ -100,20 +107,46 @@ public static class SeedData
                 || category == null)
                 continue;
 
-            dbContext.Products.Add(
-                new Product()
+            var categoryAttributeMap = categoryMap.Values
+                .SelectMany(c => c.Attributes)
+                .ToDictionary(c => c.Key);
+
+            var product = new Product()
+            {
+                Name = item.Name,
+                Description = item.Description,
+                Price = item.Price,
+                CategoryId = category.Id,
+            };
+
+            var attributes = new List<ProductAttribute>();
+            foreach (var attr in item.Attributes ?? [])
+            {
+                if (!categoryAttributeMap.TryGetValue(attr.Key, out var categoryAttr)
+                    || categoryAttr == null)
+                    continue;
+                var productAttribute = new ProductAttribute()
                 {
-                    Name = item.Name,
-                    Description = item.Description,
-                    Price = item.Price,
-                    CategoryId = category.Id,
-                });
+                    CategoryAttributeId = categoryAttr.Id,
+                    Value = new AttributeValue()
+                    {
+                        BoolValue = attr.Value.BooleanValue,
+                        NumericValue = attr.Value.NumericValue,
+                        StringValue = attr.Value.Stringvalue,
+                    }
+                };
+                product.Attributes.Add(productAttribute);
+            }
+            dbContext.Products.Add(product);
         }
         var total = await dbContext.SaveChangesAsync(cancellationToken);
         logger.LogInformation("Seeding products done. Records: {Total}", total);
     }
 
-    record CategoryInfoJson(string Key, string DisplayName);
+    record CategoryInfo(string Key, string DisplayName, CategoryAttributeInfo[] Attributes);
+    record CategoryAttributeInfo(string Key, CategoryAttributeDataTypes DataType);
 
-    record ProductInfoJson(string Name, string Description, decimal Price, string CategoryKey);
+    record ProductInfo(string Name, string Description, decimal Price, string CategoryKey, ProductAttributeInfo[] Attributes);
+    record ProductAttributeInfo(string Key, ProductAttributeValueInfo Value);
+    record ProductAttributeValueInfo(decimal? NumericValue, bool? BooleanValue, string? Stringvalue);
 }

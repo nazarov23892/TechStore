@@ -3,301 +3,1201 @@
     "name": "Intel Core i3-12100F",
     "description": "4 ядра, 8 потоков, 3.3 ГГц, LGA1700",
     "price": 7500,
-    "categoryKey": "processors"
+    "categoryKey": "processors",
+    "attributes": [
+      {
+        "key": "Количество ядер",
+        "value": { "NumericValue": 4 }
+      },
+      {
+        "key": "Частота",
+        "value": { "NumericValue": 3.3 }
+      },
+      {
+        "key": "Интегрированное графическое ядро",
+        "value": { "BooleanValue": false }
+      },
+      {
+        "key": "Сокет",
+        "value": { "StringValue": "LGA1700" }
+      }
+    ]
   },
   {
     "name": "Intel Core i5-12400F",
     "description": "6 ядер, 12 потоков, 2.5 ГГц, LGA1700",
     "price": 13500,
-    "categoryKey": "processors"
+    "categoryKey": "processors",
+    "attributes": [
+      {
+        "key": "Количество ядер",
+        "value": { "NumericValue": 6 }
+      },
+      {
+        "key": "Частота",
+        "value": { "NumericValue": 2.5 }
+      },
+      {
+        "key": "Интегрированное графическое ядро",
+        "value": { "BooleanValue": false }
+      },
+      {
+        "key": "Сокет",
+        "value": { "StringValue": "LGA1700" }
+      }
+    ]
   },
   {
     "name": "Intel Core i5-13400F",
     "description": "10 ядер, 16 потоков, 2.5 ГГц, LGA1700",
     "price": 18900,
-    "categoryKey": "processors"
+    "categoryKey": "processors",
+    "attributes": [
+      {
+        "key": "Количество ядер",
+        "value": { "NumericValue": 10 }
+      },
+      {
+        "key": "Частота",
+        "value": { "NumericValue": 2.5 }
+      },
+      {
+        "key": "Интегрированное графическое ядро",
+        "value": { "BooleanValue": false }
+      },
+      {
+        "key": "Сокет",
+        "value": { "StringValue": "LGA1700" }
+      }
+    ]
   },
   {
     "name": "Intel Core i5-14400F",
     "description": "10 ядер, 16 потоков, 2.5 ГГц, LGA1700",
     "price": 21500,
-    "categoryKey": "processors"
+    "categoryKey": "processors",
+    "attributes": [
+      {
+        "key": "Количество ядер",
+        "value": { "NumericValue": 10 }
+      },
+      {
+        "key": "Частота",
+        "value": { "NumericValue": 2.5 }
+      },
+      {
+        "key": "Интегрированное графическое ядро",
+        "value": { "BooleanValue": false }
+      },
+      {
+        "key": "Сокет",
+        "value": { "StringValue": "LGA1700" }
+      }
+    ]
   },
   {
     "name": "Intel Core i7-12700K",
     "description": "12 ядер, 20 потоков, 3.6 ГГц, LGA1700",
     "price": 28500,
-    "categoryKey": "processors"
+    "categoryKey": "processors",
+    "attributes": [
+      {
+        "key": "Количество ядер",
+        "value": { "NumericValue": 12 }
+      },
+      {
+        "key": "Частота",
+        "value": { "NumericValue": 3.6 }
+      },
+      {
+        "key": "Интегрированное графическое ядро",
+        "value": { "BooleanValue": true }
+      },
+      {
+        "key": "Сокет",
+        "value": { "StringValue": "LGA1700" }
+      }
+    ]
   },
   {
     "name": "Intel Core i7-13700K",
     "description": "16 ядер, 24 потока, 3.4 ГГц, LGA1700",
     "price": 38900,
-    "categoryKey": "processors"
+    "categoryKey": "processors",
+    "attributes": [
+      {
+        "key": "Количество ядер",
+        "value": { "NumericValue": 16 }
+      },
+      {
+        "key": "Частота",
+        "value": { "NumericValue": 3.4 }
+      },
+      {
+        "key": "Интегрированное графическое ядро",
+        "value": { "BooleanValue": true }
+      },
+      {
+        "key": "Сокет",
+        "value": { "StringValue": "LGA1700" }
+      }
+    ]
   },
   {
     "name": "Intel Core i7-14700K",
     "description": "20 ядер, 28 потоков, 3.4 ГГц, LGA1700",
     "price": 45500,
-    "categoryKey": "processors"
+    "categoryKey": "processors",
+    "attributes": [
+      {
+        "key": "Количество ядер",
+        "value": { "NumericValue": 20 }
+      },
+      {
+        "key": "Частота",
+        "value": { "NumericValue": 3.4 }
+      },
+      {
+        "key": "Интегрированное графическое ядро",
+        "value": { "BooleanValue": true }
+      },
+      {
+        "key": "Сокет",
+        "value": { "StringValue": "LGA1700" }
+      }
+    ]
   },
   {
     "name": "Intel Core i9-13900K",
     "description": "24 ядра, 32 потока, 3.0 ГГц, LGA1700",
     "price": 58000,
-    "categoryKey": "processors"
+    "categoryKey": "processors",
+    "attributes": [
+      {
+        "key": "Количество ядер",
+        "value": { "NumericValue": 24 }
+      },
+      {
+        "key": "Частота",
+        "value": { "NumericValue": 3.0 }
+      },
+      {
+        "key": "Интегрированное графическое ядро",
+        "value": { "BooleanValue": true }
+      },
+      {
+        "key": "Сокет",
+        "value": { "StringValue": "LGA1700" }
+      }
+    ]
   },
   {
     "name": "Intel Core i9-14900K",
     "description": "24 ядра, 32 потока, 3.2 ГГц, LGA1700",
     "price": 65000,
-    "categoryKey": "processors"
+    "categoryKey": "processors",
+    "attributes": [
+      {
+        "key": "Количество ядер",
+        "value": { "NumericValue": 24 }
+      },
+      {
+        "key": "Частота",
+        "value": { "NumericValue": 3.2 }
+      },
+      {
+        "key": "Интегрированное графическое ядро",
+        "value": { "BooleanValue": true }
+      },
+      {
+        "key": "Сокет",
+        "value": { "StringValue": "LGA1700" }
+      }
+    ]
   },
   {
     "name": "Intel Core Ultra 7 265K",
     "description": "20 ядер, 20 потоков, 3.9 ГГц, LGA1851",
     "price": 52000,
-    "categoryKey": "processors"
+    "categoryKey": "processors",
+    "attributes": [
+      {
+        "key": "Количество ядер",
+        "value": { "NumericValue": 20 }
+      },
+      {
+        "key": "Частота",
+        "value": { "NumericValue": 3.9 }
+      },
+      {
+        "key": "Интегрированное графическое ядро",
+        "value": { "BooleanValue": true }
+      },
+      {
+        "key": "Сокет",
+        "value": { "StringValue": "LGA1851" }
+      }
+    ]
   },
   {
     "name": "AMD Ryzen 5 5600",
     "description": "6 ядер, 12 потоков, 3.5 ГГц, AM4",
     "price": 11000,
-    "categoryKey": "processors"
+    "categoryKey": "processors",
+    "attributes": [
+      {
+        "key": "Количество ядер",
+        "value": { "NumericValue": 6 }
+      },
+      {
+        "key": "Частота",
+        "value": { "NumericValue": 3.5 }
+      },
+      {
+        "key": "Интегрированное графическое ядро",
+        "value": { "BooleanValue": false }
+      },
+      {
+        "key": "Сокет",
+        "value": { "StringValue": "AM4" }
+      }
+    ]
   },
   {
     "name": "AMD Ryzen 5 5600X",
     "description": "6 ядер, 12 потоков, 3.7 ГГц, AM4",
     "price": 13500,
-    "categoryKey": "processors"
+    "categoryKey": "processors",
+    "attributes": [
+      {
+        "key": "Количество ядер",
+        "value": { "NumericValue": 6 }
+      },
+      {
+        "key": "Частота",
+        "value": { "NumericValue": 3.7 }
+      },
+      {
+        "key": "Интегрированное графическое ядро",
+        "value": { "BooleanValue": false }
+      },
+      {
+        "key": "Сокет",
+        "value": { "StringValue": "AM4" }
+      }
+    ]
   },
   {
     "name": "AMD Ryzen 5 7600",
     "description": "6 ядер, 12 потоков, 3.8 ГГц, AM5",
     "price": 19500,
-    "categoryKey": "processors"
+    "categoryKey": "processors",
+    "attributes": [
+      {
+        "key": "Количество ядер",
+        "value": { "NumericValue": 6 }
+      },
+      {
+        "key": "Частота",
+        "value": { "NumericValue": 3.8 }
+      },
+      {
+        "key": "Интегрированное графическое ядро",
+        "value": { "BooleanValue": true }
+      },
+      {
+        "key": "Сокет",
+        "value": { "StringValue": "AM5" }
+      }
+    ]
   },
   {
     "name": "AMD Ryzen 5 7600X",
     "description": "6 ядер, 12 потоков, 4.7 ГГц, AM5",
     "price": 21000,
-    "categoryKey": "processors"
+    "categoryKey": "processors",
+    "attributes": [
+      {
+        "key": "Количество ядер",
+        "value": { "NumericValue": 6 }
+      },
+      {
+        "key": "Частота",
+        "value": { "NumericValue": 4.7 }
+      },
+      {
+        "key": "Интегрированное графическое ядро",
+        "value": { "BooleanValue": true }
+      },
+      {
+        "key": "Сокет",
+        "value": { "StringValue": "AM5" }
+      }
+    ]
   },
   {
     "name": "AMD Ryzen 5 8600G",
     "description": "6 ядер, 12 потоков, 4.3 ГГц, AM5, с графикой",
     "price": 22500,
-    "categoryKey": "processors"
+    "categoryKey": "processors",
+    "attributes": [
+      {
+        "key": "Количество ядер",
+        "value": { "NumericValue": 6 }
+      },
+      {
+        "key": "Частота",
+        "value": { "NumericValue": 4.3 }
+      },
+      {
+        "key": "Интегрированное графическое ядро",
+        "value": { "BooleanValue": true }
+      },
+      {
+        "key": "Сокет",
+        "value": { "StringValue": "AM5" }
+      }
+    ]
   },
   {
     "name": "AMD Ryzen 7 5700X",
     "description": "8 ядер, 16 потоков, 3.4 ГГц, AM4",
     "price": 16500,
-    "categoryKey": "processors"
+    "categoryKey": "processors",
+    "attributes": [
+      {
+        "key": "Количество ядер",
+        "value": { "NumericValue": 8 }
+      },
+      {
+        "key": "Частота",
+        "value": { "NumericValue": 3.4 }
+      },
+      {
+        "key": "Интегрированное графическое ядро",
+        "value": { "BooleanValue": false }
+      },
+      {
+        "key": "Сокет",
+        "value": { "StringValue": "AM4" }
+      }
+    ]
   },
   {
     "name": "AMD Ryzen 7 5800X",
     "description": "8 ядер, 16 потоков, 3.8 ГГц, AM4",
     "price": 19500,
-    "categoryKey": "processors"
+    "categoryKey": "processors",
+    "attributes": [
+      {
+        "key": "Количество ядер",
+        "value": { "NumericValue": 8 }
+      },
+      {
+        "key": "Частота",
+        "value": { "NumericValue": 3.8 }
+      },
+      {
+        "key": "Интегрированное графическое ядро",
+        "value": { "BooleanValue": false }
+      },
+      {
+        "key": "Сокет",
+        "value": { "StringValue": "AM4" }
+      }
+    ]
   },
   {
     "name": "AMD Ryzen 7 7700",
     "description": "8 ядер, 16 потоков, 3.8 ГГц, AM5",
     "price": 28500,
-    "categoryKey": "processors"
+    "categoryKey": "processors",
+    "attributes": [
+      {
+        "key": "Количество ядер",
+        "value": { "NumericValue": 8 }
+      },
+      {
+        "key": "Частота",
+        "value": { "NumericValue": 3.8 }
+      },
+      {
+        "key": "Интегрированное графическое ядро",
+        "value": { "BooleanValue": true }
+      },
+      {
+        "key": "Сокет",
+        "value": { "StringValue": "AM5" }
+      }
+    ]
   },
   {
     "name": "AMD Ryzen 7 7700X",
     "description": "8 ядер, 16 потоков, 4.5 ГГц, AM5",
     "price": 30500,
-    "categoryKey": "processors"
+    "categoryKey": "processors",
+    "attributes": [
+      {
+        "key": "Количество ядер",
+        "value": { "NumericValue": 8 }
+      },
+      {
+        "key": "Частота",
+        "value": { "NumericValue": 4.5 }
+      },
+      {
+        "key": "Интегрированное графическое ядро",
+        "value": { "BooleanValue": true }
+      },
+      {
+        "key": "Сокет",
+        "value": { "StringValue": "AM5" }
+      }
+    ]
   },
   {
     "name": "AMD Ryzen 7 7800X3D",
     "description": "8 ядер, 16 потоков, 4.2 ГГц, AM5, 3D V-Cache",
     "price": 42000,
-    "categoryKey": "processors"
+    "categoryKey": "processors",
+    "attributes": [
+      {
+        "key": "Количество ядер",
+        "value": { "NumericValue": 8 }
+      },
+      {
+        "key": "Частота",
+        "value": { "NumericValue": 4.2 }
+      },
+      {
+        "key": "Интегрированное графическое ядро",
+        "value": { "BooleanValue": true }
+      },
+      {
+        "key": "Сокет",
+        "value": { "StringValue": "AM5" }
+      }
+    ]
   },
   {
     "name": "AMD Ryzen 7 9700X",
     "description": "8 ядер, 16 потоков, 3.8 ГГц, AM5",
     "price": 38000,
-    "categoryKey": "processors"
+    "categoryKey": "processors",
+    "attributes": [
+      {
+        "key": "Количество ядер",
+        "value": { "NumericValue": 8 }
+      },
+      {
+        "key": "Частота",
+        "value": { "NumericValue": 3.8 }
+      },
+      {
+        "key": "Интегрированное графическое ядро",
+        "value": { "BooleanValue": true }
+      },
+      {
+        "key": "Сокет",
+        "value": { "StringValue": "AM5" }
+      }
+    ]
   },
   {
     "name": "AMD Ryzen 9 5900X",
     "description": "12 ядер, 24 потока, 3.7 ГГц, AM4",
     "price": 32000,
-    "categoryKey": "processors"
+    "categoryKey": "processors",
+    "attributes": [
+      {
+        "key": "Количество ядер",
+        "value": { "NumericValue": 12 }
+      },
+      {
+        "key": "Частота",
+        "value": { "NumericValue": 3.7 }
+      },
+      {
+        "key": "Интегрированное графическое ядро",
+        "value": { "BooleanValue": false }
+      },
+      {
+        "key": "Сокет",
+        "value": { "StringValue": "AM4" }
+      }
+    ]
   },
   {
     "name": "AMD Ryzen 9 5950X",
     "description": "16 ядер, 32 потока, 3.4 ГГц, AM4",
     "price": 45000,
-    "categoryKey": "processors"
+    "categoryKey": "processors",
+    "attributes": [
+      {
+        "key": "Количество ядер",
+        "value": { "NumericValue": 16 }
+      },
+      {
+        "key": "Частота",
+        "value": { "NumericValue": 3.4 }
+      },
+      {
+        "key": "Интегрированное графическое ядро",
+        "value": { "BooleanValue": false }
+      },
+      {
+        "key": "Сокет",
+        "value": { "StringValue": "AM4" }
+      }
+    ]
   },
   {
     "name": "AMD Ryzen 9 7900X",
     "description": "12 ядер, 24 потока, 4.7 ГГц, AM5",
     "price": 42000,
-    "categoryKey": "processors"
+    "categoryKey": "processors",
+    "attributes": [
+      {
+        "key": "Количество ядер",
+        "value": { "NumericValue": 12 }
+      },
+      {
+        "key": "Частота",
+        "value": { "NumericValue": 4.7 }
+      },
+      {
+        "key": "Интегрированное графическое ядро",
+        "value": { "BooleanValue": true }
+      },
+      {
+        "key": "Сокет",
+        "value": { "StringValue": "AM5" }
+      }
+    ]
   },
   {
     "name": "AMD Ryzen 9 7950X",
     "description": "16 ядер, 32 потока, 4.5 ГГц, AM5",
     "price": 58000,
-    "categoryKey": "processors"
+    "categoryKey": "processors",
+    "attributes": [
+      {
+        "key": "Количество ядер",
+        "value": { "NumericValue": 16 }
+      },
+      {
+        "key": "Частота",
+        "value": { "NumericValue": 4.5 }
+      },
+      {
+        "key": "Интегрированное графическое ядро",
+        "value": { "BooleanValue": true }
+      },
+      {
+        "key": "Сокет",
+        "value": { "StringValue": "AM5" }
+      }
+    ]
   },
   {
     "name": "AMD Ryzen 9 7950X3D",
     "description": "16 ядер, 32 потока, 4.2 ГГц, AM5, 3D V-Cache",
     "price": 72000,
-    "categoryKey": "processors"
+    "categoryKey": "processors",
+    "attributes": [
+      {
+        "key": "Количество ядер",
+        "value": { "NumericValue": 16 }
+      },
+      {
+        "key": "Частота",
+        "value": { "NumericValue": 4.2 }
+      },
+      {
+        "key": "Интегрированное графическое ядро",
+        "value": { "BooleanValue": true }
+      },
+      {
+        "key": "Сокет",
+        "value": { "StringValue": "AM5" }
+      }
+    ]
   },
   {
     "name": "AMD Ryzen 9 9900X",
     "description": "12 ядер, 24 потока, 4.4 ГГц, AM5",
     "price": 55000,
-    "categoryKey": "processors"
+    "categoryKey": "processors",
+    "attributes": [
+      {
+        "key": "Количество ядер",
+        "value": { "NumericValue": 12 }
+      },
+      {
+        "key": "Частота",
+        "value": { "NumericValue": 4.4 }
+      },
+      {
+        "key": "Интегрированное графическое ядро",
+        "value": { "BooleanValue": true }
+      },
+      {
+        "key": "Сокет",
+        "value": { "StringValue": "AM5" }
+      }
+    ]
   },
   {
     "name": "AMD Ryzen 9 9950X",
     "description": "16 ядер, 32 потока, 4.3 ГГц, AM5",
     "price": 75000,
-    "categoryKey": "processors"
+    "categoryKey": "processors",
+    "attributes": [
+      {
+        "key": "Количество ядер",
+        "value": { "NumericValue": 16 }
+      },
+      {
+        "key": "Частота",
+        "value": { "NumericValue": 4.3 }
+      },
+      {
+        "key": "Интегрированное графическое ядро",
+        "value": { "BooleanValue": true }
+      },
+      {
+        "key": "Сокет",
+        "value": { "StringValue": "AM5" }
+      }
+    ]
   },
   {
     "name": "Intel Core i5-11400F",
     "description": "6 ядер, 12 потоков, 2.6 ГГц, LGA1200",
     "price": 9500,
-    "categoryKey": "processors"
+    "categoryKey": "processors",
+    "attributes": [
+      {
+        "key": "Количество ядер",
+        "value": { "NumericValue": 6 }
+      },
+      {
+        "key": "Частота",
+        "value": { "NumericValue": 2.6 }
+      },
+      {
+        "key": "Интегрированное графическое ядро",
+        "value": { "BooleanValue": false }
+      },
+      {
+        "key": "Сокет",
+        "value": { "StringValue": "LGA1200" }
+      }
+    ]
   },
   {
     "name": "Intel Core i7-11700F",
     "description": "8 ядер, 16 потоков, 2.5 ГГц, LGA1200",
     "price": 16500,
-    "categoryKey": "processors"
+    "categoryKey": "processors",
+    "attributes": [
+      {
+        "key": "Количество ядер",
+        "value": { "NumericValue": 8 }
+      },
+      {
+        "key": "Частота",
+        "value": { "NumericValue": 2.5 }
+      },
+      {
+        "key": "Интегрированное графическое ядро",
+        "value": { "BooleanValue": false }
+      },
+      {
+        "key": "Сокет",
+        "value": { "StringValue": "LGA1200" }
+      }
+    ]
   },
   {
     "name": "Intel Core i9-11900K",
     "description": "8 ядер, 16 потоков, 3.5 ГГц, LGA1200",
     "price": 28000,
-    "categoryKey": "processors"
+    "categoryKey": "processors",
+    "attributes": [
+      {
+        "key": "Количество ядер",
+        "value": { "NumericValue": 8 }
+      },
+      {
+        "key": "Частота",
+        "value": { "NumericValue": 3.5 }
+      },
+      {
+        "key": "Интегрированное графическое ядро",
+        "value": { "BooleanValue": true }
+      },
+      {
+        "key": "Сокет",
+        "value": { "StringValue": "LGA1200" }
+      }
+    ]
   },
   {
     "name": "Intel Core i3-13100F",
     "description": "4 ядра, 8 потоков, 3.4 ГГц, LGA1700",
     "price": 8900,
-    "categoryKey": "processors"
+    "categoryKey": "processors",
+    "attributes": [
+      {
+        "key": "Количество ядер",
+        "value": { "NumericValue": 4 }
+      },
+      {
+        "key": "Частота",
+        "value": { "NumericValue": 3.4 }
+      },
+      {
+        "key": "Интегрированное графическое ядро",
+        "value": { "BooleanValue": false }
+      },
+      {
+        "key": "Сокет",
+        "value": { "StringValue": "LGA1700" }
+      }
+    ]
   },
   {
     "name": "Intel Core i5-13600K",
     "description": "14 ядер, 20 потоков, 3.5 ГГц, LGA1700",
     "price": 29500,
-    "categoryKey": "processors"
+    "categoryKey": "processors",
+    "attributes": [
+      {
+        "key": "Количество ядер",
+        "value": { "NumericValue": 14 }
+      },
+      {
+        "key": "Частота",
+        "value": { "NumericValue": 3.5 }
+      },
+      {
+        "key": "Интегрированное графическое ядро",
+        "value": { "BooleanValue": true }
+      },
+      {
+        "key": "Сокет",
+        "value": { "StringValue": "LGA1700" }
+      }
+    ]
   },
   {
     "name": "Intel Core i5-14600K",
     "description": "14 ядер, 20 потоков, 3.5 ГГц, LGA1700",
     "price": 32000,
-    "categoryKey": "processors"
+    "categoryKey": "processors",
+    "attributes": [
+      {
+        "key": "Количество ядер",
+        "value": { "NumericValue": 14 }
+      },
+      {
+        "key": "Частота",
+        "value": { "NumericValue": 3.5 }
+      },
+      {
+        "key": "Интегрированное графическое ядро",
+        "value": { "BooleanValue": true }
+      },
+      {
+        "key": "Сокет",
+        "value": { "StringValue": "LGA1700" }
+      }
+    ]
   },
   {
     "name": "Intel Core i9-12900K",
     "description": "16 ядер, 24 потока, 3.2 ГГц, LGA1700",
     "price": 42000,
-    "categoryKey": "processors"
+    "categoryKey": "processors",
+    "attributes": [
+      {
+        "key": "Количество ядер",
+        "value": { "NumericValue": 16 }
+      },
+      {
+        "key": "Частота",
+        "value": { "NumericValue": 3.2 }
+      },
+      {
+        "key": "Интегрированное графическое ядро",
+        "value": { "BooleanValue": true }
+      },
+      {
+        "key": "Сокет",
+        "value": { "StringValue": "LGA1700" }
+      }
+    ]
   },
   {
     "name": "AMD Ryzen 3 4100",
     "description": "4 ядра, 8 потоков, 3.8 ГГц, AM4",
     "price": 5500,
-    "categoryKey": "processors"
+    "categoryKey": "processors",
+    "attributes": [
+      {
+        "key": "Количество ядер",
+        "value": { "NumericValue": 4 }
+      },
+      {
+        "key": "Частота",
+        "value": { "NumericValue": 3.8 }
+      },
+      {
+        "key": "Интегрированное графическое ядро",
+        "value": { "BooleanValue": false }
+      },
+      {
+        "key": "Сокет",
+        "value": { "StringValue": "AM4" }
+      }
+    ]
   },
   {
     "name": "AMD Ryzen 5 4500",
     "description": "6 ядер, 12 потоков, 3.6 ГГц, AM4",
     "price": 7200,
-    "categoryKey": "processors"
+    "categoryKey": "processors",
+    "attributes": [
+      {
+        "key": "Количество ядер",
+        "value": { "NumericValue": 6 }
+      },
+      {
+        "key": "Частота",
+        "value": { "NumericValue": 3.6 }
+      },
+      {
+        "key": "Интегрированное графическое ядро",
+        "value": { "BooleanValue": false }
+      },
+      {
+        "key": "Сокет",
+        "value": { "StringValue": "AM4" }
+      }
+    ]
   },
   {
     "name": "AMD Ryzen 5 5500",
     "description": "6 ядер, 12 потоков, 3.6 ГГц, AM4",
     "price": 8500,
-    "categoryKey": "processors"
+    "categoryKey": "processors",
+    "attributes": [
+      {
+        "key": "Количество ядер",
+        "value": { "NumericValue": 6 }
+      },
+      {
+        "key": "Частота",
+        "value": { "NumericValue": 3.6 }
+      },
+      {
+        "key": "Интегрированное графическое ядро",
+        "value": { "BooleanValue": false }
+      },
+      {
+        "key": "Сокет",
+        "value": { "StringValue": "AM4" }
+      }
+    ]
   },
   {
     "name": "AMD Ryzen 5 8400F",
     "description": "6 ядер, 12 потоков, 4.2 ГГц, AM5",
     "price": 15500,
-    "categoryKey": "processors"
+    "categoryKey": "processors",
+    "attributes": [
+      {
+        "key": "Количество ядер",
+        "value": { "NumericValue": 6 }
+      },
+      {
+        "key": "Частота",
+        "value": { "NumericValue": 4.2 }
+      },
+      {
+        "key": "Интегрированное графическое ядро",
+        "value": { "BooleanValue": false }
+      },
+      {
+        "key": "Сокет",
+        "value": { "StringValue": "AM5" }
+      }
+    ]
   },
   {
     "name": "AMD Ryzen 7 8700F",
     "description": "8 ядер, 16 потоков, 4.1 ГГц, AM5",
     "price": 24500,
-    "categoryKey": "processors"
+    "categoryKey": "processors",
+    "attributes": [
+      {
+        "key": "Количество ядер",
+        "value": { "NumericValue": 8 }
+      },
+      {
+        "key": "Частота",
+        "value": { "NumericValue": 4.1 }
+      },
+      {
+        "key": "Интегрированное графическое ядро",
+        "value": { "BooleanValue": false }
+      },
+      {
+        "key": "Сокет",
+        "value": { "StringValue": "AM5" }
+      }
+    ]
   },
   {
     "name": "AMD Ryzen 5 9600X",
     "description": "6 ядер, 12 потоков, 3.9 ГГц, AM5",
     "price": 27500,
-    "categoryKey": "processors"
+    "categoryKey": "processors",
+    "attributes": [
+      {
+        "key": "Количество ядер",
+        "value": { "NumericValue": 6 }
+      },
+      {
+        "key": "Частота",
+        "value": { "NumericValue": 3.9 }
+      },
+      {
+        "key": "Интегрированное графическое ядро",
+        "value": { "BooleanValue": true }
+      },
+      {
+        "key": "Сокет",
+        "value": { "StringValue": "AM5" }
+      }
+    ]
   },
   {
     "name": "AMD Ryzen 7 9800X3D",
     "description": "8 ядер, 16 потоков, 4.7 ГГц, AM5, 3D V-Cache",
     "price": 68000,
-    "categoryKey": "processors"
+    "categoryKey": "processors",
+    "attributes": [
+      {
+        "key": "Количество ядер",
+        "value": { "NumericValue": 8 }
+      },
+      {
+        "key": "Частота",
+        "value": { "NumericValue": 4.7 }
+      },
+      {
+        "key": "Интегрированное графическое ядро",
+        "value": { "BooleanValue": true }
+      },
+      {
+        "key": "Сокет",
+        "value": { "StringValue": "AM5" }
+      }
+    ]
   },
   {
     "name": "Intel Xeon E-2388G",
     "description": "8 ядер, 16 потоков, 3.2 ГГц, LGA1200",
     "price": 45000,
-    "categoryKey": "processors"
+    "categoryKey": "processors",
+    "attributes": [
+      {
+        "key": "Количество ядер",
+        "value": { "NumericValue": 8 }
+      },
+      {
+        "key": "Частота",
+        "value": { "NumericValue": 3.2 }
+      },
+      {
+        "key": "Интегрированное графическое ядро",
+        "value": { "BooleanValue": true }
+      },
+      {
+        "key": "Сокет",
+        "value": { "StringValue": "LGA1200" }
+      }
+    ]
   },
   {
     "name": "Intel Core i5-10400F",
     "description": "6 ядер, 12 потоков, 2.9 ГГц, LGA1200",
     "price": 7800,
-    "categoryKey": "processors"
+    "categoryKey": "processors",
+    "attributes": [
+      {
+        "key": "Количество ядер",
+        "value": { "NumericValue": 6 }
+      },
+      {
+        "key": "Частота",
+        "value": { "NumericValue": 2.9 }
+      },
+      {
+        "key": "Интегрированное графическое ядро",
+        "value": { "BooleanValue": false }
+      },
+      {
+        "key": "Сокет",
+        "value": { "StringValue": "LGA1200" }
+      }
+    ]
   },
   {
     "name": "Intel Core i7-10700F",
     "description": "8 ядер, 16 потоков, 2.9 ГГц, LGA1200",
     "price": 14500,
-    "categoryKey": "processors"
+    "categoryKey": "processors",
+    "attributes": [
+      {
+        "key": "Количество ядер",
+        "value": { "NumericValue": 8 }
+      },
+      {
+        "key": "Частота",
+        "value": { "NumericValue": 2.9 }
+      },
+      {
+        "key": "Интегрированное графическое ядро",
+        "value": { "BooleanValue": false }
+      },
+      {
+        "key": "Сокет",
+        "value": { "StringValue": "LGA1200" }
+      }
+    ]
   },
   {
     "name": "AMD Ryzen Threadripper 7960X",
     "description": "24 ядра, 48 потоков, 4.2 ГГц, sTR5",
     "price": 185000,
-    "categoryKey": "processors"
+    "categoryKey": "processors",
+    "attributes": [
+      {
+        "key": "Количество ядер",
+        "value": { "NumericValue": 24 }
+      },
+      {
+        "key": "Частота",
+        "value": { "NumericValue": 4.2 }
+      },
+      {
+        "key": "Интегрированное графическое ядро",
+        "value": { "BooleanValue": false }
+      },
+      {
+        "key": "Сокет",
+        "value": { "StringValue": "sTR5" }
+      }
+    ]
   },
   {
     "name": "AMD Ryzen Threadripper 7980X",
     "description": "64 ядра, 128 потоков, 3.2 ГГц, sTR5",
     "price": 520000,
-    "categoryKey": "processors"
+    "categoryKey": "processors",
+    "attributes": [
+      {
+        "key": "Количество ядер",
+        "value": { "NumericValue": 64 }
+      },
+      {
+        "key": "Частота",
+        "value": { "NumericValue": 3.2 }
+      },
+      {
+        "key": "Интегрированное графическое ядро",
+        "value": { "BooleanValue": false }
+      },
+      {
+        "key": "Сокет",
+        "value": { "StringValue": "sTR5" }
+      }
+    ]
   },
   {
     "name": "Intel Core i9-10900K",
     "description": "10 ядер, 20 потоков, 3.7 ГГц, LGA1200",
     "price": 35000,
-    "categoryKey": "processors"
+    "categoryKey": "processors",
+    "attributes": [
+      {
+        "key": "Количество ядер",
+        "value": { "NumericValue": 10 }
+      },
+      {
+        "key": "Частота",
+        "value": { "NumericValue": 3.7 }
+      },
+      {
+        "key": "Интегрированное графическое ядро",
+        "value": { "BooleanValue": true }
+      },
+      {
+        "key": "Сокет",
+        "value": { "StringValue": "LGA1200" }
+      }
+    ]
   },
   {
     "name": "Intel Core i7-9700K",
     "description": "8 ядер, 8 потоков, 3.6 ГГц, LGA1151",
     "price": 18500,
-    "categoryKey": "processors"
+    "categoryKey": "processors",
+    "attributes": [
+      {
+        "key": "Количество ядер",
+        "value": { "NumericValue": 8 }
+      },
+      {
+        "key": "Частота",
+        "value": { "NumericValue": 3.6 }
+      },
+      {
+        "key": "Интегрированное графическое ядро",
+        "value": { "BooleanValue": true }
+      },
+      {
+        "key": "Сокет",
+        "value": { "StringValue": "LGA1151" }
+      }
+    ]
   },
   {
     "name": "AMD Ryzen 5 3600",
     "description": "6 ядер, 12 потоков, 3.6 ГГц, AM4",
     "price": 6500,
-    "categoryKey": "processors"
+    "categoryKey": "processors",
+    "attributes": [
+      {
+        "key": "Количество ядер",
+        "value": { "NumericValue": 6 }
+      },
+      {
+        "key": "Частота",
+        "value": { "NumericValue": 3.6 }
+      },
+      {
+        "key": "Интегрированное графическое ядро",
+        "value": { "BooleanValue": false }
+      },
+      {
+        "key": "Сокет",
+        "value": { "StringValue": "AM4" }
+      }
+    ]
   },
 
   {
