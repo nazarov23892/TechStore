@@ -27,5 +27,5 @@ public interface IProductHttpService
     /// </summary>
     /// <param name="id">Идентификатор.</param>
     /// <param name="cancellationToken">Токен отмены операции.</param>
-    Task DeleteAsync(int id, CancellationToken cancellationToken = default);
+    Task DeleteAsync(long id, CancellationToken cancellationToken = default);
 }

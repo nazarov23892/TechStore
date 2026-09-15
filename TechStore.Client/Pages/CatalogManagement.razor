@@ -81,7 +81,7 @@
         }
     }
 
-    async Task DeleteProduct(int id)
+    async Task DeleteProduct(long id)
     {
         bool isConfirmed = await JS.InvokeAsync<bool>(
             "confirm",

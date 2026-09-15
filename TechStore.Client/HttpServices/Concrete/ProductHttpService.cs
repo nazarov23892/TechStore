@@ -40,7 +40,7 @@ public class ProductHttpService : IProductHttpService
     }
 
     /// <inheritdoc/>
-    public async Task DeleteAsync(int id, CancellationToken cancellationToken = default)
+    public async Task DeleteAsync(long id, CancellationToken cancellationToken = default)
     {
         var response = await _httpClient.DeleteAsync($"{BaseUri}/{id}", cancellationToken);
         response.EnsureSuccessStatusCode();
