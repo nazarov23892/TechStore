@@ -41,19 +41,31 @@ public class CategoriesController : ControllerBase
         return result;
     }
 
-    [HttpGet("{id:long}/attributes")]
-    public async Task<ActionResult<IEnumerable<CategoryAttributeListDto>>> GetCategyAtrributes(
-        long id, CancellationToken cancellationToken)
-    {
-        var result = await _catalogService.GetCategyAtrributesAsync(id, cancellationToken);
-        return result.ToList();
-    }
-
     [HttpPost]
     public async Task<ActionResult<CategoryDto>> CreateCategory(
         CategoryPostDto category, CancellationToken cancellationToken)
     {
         var result = await _catalogService.CreateCategoryAsync(category, cancellationToken);
+        return result;
+    }
+
+    [HttpGet("{id:long}/attributes")]
+    public async Task<ActionResult<IEnumerable<CategoryAttributeListDto>>> GetCategoryAttributes(
+        long id, CancellationToken cancellationToken)
+    {
+        var result = await _catalogService.GetCategoryAttributesAsync(id, cancellationToken);
+        return result.ToList();
+    }
+
+    [HttpPost("{id:long}/attributes")]
+    public async Task<ActionResult<CategoryAttributetDto>> CreateCategoryAttribute(
+        long id,
+        CategoryAttributePostDto value, 
+        CancellationToken cancellationToken = default)
+    {
+        var result = await _catalogService.CreateCategoryAtrributeAsync(
+            id, value, cancellationToken);
+
         return result;
     }
 }

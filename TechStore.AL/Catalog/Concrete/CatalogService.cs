@@ -137,7 +137,7 @@ public class CatalogService : ICatalogService
     }
 
     /// <inheritdoc/>
-    public async Task<IEnumerable<CategoryAttributeListDto>> GetCategyAtrributesAsync(
+    public async Task<IEnumerable<CategoryAttributeListDto>> GetCategoryAttributesAsync(
         long categoryId, CancellationToken cancellationToken = default)
     {
         var category = await _context.Categories
@@ -168,12 +168,38 @@ public class CatalogService : ICatalogService
 
         if (value.Key != null)
             category.Key = value.Key;
-        if(value.DisplayName != null)
+        if (value.DisplayName != null)
             category.DisplayName = value.DisplayName;
 
         await _context.SaveChangesAsync(cancellationToken);
 
         var dto = category.Adapt<CategoryDto>();
+        return dto;
+    }
+
+    /// <inheritdoc/>
+    public async Task<CategoryAttributetDto> CreateCategoryAtrributeAsync(
+        long categoryId,
+        CategoryAttributePostDto value,
+        CancellationToken cancellationToken = default)
+    {
+        if (!Enum.TryParse<CategoryAttributeDataTypes>(value.DataType, out var dataType))
+            throw new FailedPreconditionException(
+                $"{nameof(value.DataType)} has invalid value: '{value.DataType}'");
+
+        var category = await _context.Categories
+            .Include(c => c.Attributes)
+            .FirstOrDefaultAsync(c => c.Id == categoryId, cancellationToken)
+            ?? throw new NotFoundException($"Category {categoryId} not found.");
+
+        var attribute = new CategoryAttribute()
+        {
+            Key = value.Key,
+            DataType = dataType,
+        };
+        category.Attributes.Add(attribute);
+        await _context.SaveChangesAsync(cancellationToken);
+        var dto = attribute.Adapt<CategoryAttributetDto>();
         return dto;
     }
 }
