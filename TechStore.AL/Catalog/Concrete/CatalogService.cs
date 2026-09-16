@@ -94,14 +94,7 @@ public class CatalogService : ICatalogService
             .WithPaging(pagingStartsZero, pagingRequest.PerPage)
             .ToListAsync(cancellationToken);
 
-        var dtos = models.Select(
-            m => new CategoryListDto()
-            {
-                Id = m.Id,
-                Key = m.Key,
-                DisplayName = m.DisplayName,
-            }).ToList();
-
+        var dtos = models.Adapt<List<CategoryListDto>>();
         var result = new PagedListResponseDto<CategoryListDto>()
         {
             Items = dtos,
@@ -121,12 +114,7 @@ public class CatalogService : ICatalogService
             .FirstOrDefaultAsync(c => c.Id == categoryId, cancellationToken)
             ?? throw new NotFoundException($"Category {categoryId} not found.");
 
-        var dto = new CategoryDto()
-        {
-            Id = category.Id,
-            Key = category.Key,
-            DisplayName = category.DisplayName,
-        };
+        var dto = category.Adapt<CategoryDto>();
         return dto;
     }
 
@@ -144,12 +132,7 @@ public class CatalogService : ICatalogService
         };
         _context.Categories.Add(category);
         await _context.SaveChangesAsync(cancellationToken);
-        var dto = new CategoryDto()
-        {
-            Id = category.Id,
-            Key = request.Key,
-            DisplayName = request.DisplayName,
-        };
+        var dto = category.Adapt<CategoryDto>();
         return dto;
     }
 

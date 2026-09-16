@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Mapster;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using TechStore.AL.Catalog.Concrete;
@@ -16,6 +17,8 @@ public class CategoriesControllerTest
 
     public CategoriesControllerTest()
     {
+        TypeAdapterConfig.GlobalSettings.Scan(typeof(AL.Configuration.AppConstants).Assembly);
+
         var serviceCollection = new ServiceCollection();
         serviceCollection.AddEntityFrameworkInMemoryDatabase()
                 .BuildServiceProvider();
