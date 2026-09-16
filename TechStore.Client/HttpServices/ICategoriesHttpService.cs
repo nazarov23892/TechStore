@@ -15,6 +15,14 @@ public interface ICategoriesHttpService
         int page, int perPage, CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// Выполняет запрос получения списка атрибутов категории.
+    /// </summary>
+    /// <param name="id">Id категории.</param>
+    /// <param name="cancellationToken"></param>
+    Task<IEnumerable<CategoryAttributeListDto>?> GetAttributeListAsync(
+        long id, CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Выполняет запрос получения категории по Id.
     /// </summary>
     /// <param name="id">Id.</param>

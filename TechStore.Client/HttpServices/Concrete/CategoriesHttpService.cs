@@ -35,6 +35,14 @@ public class CategoriesHttpService : ICategoriesHttpService
     }
 
     /// <inheritdoc/>
+    public Task<IEnumerable<CategoryAttributeListDto>?> GetAttributeListAsync(
+        long id, CancellationToken cancellationToken = default)
+    {
+        var uri = $"{BasePath}/{id}/attributes";
+        return _httpClient.GetFromJsonAsync<IEnumerable<CategoryAttributeListDto>>(uri, cancellationToken);
+    }
+
+    /// <inheritdoc/>
     public async Task<CategoryDto?> Update(
         long id, CategoryPutDto value, CancellationToken cancellationToken = default)
     {

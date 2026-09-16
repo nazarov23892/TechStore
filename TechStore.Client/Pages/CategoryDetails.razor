@@ -6,7 +6,6 @@
 @inject ICategoriesHttpService CategoriesHttpService;
 @inject NavigationManager Navigation
 
-
 <div class="container my-3">
     <div class="mb-3">
         <NavLink class="text-decoration-none small text-secondary" href="management/categories">&larr; Назад к категориям</NavLink>
@@ -22,15 +21,38 @@
 
         <div class="row g-3">
 
-            <div class="p-3 border rounded bg-light">
-                <h5 class="fs-6 fw-bold mb-2">Обозначение</h5>
-                <input type="text" class="form-control form-control-sm mb-2" @bind="categoryPutModel.Key" />
-                <h5 class="fs-6 fw-bold mb-2">Название</h5>
-                <input type="text" class="form-control form-control-sm mb-2" @bind="categoryPutModel.DisplayName" />
-                <div class="d-flex gap-2">
-                    <button class="btn btn-sm btn-primary flex-grow-1" @onclick="UpdateCategory">Сохранить</button>
+            <div class="col-12 col-md-4">
+                <div class="p-3 border rounded bg-light">
+                    <h5 class="fs-6 fw-bold mb-2">Обозначение</h5>
+                    <input type="text" class="form-control form-control-sm mb-2" @bind="categoryPutModel.Key" />
+                    <h5 class="fs-6 fw-bold mb-2">Название</h5>
+                    <input type="text" class="form-control form-control-sm mb-2" @bind="categoryPutModel.DisplayName" />
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-sm btn-primary flex-grow-1" @onclick="UpdateCategory">Сохранить</button>
+                    </div>
                 </div>
             </div>
+
+            <div class="col-12 col-md-8">
+                <div class="p-3 border rounded bg-white">
+                    <h5 class="fs-6 fw-bold mb-2">Атрибуты (спецификация)</h5>
+
+                    <div class="d-flex flex-column gap-2 mb-3">
+
+                        @foreach (var attr in categoryAttributes)
+                        {
+                            <div class="p-2 border rounded bg-light d-flex justify-content-between align-items-center">
+                                <div>
+                                    <span class="fw-medium small">@attr.Key</span>
+                                    <span class="text-muted small ms-2">@attr.DataType</span>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                </div>
+            </div>
+
         </div>
     }
 </div>
@@ -40,11 +62,12 @@
     public long CategoryId { get; set; }
 
     CategoryPutDto? categoryPutModel;
-    string categoryErrorMessage = string.Empty;
+    List<CategoryAttributeListDto> categoryAttributes = [];
 
     protected override async Task OnInitializedAsync()
     {
         await LoadCategory(CategoryId);
+        await LoadAttributes(CategoryId);
     }
 
     async Task LoadCategory(long id)
@@ -57,6 +80,19 @@
                 Key = response!.Key,
                 DisplayName = response.DisplayName,
             };
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Ошибка загрузки: {ex.Message}");
+        }
+    }
+
+    async Task LoadAttributes(long id)
+    {
+        try
+        {
+            var response = await CategoriesHttpService.GetAttributeListAsync(CategoryId);
+            categoryAttributes = response?.ToList() ?? [];
         }
         catch (Exception ex)
         {
