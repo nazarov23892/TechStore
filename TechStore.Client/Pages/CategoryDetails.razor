@@ -1,0 +1,65 @@
+﻿@page "/management/categories/{CategoryId:long}"
+
+@using TechStore.Client.HttpServices
+@using TechStore.Contracts.DTOs
+
+@inject ICategoriesHttpService CategoriesHttpService;
+@inject NavigationManager Navigation
+
+
+<div class="container my-3">
+    <!-- Навигация назад -->
+    <div class="mb-3">
+        <NavLink class="text-decoration-none small text-secondary" href="management/categories">&larr; Назад к категориям</NavLink>
+    </div>
+
+    @if (category == null)
+    {
+        <p class="text-muted small">Загрузка данных категории...</p>
+    }
+    else
+    {
+        <h4 class="fw-bold mb-3">Категория</h4>
+
+        <div class="row g-3">
+
+            <div class="p-3 border rounded bg-light">
+                <h5 class="fs-6 fw-bold mb-2">Обозначение</h5>
+                <input type="text" class="form-control form-control-sm mb-2" @bind="category.Key" />
+                <h5 class="fs-6 fw-bold mb-2">Название</h5>
+                <input type="text" class="form-control form-control-sm mb-2" @bind="category.DisplayName" />
+            </div>
+
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public long CategoryId { get; set; }
+
+    CategoryDto? category;
+    string categoryErrorMessage = string.Empty;
+
+    // Поля для формы нового атрибута
+    private string newAttributeName = string.Empty;
+    private string selectedAttributeType = "Number";
+    private int selectedDictionaryId = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadCategory(CategoryId);
+    }
+
+    async Task LoadCategory(long id)
+    {
+        try
+        {
+            category = await CategoriesHttpService.GetByIdAsync(CategoryId);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Ошибка загрузки: {ex.Message}");
+        }
+    }
+}

@@ -25,4 +25,12 @@ public class CategoriesHttpService : ICategoriesHttpService
         return _httpClient.GetFromJsonAsync<PagedListResponseDto<CategoryListDto>>(
             uri, cancellationToken);
     }
+
+    /// <inheritdoc/>
+    public Task<CategoryDto?> GetByIdAsync(
+        long id, CancellationToken cancellationToken = default)
+    {
+        var uri = $"{BasePath}/{id}";
+        return _httpClient.GetFromJsonAsync<CategoryDto>(uri, cancellationToken);
+    }
 }
