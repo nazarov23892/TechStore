@@ -153,4 +153,26 @@ public class CatalogService : ICatalogService
         };
         return dto;
     }
+
+    /// <inheritdoc/>
+    public async Task<IEnumerable<CategoryAttributeListDto>> GetCategyAtrributes(
+        long categoryId, CancellationToken cancellationToken = default)
+    {
+        var category = await _context.Categories
+            .AsNoTracking()
+            .Include(c => c.Attributes)
+            .FirstOrDefaultAsync(c => c.Id == categoryId, cancellationToken)
+            ?? throw new NotFoundException($"Category {categoryId} not found.");
+
+        var attributes = category.Attributes
+            .Select(
+                a => new CategoryAttributeListDto()
+                {
+                    Id = a.Id,
+                    DataType = a.DataType.ToString(),
+                    Key = a.Key,
+                }).ToList();
+
+        return attributes;
+    }
 }
