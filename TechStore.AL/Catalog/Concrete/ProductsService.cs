@@ -11,11 +11,11 @@ namespace TechStore.AL.Catalog.Concrete;
 /// <summary>
 /// Сервис для работы с функционалом каталога товаров.
 /// </summary>
-public class CatalogService : ICatalogService
+public class ProductsService : IProductsService
 {
     readonly IApplicationDbContext _context;
 
-    public CatalogService(IApplicationDbContext context)
+    public ProductsService(IApplicationDbContext context)
     {
         _context = context;
     }

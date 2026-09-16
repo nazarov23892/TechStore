@@ -5,7 +5,7 @@ namespace TechStore.AL.Catalog;
 /// <summary>
 /// Сервис для работы с функционалом каталога товаров.
 /// </summary>
-public interface ICatalogService
+public interface IProductsService
 {
     /// <summary>
     /// Возвращает модель для списка товаров каталога.

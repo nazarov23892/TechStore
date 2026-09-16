@@ -8,9 +8,9 @@ namespace TechStore.WebApi.Controllers;
 [Route("api/products")]
 public class ProductsController : ControllerBase
 {
-    readonly ICatalogService _catalogService;
+    readonly IProductsService _catalogService;
 
-    public ProductsController(ICatalogService catalogService)
+    public ProductsController(IProductsService catalogService)
     {
         _catalogService = catalogService;
     }

@@ -46,7 +46,7 @@ public class ProductsControllerTests
         PagedListResponseDto<ProductListItemDto>? response = null;
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
         {
-            var catalogService = new CatalogService(dbContext);
+            var catalogService = new ProductsService(dbContext);
             var controller = new ProductsController(catalogService);
 
             //Act.
@@ -87,7 +87,7 @@ public class ProductsControllerTests
         PagedListResponseDto<ProductListItemDto>? response = null;
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
         {
-            var catalogService = new CatalogService(dbContext);
+            var catalogService = new ProductsService(dbContext);
             var controller = new ProductsController(catalogService);
 
             //Act.
@@ -130,7 +130,7 @@ public class ProductsControllerTests
         ProductDto? response = null;
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
         {
-            var catalogService = new CatalogService(dbContext);
+            var catalogService = new ProductsService(dbContext);
             var controller = new ProductsController(catalogService);
 
             //Act.
