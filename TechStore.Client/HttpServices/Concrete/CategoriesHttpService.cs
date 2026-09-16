@@ -33,4 +33,15 @@ public class CategoriesHttpService : ICategoriesHttpService
         var uri = $"{BasePath}/{id}";
         return _httpClient.GetFromJsonAsync<CategoryDto>(uri, cancellationToken);
     }
+
+    /// <inheritdoc/>
+    public async Task<CategoryDto?> Update(
+        long id, CategoryPutDto value, CancellationToken cancellationToken = default)
+    {
+        var uri = $"{BasePath}/{id}";
+        using var response = await _httpClient.PutAsJsonAsync(uri, value, cancellationToken);
+        response.EnsureSuccessStatusCode();
+        var dto = await response.Content.ReadFromJsonAsync<CategoryDto>(cancellationToken);
+        return dto;
+    }
 }

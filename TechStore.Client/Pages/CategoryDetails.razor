@@ -8,12 +8,11 @@
 
 
 <div class="container my-3">
-    <!-- Навигация назад -->
     <div class="mb-3">
         <NavLink class="text-decoration-none small text-secondary" href="management/categories">&larr; Назад к категориям</NavLink>
     </div>
 
-    @if (category == null)
+    @if (categoryPutModel == null)
     {
         <p class="text-muted small">Загрузка данных категории...</p>
     }
@@ -25,9 +24,9 @@
 
             <div class="p-3 border rounded bg-light">
                 <h5 class="fs-6 fw-bold mb-2">Обозначение</h5>
-                <input type="text" class="form-control form-control-sm mb-2" @bind="category.Key" />
+                <input type="text" class="form-control form-control-sm mb-2" @bind="categoryPutModel.Key" />
                 <h5 class="fs-6 fw-bold mb-2">Название</h5>
-                <input type="text" class="form-control form-control-sm mb-2" @bind="category.DisplayName" />
+                <input type="text" class="form-control form-control-sm mb-2" @bind="categoryPutModel.DisplayName" />
                 <div class="d-flex gap-2">
                     <button class="btn btn-sm btn-primary flex-grow-1" @onclick="UpdateCategory">Сохранить</button>
                 </div>
@@ -40,13 +39,8 @@
     [Parameter]
     public long CategoryId { get; set; }
 
-    CategoryDto? category;
+    CategoryPutDto? categoryPutModel;
     string categoryErrorMessage = string.Empty;
-
-    // Поля для формы нового атрибута
-    private string newAttributeName = string.Empty;
-    private string selectedAttributeType = "Number";
-    private int selectedDictionaryId = 0;
 
     protected override async Task OnInitializedAsync()
     {
@@ -57,7 +51,12 @@
     {
         try
         {
-            category = await CategoriesHttpService.GetByIdAsync(CategoryId);
+            var response = await CategoriesHttpService.GetByIdAsync(CategoryId);
+            categoryPutModel = new CategoryPutDto()
+            {
+                Key = response!.Key,
+                DisplayName = response.DisplayName,
+            };
         }
         catch (Exception ex)
         {
@@ -65,8 +64,23 @@
         }
     }
 
-    Task UpdateCategory()
+    async Task UpdateCategory()
     {
-        return Task.CompletedTask;
+        if (categoryPutModel == null)
+            return;
+
+        try
+        {
+            var response = await CategoriesHttpService.Update(CategoryId, categoryPutModel);
+            if (response == null)
+                return;
+
+            categoryPutModel.Key = response.Key;
+            categoryPutModel.DisplayName = response.DisplayName;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Ошибка загрузки: {ex.Message}");
+        }
     }
 }
