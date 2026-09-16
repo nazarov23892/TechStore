@@ -46,8 +46,8 @@ public class CategoriesControllerTest
         PagedListResponseDto<CategoryListDto>? response = null;
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
         {
-            var catalogService = new CatalogService(dbContext);
-            var controller = new CategoriesController(catalogService);
+            var categoryService = new CategoryService(dbContext);
+            var controller = new CategoriesController(categoryService);
 
             //Act.
             var actionResult = await controller.GetCategories(paging, default);
@@ -79,8 +79,8 @@ public class CategoriesControllerTest
         CategoryDto? response = null;
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
         {
-            var catalogService = new CatalogService(dbContext);
-            var controller = new CategoriesController(catalogService);
+            var categoryService = new CategoryService(dbContext);
+            var controller = new CategoriesController(categoryService);
 
             //Act.
             var actionResult = await controller.CreateCategory(request, default);
