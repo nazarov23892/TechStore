@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Mapster;
+using Microsoft.EntityFrameworkCore;
 using TechStore.AL.Abstractions;
 using TechStore.AL.Extensions;
 using TechStore.BLL.Entities;
@@ -36,18 +37,7 @@ public class CatalogService : ICatalogService
         };
         _context.Products.Add(product);
         await _context.SaveChangesAsync(cancellationToken);
-        var dto = new ProductDto()
-        {
-            Id = product.Id,
-            Name = request.Name,
-            Description = product.Description,
-            Category = new CategoryShortDto()
-            {
-                Id = product.CategoryId,
-                Name = product.Category?.Key ?? string.Empty,
-            },
-            Price = product.Price,
-        };
+        var dto = product.Adapt<ProductDto>();
         return dto;
     }
 
@@ -69,16 +59,7 @@ public class CatalogService : ICatalogService
             .WithPaging(pagingStartsZero, pagingRequest.PerPage)
             .ToListAsync(cancellationToken);
 
-        var dtos = products.Select(
-            p => new ProductListItemDto()
-            {
-                Id = p.Id,
-                Name = p.Name,
-                Description = p.Description,
-                Price = p.Price,
-                Category = p.Category?.Key ?? string.Empty,
-            }).ToList();
-
+        var dtos = products.Adapt<List<ProductListItemDto>>();
         var result = new PagedListResponseDto<ProductListItemDto>()
         {
             Items = dtos,

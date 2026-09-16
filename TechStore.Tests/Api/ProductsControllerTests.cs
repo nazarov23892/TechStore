@@ -1,3 +1,4 @@
+using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,6 +16,8 @@ public class ProductsControllerTests
 
     public ProductsControllerTests()
     {
+        TypeAdapterConfig.GlobalSettings.Scan(typeof(AL.Configuration.AppConstants).Assembly);
+
         var serviceCollection = new ServiceCollection();
         serviceCollection.AddEntityFrameworkInMemoryDatabase()
                 .BuildServiceProvider();

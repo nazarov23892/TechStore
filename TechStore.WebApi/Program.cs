@@ -1,3 +1,4 @@
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using TechStore.AL.Abstractions;
 using TechStore.AL.Catalog;
@@ -30,6 +31,9 @@ builder.Services.AddExceptionHandler<NotFoundExceptionHandler>();
 builder.Services.AddScoped<ICatalogService, CatalogService>();
 builder.Services.AddScoped<IApplicationDbContext>(
     provider => provider.GetRequiredService<ApplicationDbContext>());
+
+// Mapster.
+TypeAdapterConfig.GlobalSettings.Scan(typeof(TechStore.AL.Configuration.AppConstants).Assembly);
 
 // CORS.
 builder.Services.AddCors(
