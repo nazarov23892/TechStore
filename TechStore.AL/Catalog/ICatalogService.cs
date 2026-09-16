@@ -43,11 +43,19 @@ public interface ICatalogService
         PagingRequestDto pagingRequest, CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// Возвращает категорию по Id.
+    /// </summary>
+    /// <param name="categoryId">Идентификатор категории.</param>
+    /// <param name="cancellationToken">Токен отмены.</param>
+    Task<CategoryDto> GetCategyByIdAsync(
+        long categoryId, CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Возвращает список атрибутов категории товаров.
     /// </summary>
     /// <param name="categoryId">Идентификатор категории.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
-    Task<IEnumerable<CategoryAttributeListDto>> GetCategyAtrributes(
+    Task<IEnumerable<CategoryAttributeListDto>> GetCategyAtrributesAsync(
         long categoryId, CancellationToken cancellationToken = default);
 
     /// <summary>

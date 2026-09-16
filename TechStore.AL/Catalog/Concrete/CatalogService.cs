@@ -132,6 +132,24 @@ public class CatalogService : ICatalogService
     }
 
     /// <inheritdoc/>
+    public async Task<CategoryDto> GetCategyByIdAsync(
+        long categoryId, CancellationToken cancellationToken = default)
+    {
+        var category = await _context.Categories
+            .AsNoTracking()
+            .FirstOrDefaultAsync(c => c.Id == categoryId, cancellationToken)
+            ?? throw new NotFoundException($"Category {categoryId} not found.");
+
+        var dto = new CategoryDto()
+        {
+            Id = category.Id,
+            Key = category.Key,
+            DisplayName = category.DisplayName,
+        };
+        return dto;
+    }
+
+    /// <inheritdoc/>
     public async Task<CategoryDto> CreateCategoryAsync(
         CategoryPostDto request, CancellationToken cancellationToken = default)
     {
@@ -155,7 +173,7 @@ public class CatalogService : ICatalogService
     }
 
     /// <inheritdoc/>
-    public async Task<IEnumerable<CategoryAttributeListDto>> GetCategyAtrributes(
+    public async Task<IEnumerable<CategoryAttributeListDto>> GetCategyAtrributesAsync(
         long categoryId, CancellationToken cancellationToken = default)
     {
         var category = await _context.Categories

@@ -23,11 +23,19 @@ public class CategoriesController : ControllerBase
         return result;
     }
 
-    [HttpGet("{id}/attributes")]
+    [HttpGet("{id:long}")]
+    public async Task<ActionResult<CategoryDto>> GetCategoryById(
+        long id, CancellationToken cancellationToken)
+    {
+        var result = await _catalogService.GetCategyByIdAsync(id, cancellationToken);
+        return result;
+    }
+
+    [HttpGet("{id:long}/attributes")]
     public async Task<ActionResult<IEnumerable<CategoryAttributeListDto>>> GetCategyAtrributes(
         long id, CancellationToken cancellationToken)
     {
-        var result = await _catalogService.GetCategyAtrributes(id, cancellationToken);
+        var result = await _catalogService.GetCategyAtrributesAsync(id, cancellationToken);
         return result.ToList();
     }
 
