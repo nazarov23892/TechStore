@@ -28,8 +28,10 @@
                 <input type="text" class="form-control form-control-sm mb-2" @bind="category.Key" />
                 <h5 class="fs-6 fw-bold mb-2">Название</h5>
                 <input type="text" class="form-control form-control-sm mb-2" @bind="category.DisplayName" />
+                <div class="d-flex gap-2">
+                    <button class="btn btn-sm btn-primary flex-grow-1" @onclick="UpdateCategory">Сохранить</button>
+                </div>
             </div>
-
         </div>
     }
 </div>
@@ -61,5 +63,10 @@
         {
             Console.WriteLine($"Ошибка загрузки: {ex.Message}");
         }
+    }
+
+    Task UpdateCategory()
+    {
+        return Task.CompletedTask;
     }
 }

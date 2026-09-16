@@ -31,6 +31,16 @@ public class CategoriesController : ControllerBase
         return result;
     }
 
+    [HttpPut("{id:long}")]
+    public async Task<ActionResult<CategoryDto>> UpdateCategory(
+        long id, 
+        CategoryPutDto value,
+        CancellationToken cancellationToken)
+    {
+        var result = await _catalogService.UpdateCategoryAsync(id, value, cancellationToken);
+        return result;
+    }
+
     [HttpGet("{id:long}/attributes")]
     public async Task<ActionResult<IEnumerable<CategoryAttributeListDto>>> GetCategyAtrributes(
         long id, CancellationToken cancellationToken)

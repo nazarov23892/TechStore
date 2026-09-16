@@ -157,4 +157,23 @@ public class CatalogService : ICatalogService
 
         return attributes;
     }
+
+    /// <inheritdoc/>
+    public async Task<CategoryDto> UpdateCategoryAsync(
+        long categoryId, CategoryPutDto value, CancellationToken cancellationToken = default)
+    {
+        var category = await _context.Categories
+            .FirstOrDefaultAsync(c => c.Id == categoryId, cancellationToken)
+            ?? throw new NotFoundException($"Category {categoryId} not found.");
+
+        if (value.Key != null)
+            category.Key = value.Key;
+        if(value.DisplayName != null)
+            category.DisplayName = value.DisplayName;
+
+        await _context.SaveChangesAsync(cancellationToken);
+
+        var dto = category.Adapt<CategoryDto>();
+        return dto;
+    }
 }

@@ -51,6 +51,17 @@ public interface ICatalogService
         long categoryId, CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// Обновляет категорию.
+    /// </summary>
+    /// <param name="categoryId">Идентификатор категории.</param>
+    /// <param name="value">Модель запроса на обновление..</param>
+    /// <param name="cancellationToken">Токен отмены.</param>
+    Task<CategoryDto> UpdateCategoryAsync(
+        long categoryId,
+        CategoryPutDto value,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Возвращает список атрибутов категории товаров.
     /// </summary>
     /// <param name="categoryId">Идентификатор категории.</param>
