@@ -52,4 +52,17 @@ public class CategoriesHttpService : ICategoriesHttpService
         var dto = await response.Content.ReadFromJsonAsync<CategoryDto>(cancellationToken);
         return dto;
     }
+
+    /// <inheritdoc/>
+    public async Task<CategoryAttributetDto?> CreateAttributeAsync(
+        long id, 
+        CategoryAttributePostDto value, 
+        CancellationToken cancellationToken = default)
+    {
+        var uri = $"{BasePath}/{id}/attributes";
+        using var response = await _httpClient.PostAsJsonAsync(uri, value, cancellationToken);
+        response.EnsureSuccessStatusCode();
+        var dto = await response.Content.ReadFromJsonAsync<CategoryAttributetDto>(cancellationToken);
+        return dto;
+    }
 }

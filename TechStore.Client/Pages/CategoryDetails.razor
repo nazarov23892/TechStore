@@ -50,6 +50,23 @@
                         }
                     </div>
 
+                    <div class="p-2 border-top pt-3">
+                        <strong class="small text-secondary d-block mb-2">+ Добавить атрибут:</strong>
+
+                        <div class="d-flex flex-wrap gap-2 align-items-center">
+                            <input type="text" class="form-control form-control-sm" style="max-width: 200px;"
+                                   placeholder="Например: Сокет" @bind="attributePostModel.Key" />
+
+                            <select class="form-select form-select-sm" style="max-width: 150px;" @bind="attributePostModel.DataType">
+                                <option value="Numeric">Число</option>
+                                <option value="String">Текст</option>
+                                <option value="Boolean">Да/Нет</option>
+                            </select>
+
+                            <button class="btn btn-sm btn-success" @onclick="AddAttribute">Добавить</button>
+                        </div>
+                    </div>
+
                 </div>
             </div>
 
@@ -62,6 +79,7 @@
     public long CategoryId { get; set; }
 
     CategoryPutDto? categoryPutModel;
+    CategoryAttributePostDto attributePostModel = new();
     List<CategoryAttributeListDto> categoryAttributes = [];
 
     protected override async Task OnInitializedAsync()
@@ -119,5 +137,29 @@
         {
             Console.WriteLine($"Ошибка загрузки: {ex.Message}");
         }
+    }
+
+    async Task AddAttribute()
+    {
+        try
+        {
+            var response = await CategoriesHttpService.CreateAttributeAsync(
+                CategoryId, attributePostModel);
+            if (response == null)
+                return;
+
+            categoryAttributes.Add(
+                new CategoryAttributeListDto()
+                {
+                    Id = response.Id,
+                    Key = response.Key,
+                    DataType = response.DataType,
+                });
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Ошибка загрузки: {ex.Message}");
+        }
+        attributePostModel = new();
     }
 }
