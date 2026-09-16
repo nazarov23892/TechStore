@@ -71,6 +71,19 @@ public class ProductsService : IProductsService
     }
 
     /// <inheritdoc/>
+    public async Task<ProductDto> GetProductById(
+        long id, CancellationToken cancellationToken = default)
+    {
+        var product = await _context.Products
+            .AsNoTracking()
+            .FirstOrDefaultAsync(p => p.Id == id, cancellationToken: cancellationToken)
+            ?? throw new NotFoundException($"The product with Id {id} not found.");
+
+        var dto = product.Adapt<ProductDto>();
+        return dto;
+    }
+
+    /// <inheritdoc/>
     public async Task DeleteProductAsync(
         long id, CancellationToken cancellationToken = default)
     {

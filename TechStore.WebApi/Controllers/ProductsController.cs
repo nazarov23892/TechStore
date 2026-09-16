@@ -26,6 +26,14 @@ public class ProductsController : ControllerBase
         return result;
     }
 
+    public async Task<ActionResult<ProductDto>> GetProductById(
+        long id,
+        CancellationToken cancellationToken = default)
+    {
+        var result = await _catalogService.GetProductById(id, cancellationToken);
+        return result;
+    }
+
     [HttpPost]
     public async Task<ActionResult<ProductDto>> CreateProduct(
         ProductPostDto request, CancellationToken cancellationToken)

@@ -19,6 +19,15 @@ public interface IProductsService
         CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// Возвращает модель товара по Id.
+    /// </summary>
+    /// <param name="id">Идентификатор товара.</param>
+    /// <param name="cancellationToken">Токен отмены операции.</param> 
+    Task<ProductDto> GetProductById(
+        long id,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Создает новый товар.
     /// </summary>
     /// <param name="request">Модель запроса на создание.</param>
