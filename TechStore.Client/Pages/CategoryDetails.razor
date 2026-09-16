@@ -66,8 +66,9 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await LoadCategory(CategoryId);
-        await LoadAttributes(CategoryId);
+        var loadCategoriesTask = LoadCategory(CategoryId);
+        var loadAttributesTask = LoadAttributes(CategoryId);
+        await Task.WhenAll(loadCategoriesTask, loadAttributesTask);
     }
 
     async Task LoadCategory(long id)
