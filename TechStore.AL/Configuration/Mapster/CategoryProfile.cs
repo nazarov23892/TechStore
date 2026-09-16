@@ -15,5 +15,6 @@ public class CategoryProfile : IRegister
         config.NewConfig<Category, CategoryDto>();
 
         config.NewConfig<CategoryAttribute, CategoryAttributetDto>();
+        config.NewConfig<CategoryAttribute, CategoryAttributeListDto>();
     }
 }

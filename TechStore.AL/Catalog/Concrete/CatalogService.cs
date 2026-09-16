@@ -146,16 +146,8 @@ public class CatalogService : ICatalogService
             .FirstOrDefaultAsync(c => c.Id == categoryId, cancellationToken)
             ?? throw new NotFoundException($"Category {categoryId} not found.");
 
-        var attributes = category.Attributes
-            .Select(
-                a => new CategoryAttributeListDto()
-                {
-                    Id = a.Id,
-                    DataType = a.DataType.ToString(),
-                    Key = a.Key,
-                }).ToList();
-
-        return attributes;
+        var dtos = category.Attributes.Adapt<List<CategoryAttributeListDto>>();
+        return dtos;
     }
 
     /// <inheritdoc/>
