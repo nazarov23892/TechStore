@@ -1,0 +1,78 @@
+﻿@page "/management/categories"
+
+@using TechStore.Client.HttpServices
+@using TechStore.Contracts.DTOs
+@using TechStore.Client.Components
+
+@inject ICategoriesHttpService CategoriesHttpService;
+@inject HttpClient Http
+
+<div class="container my-3">
+    <div class="mb-3">
+        <NavLink class="text-decoration-none small text-secondary" href="management">&larr; В панель управления</NavLink>
+    </div>
+
+    <h4 class="fw-bold text-dark mb-3">Категории товаров</h4>
+
+    @if (_response == null)
+    {
+        <p class="small text-muted">Загрузка категорий...</p>
+    }
+    else if (!_response.Items.Any())
+    {
+        <div class="alert alert-info small" role="alert">Категорий пока нет.</div>
+    }
+    else
+    {
+        <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-2">
+            <NavLink class="btn btn-sm btn-primary" href="management/categories/create">
+                + Создать
+            </NavLink>
+        </div>
+        <div class="list-group shadow-sm">
+            @foreach (var cat in _response.Items)
+            {
+                <div class="list-group-item d-flex justify-content-between align-items-center p-3">
+                    <div>
+                        <span class="fw-medium">@cat.DisplayName</span>
+                    </div>
+
+                    <NavLink class="btn btn-sm btn-outline-primary" href="@($"management/categories/{cat.Id}")">
+                        Редактировать
+                    </NavLink>
+                </div>
+            }
+        </div>
+        <PaginationPanel @ref="_paginationPanelRef"
+                    Page="@_response.Page"
+                    TotalPages="@_response.TotalPages"
+                    PageSelected="PagingPanelPageSelected" />
+    }
+</div>
+
+@code {
+    const int PerPage = 5;
+    PaginationPanel? _paginationPanelRef;
+    PagedListResponseDto<CategoryListDto>? _response;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadCategories(1);
+    }
+
+    async Task LoadCategories(int page)
+    {
+        try
+        {
+            var response = await CategoriesHttpService.GetPagedListAsync(
+                page, PerPage);
+            _response = response;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Ошибка загрузки: {ex.Message}");
+        }
+    }
+
+    Task PagingPanelPageSelected(int page) => LoadCategories(page);
+}
