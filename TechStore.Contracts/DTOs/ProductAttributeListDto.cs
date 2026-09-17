@@ -20,5 +20,5 @@ public class ProductAttributeListDto
     /// <summary>
     /// Значение.
     /// </summary>
-    public ProductAttributeValueDto? Value { get; set; }
+    public ProductAttributeValueDto Value { get; set; } = new();
 }

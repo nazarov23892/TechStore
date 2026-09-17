@@ -76,6 +76,7 @@ public class ProductsService : IProductsService
     {
         var product = await _context.Products
             .AsNoTracking()
+            .Include(p => p.Category)
             .FirstOrDefaultAsync(p => p.Id == id, cancellationToken)
             ?? throw new NotFoundException($"The product with Id {id} not found.");
 

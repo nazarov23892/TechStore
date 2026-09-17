@@ -8,8 +8,7 @@ public class CategoryProfile : IRegister
 {
     public void Register(TypeAdapterConfig config)
     {
-        config.NewConfig<Category, CategoryShortDto>()
-            .Map(dst => dst.Name, src => src.Key);
+        config.NewConfig<Category, CategoryShortDto>();
 
         config.NewConfig<Category, CategoryListDto>();
         config.NewConfig<Category, CategoryDto>();

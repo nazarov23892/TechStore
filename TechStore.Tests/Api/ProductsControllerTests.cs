@@ -145,7 +145,7 @@ public class ProductsControllerTests
         Assert.Equal("description1", response.Description);
         Assert.Equal(999.9M, response.Price);
         Assert.NotNull(response.Category);
-        Assert.Equal("cat1", response.Category!.Name);
+        Assert.Equal("cat1", response.Category!.Key);
 
         Product? domainModel = null;
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))

@@ -13,5 +13,10 @@ public class CategoryShortDto
     /// <summary>
     /// Название.
     /// </summary>
-    public string Name { get; set; } = string.Empty;
+    public string Key { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Отображаемое в интерфейсе название.
+    /// </summary>
+    public string? DisplayName { get; set; }
 }
