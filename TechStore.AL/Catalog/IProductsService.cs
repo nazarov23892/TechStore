@@ -42,4 +42,12 @@ public interface IProductsService
     /// <param name="cancellationToken">Токен отмены операции.</param> 
     Task DeleteProductAsync(
         long id, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Возвращает список атрибутов товара.
+    /// </summary>
+    /// <param name="productId">Идентификатор товара.</param>
+    /// <param name="cancellationToken">Токен отмены.</param>
+    Task<IEnumerable<ProductAttributeListDto>> GetProductAttributesAsync(
+        long productId, CancellationToken cancellationToken = default);
 }

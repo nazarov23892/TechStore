@@ -76,7 +76,7 @@ public class ProductsService : IProductsService
     {
         var product = await _context.Products
             .AsNoTracking()
-            .FirstOrDefaultAsync(p => p.Id == id, cancellationToken: cancellationToken)
+            .FirstOrDefaultAsync(p => p.Id == id, cancellationToken)
             ?? throw new NotFoundException($"The product with Id {id} not found.");
 
         var dto = product.Adapt<ProductDto>();
@@ -88,10 +88,25 @@ public class ProductsService : IProductsService
         long id, CancellationToken cancellationToken = default)
     {
         var product = await _context.Products
-            .FirstOrDefaultAsync(p => p.Id == id, cancellationToken: cancellationToken)
+            .FirstOrDefaultAsync(p => p.Id == id, cancellationToken)
             ?? throw new NotFoundException($"The product with Id {id} not found.");
 
         _context.Products.Remove(product);
         await _context.SaveChangesAsync(cancellationToken);
+    }
+
+    /// <inheritdoc/>
+    public async Task<IEnumerable<ProductAttributeListDto>> GetProductAttributesAsync(
+        long productId, CancellationToken cancellationToken = default)
+    {
+        var product = await _context.Products
+            .AsNoTracking()
+            .Include(p => p.Attributes).ThenInclude(attr => attr.CategoryAttribute)
+            .Include(p => p.Attributes).ThenInclude(attr => attr.Value)
+            .FirstOrDefaultAsync(p => p.Id == productId, cancellationToken)
+            ?? throw new NotFoundException($"The product with Id {productId} not found.");
+
+        var dtos = product.Attributes.Adapt<List<ProductAttributeListDto>>();
+        return dtos;
     }
 }

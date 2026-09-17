@@ -50,4 +50,12 @@ public class ProductsController : ControllerBase
         await _catalogService.DeleteProductAsync(id, cancellationToken);
         return NoContent();
     }
+
+    [HttpGet("{id:long}/attributes")]
+    public async Task<ActionResult<IEnumerable<ProductAttributeListDto>>> GetCategoryAttributes(
+    long id, CancellationToken cancellationToken)
+    {
+        var result = await _catalogService.GetProductAttributesAsync(id, cancellationToken);
+        return result.ToList();
+    }
 }

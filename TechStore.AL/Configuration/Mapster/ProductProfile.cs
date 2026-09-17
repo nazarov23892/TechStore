@@ -19,5 +19,14 @@ public class ProductProfile : IRegister
             .Map(dst => dst.Id, src => src.CategoryId)
             .Map(dst => dst.Name, src => src.Category!.Key)
             .IgnoreIf((src, dst) => src.Category == null, dst => dst.Name);
+
+        config.NewConfig<ProductAttribute, ProductAttributeListDto>()
+            .Map(dst => dst.Key, src => src.CategoryAttribute!.Key)
+            .Map(dst => dst.DataType, src => src.CategoryAttribute!.DataType)
+            .IgnoreIf(
+                (src, dst) => src.CategoryAttribute == null, 
+                dst => dst.Key,
+                dst => dst.DataType
+            );
     }
 }
