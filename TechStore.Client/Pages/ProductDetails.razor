@@ -61,8 +61,39 @@
                             var type = attr.DataType == "Numeric" ? "number" : "text";
                             var placeHolder = attr.DataType == "Numeric" ? "Например: 6" : "Например: LGA";
                             <div>
-                                <label class="form-label small fw-medium mb-1">@attr.Key</label>
-                                <input type="@type" class="form-control form-control-sm" style="max-width: 250px;" placeholder="@placeHolder" />
+                                @if (attr.DataType == "Numeric")
+                                {
+                                    <label class="form-label small fw-medium mb-1">@attr.Key</label>
+                                    <input type="number"
+                                           class="form-control form-control-sm"
+                                           style="max-width: 150px;"
+                                           placeholder="Например: 6"
+                                           @bind="attr.Value!.NumericValue" />
+                                }
+                                else if (attr.DataType == "String")
+                                {
+                                    <label class="form-label small fw-medium mb-1">@attr.Key</label>
+                                    <input type="text"
+                                           class="form-control form-control-sm"
+                                           style="max-width: 300px;"
+                                           placeholder="Например: LGA"
+                                           @bind="attr.Value!.StringValue" />
+                                }
+                                else if (attr.DataType == "Boolean")
+                                {
+                                    <label class="form-label small fw-medium mb-1">@attr.Key</label>
+                                    <div class="form-check pt-1">
+                                        
+                                        <input class="form-check-input"
+                                               type="checkbox"
+                                               id="@($"attr_{attr.Id}")"
+                                               @bind="attr.Value!.BoolValue" />
+                                        <label class="form-check-label small fw-medium"
+                                               for="@($"attr_{attr.Id}")">
+                                            Да/Нет
+                                        </label>
+                                    </div>
+                                }
                             </div>
                         }
                     </div>
