@@ -10,6 +10,9 @@ public interface IProductHttpService
     /// <summary>
     /// Выполняет запрос получения постраничного списка товаров заданной категории.
     /// </summary>
+    /// <param name="page">Номер страницы.</param>
+    /// <param name="perPage">Количество элементов на странице.</param>
+    /// <param name="category">Обозначение категории.</param>
     /// <param name="cancellationToken">Токен отмены операции.</param>
     Task<PagedListResponseDto<ProductListItemDto>?> GetPagedListByCategoryAsync(
         int page, int perPage, string? category, CancellationToken cancellationToken = default);
@@ -19,7 +22,7 @@ public interface IProductHttpService
     /// </summary>
     /// <param name="id">Идентификатор товара.</param>
     /// <param name="cancellationToken">Токен отмены операции.</param>
-    Task<ProductDto?> GetByIdAsync(long id, CancellationToken cancellationToken = default); 
+    Task<ProductDto> GetByIdAsync(long id, CancellationToken cancellationToken = default); 
 
     /// <summary>
     /// Выполняет запрос создания товара.
@@ -28,6 +31,17 @@ public interface IProductHttpService
     /// <param name="cancellationToken">Токен отмены операции.</param>
     Task<ProductDto?> CreateAsync(
         ProductPostDto createRequest, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Выполняет запрос обновления товара.
+    /// </summary>
+    /// <param name="id">Идентификатор товара.</param>
+    /// <param name="value">Модель запроса для обновления.</param>
+    /// <param name="cancellationToken">Токен отмены операции.</param>
+    Task<ProductDto> UpdateProductAsync(
+        long id,
+        ProductPutDto value,
+        CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Выполняет запрос удаления товара.

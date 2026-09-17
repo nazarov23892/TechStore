@@ -27,12 +27,12 @@ public class ProductHttpService : IProductHttpService
     }
 
     /// <inheritdoc/>
-    public Task<ProductDto?> GetByIdAsync(
+    public Task<ProductDto> GetByIdAsync(
         long id, CancellationToken cancellationToken = default)
     {
         var uri = $"{BaseUri}/{id}";
         return _httpClient.GetFromJsonAsync<ProductDto>(
-            uri, cancellationToken);
+            uri, cancellationToken)!;
     }
 
     /// <inheritdoc/>
@@ -43,6 +43,17 @@ public class ProductHttpService : IProductHttpService
         response.EnsureSuccessStatusCode();
         var result = await response.Content.ReadFromJsonAsync<ProductDto>(cancellationToken);
         return result;
+    }
+
+    /// <inheritdoc/>
+    public async Task<ProductDto> UpdateProductAsync(
+        long id, ProductPutDto value, CancellationToken cancellationToken = default)
+    {
+        var uri = $"{BaseUri}/{id}";
+        var response = await _httpClient.PutAsJsonAsync(uri, value, cancellationToken);
+        response.EnsureSuccessStatusCode();
+        var result = await response.Content.ReadFromJsonAsync<ProductDto>(cancellationToken);
+        return result!;
     }
 
     /// <inheritdoc/>
