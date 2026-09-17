@@ -28,5 +28,7 @@ public class ProductProfile : IRegister
                 dst => dst.Key,
                 dst => dst.DataType
             );
+
+        config.NewConfig<AttributeValue, ProductAttributeValueDto>();
     }
 }

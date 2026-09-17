@@ -16,4 +16,9 @@ public class ProductAttributeListDto
     /// Тип данных.
     /// </summary>
     public string DataType { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Значение.
+    /// </summary>
+    public ProductAttributeValueDto? Value { get; set; }
 }
