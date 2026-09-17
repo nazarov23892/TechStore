@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using TechStore.AL.Catalog.Concrete;
 using TechStore.BLL.Entities;
+using TechStore.BLL.Exceptions;
 using TechStore.Contracts.DTOs;
 using TechStore.DAL.DbContexts;
 using TechStore.WebApi.Controllers;
@@ -114,8 +115,7 @@ public class ProductsControllerTests
                 Key = "cat1",
                 DisplayName = "category1",
             };
-            dbContext.Categories.Add(
-                category1);
+            dbContext.Categories.Add(category1);
             await dbContext.SaveChangesAsync();
             categoryId = category1.Id;
         }
@@ -146,6 +146,7 @@ public class ProductsControllerTests
         Assert.Equal(999.9M, response.Price);
         Assert.NotNull(response.Category);
         Assert.Equal("cat1", response.Category!.Key);
+        Assert.Equal("category1", response.Category.DisplayName);
 
         Product? domainModel = null;
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
@@ -160,6 +161,28 @@ public class ProductsControllerTests
         Assert.Equal(999.9M, domainModel.Price);
         Assert.NotNull(domainModel.Category);
         Assert.Equal("cat1", domainModel.Category!.Key);
+    }
+
+    [Fact(DisplayName = "Товары: создание с несуществующей категории: ошибка.")]
+    public async Task CreateProduct_NonExistingCategory_Error()
+    {
+        // Arrange.
+        long nonExistingCategoryId = 501;
+        var request = new ProductPostDto()
+        {
+            Name = "product1",
+            Description = "description1",
+            Price = 999.9M,
+            CategoryId = nonExistingCategoryId,
+        };
+        using var dbContext = new ApplicationDbContext(_dbContextOptions);
+        var catalogService = new ProductsService(dbContext);
+        var controller = new ProductsController(catalogService);
+
+        //Act.
+        var exception = await Assert.ThrowsAsync<NotFoundException>(
+            () => controller.CreateProduct(request, default));
+        Assert.NotNull(exception);
     }
 
     static async Task SeedData(ApplicationDbContext dbContext, int count)
