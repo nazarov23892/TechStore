@@ -89,6 +89,7 @@ public class ProductsService : IProductsService
         long id, ProductPutDto value, CancellationToken cancellationToken = default)
     {
         var model = await _context.Products
+            .Include(p => p.Category)
             .FirstOrDefaultAsync(c => c.Id == id, cancellationToken)
             ?? throw new NotFoundException($"The product with Id {id} not found.");
 
