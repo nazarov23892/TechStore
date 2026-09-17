@@ -51,4 +51,12 @@ public class ProductHttpService : IProductHttpService
         var response = await _httpClient.DeleteAsync($"{BaseUri}/{id}", cancellationToken);
         response.EnsureSuccessStatusCode();
     }
+
+    /// <inheritdoc/>
+    public Task<IEnumerable<ProductAttributeListDto>?> GetAttributeListAsync(
+        long id, CancellationToken cancellationToken = default)
+    {
+        var uri = $"{BaseUri}/{id}/attributes";
+        return _httpClient.GetFromJsonAsync<IEnumerable<ProductAttributeListDto>>(uri, cancellationToken);
+    }
 }

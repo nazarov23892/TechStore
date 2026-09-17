@@ -49,20 +49,42 @@
                     </div>
                 </div>
             </div>
+
+            <div class="col-12 col-md-7">
+                <div class="p-3 border rounded bg-white">
+                    <h5 class="fs-6 fw-bold mb-2">Технические характеристики</h5>
+                    <p class="text-muted small mb-3">Свойства генерируются автоматически на основе шаблона категории.</p>
+
+                    <div class="d-flex flex-column gap-3">
+                        @foreach (var attr in productAttributes)
+                        {
+                            var type = attr.DataType == "Numeric" ? "number" : "text";
+                            var placeHolder = attr.DataType == "Numeric" ? "Например: 6" : "Например: LGA";
+                            <div>
+                                <label class="form-label small fw-medium mb-1">@attr.Key</label>
+                                <input type="@type" class="form-control form-control-sm" style="max-width: 250px;" placeholder="@placeHolder" />
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
         </div>
     }
 </div>
 
 @code {
 
-    [Parameter] 
+    [Parameter]
     public long ProductId { get; set; }
 
     ProductDto? product;
+    List<ProductAttributeListDto> productAttributes = [];
 
     protected override async Task OnInitializedAsync()
     {
-        await LoadProduct();
+        var loadProductTask = LoadProduct();
+        var loadAttributesTask = LoadAttributes();
+        await Task.WhenAll(loadProductTask, loadAttributesTask);
     }
 
     async Task LoadProduct()
@@ -78,7 +100,20 @@
         }
     }
 
-    private void Cancel()
+    async Task LoadAttributes()
+    {
+        try
+        {
+            var response = await ProductsHttpService.GetAttributeListAsync(ProductId);
+            productAttributes = response?.ToList() ?? [];
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Ошибка загрузки: {ex.Message}");
+        }
+    }
+
+    void Cancel()
     {
         Navigation.NavigateTo("/management");
     }
