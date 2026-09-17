@@ -36,6 +36,15 @@ public interface IProductsService
         ProductPostDto request, CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// Обновляет товар.
+    /// </summary>
+    /// <param name="id">Идентификатор товара.</param>
+    /// <param name="value">Модель запроса на обновление.</param>
+    /// <param name="cancellationToken">Токен отмены операции.</param> 
+    Task<ProductDto> UpdateProductAsync(
+        long id, ProductPutDto value, CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Удаляет товар.
     /// </summary>
     /// <param name="id">Идентификатор товара.</param>

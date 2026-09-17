@@ -85,6 +85,27 @@ public class ProductsService : IProductsService
     }
 
     /// <inheritdoc/>
+    public async Task<ProductDto> UpdateProductAsync(
+        long id, ProductPutDto value, CancellationToken cancellationToken = default)
+    {
+        var model = await _context.Products
+            .FirstOrDefaultAsync(c => c.Id == id, cancellationToken)
+            ?? throw new NotFoundException($"The product with Id {id} not found.");
+
+        if (value.Name != null)
+            model.Name = value.Name;
+        if (value.Price != null)
+            model.Price = value.Price.Value;
+        if (value.Description != null)
+            model.Description = value.Description;
+
+        await _context.SaveChangesAsync(cancellationToken);
+
+        var dto = model.Adapt<ProductDto>();
+        return dto;
+    }
+
+    /// <inheritdoc/>
     public async Task DeleteProductAsync(
         long id, CancellationToken cancellationToken = default)
     {
