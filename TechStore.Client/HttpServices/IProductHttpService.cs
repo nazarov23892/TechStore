@@ -8,11 +8,18 @@ namespace TechStore.Client.HttpServices;
 public interface IProductHttpService
 {
     /// <summary>
-    /// Выполняет запрос получения постраничного списка товаров.
+    /// Выполняет запрос получения постраничного списка товаров заданной категории.
     /// </summary>
     /// <param name="cancellationToken">Токен отмены операции.</param>
-    Task<PagedListResponseDto<ProductListItemDto>?> GetPagedListAsync(
+    Task<PagedListResponseDto<ProductListItemDto>?> GetPagedListByCategoryAsync(
         int page, int perPage, string? category, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Выполняет запрос получения товара по Id.
+    /// </summary>
+    /// <param name="id">Идентификатор товара.</param>
+    /// <param name="cancellationToken">Токен отмены операции.</param>
+    Task<ProductDto?> GetByIdAsync(long id, CancellationToken cancellationToken = default); 
 
     /// <summary>
     /// Выполняет запрос создания товара.

@@ -18,15 +18,21 @@ public class ProductHttpService : IProductHttpService
     }
 
     /// <inheritdoc/>
-    public Task<PagedListResponseDto<ProductListItemDto>?> GetPagedListAsync(
+    public Task<PagedListResponseDto<ProductListItemDto>?> GetPagedListByCategoryAsync(
         int page, int perPage, string? category, CancellationToken cancellationToken = default)
     {
-        var uri = !string.IsNullOrEmpty(category)
-            ? $"{BaseUri}/{category}"
-            : BaseUri;
-        var resultUri = $"{uri}?page={page}&perPage={perPage}";
+        var uri = $"{BaseUri}/category/{category}?page={page}&perPage={perPage}";
         return _httpClient.GetFromJsonAsync<PagedListResponseDto<ProductListItemDto>>(
-            resultUri, cancellationToken);
+            uri, cancellationToken);
+    }
+
+    /// <inheritdoc/>
+    public Task<ProductDto?> GetByIdAsync(
+        long id, CancellationToken cancellationToken = default)
+    {
+        var uri = $"{BaseUri}/{id}";
+        return _httpClient.GetFromJsonAsync<ProductDto>(
+            uri, cancellationToken);
     }
 
     /// <inheritdoc/>

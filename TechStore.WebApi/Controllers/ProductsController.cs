@@ -15,7 +15,7 @@ public class ProductsController : ControllerBase
         _catalogService = catalogService;
     }
 
-    [HttpGet("{category?}")]
+    [HttpGet("category/{category?}")]
     public async Task<ActionResult<PagedListResponseDto<ProductListItemDto>>> GetProductList(
         [FromQuery] PagingRequestDto request,
         string? category,
@@ -26,6 +26,7 @@ public class ProductsController : ControllerBase
         return result;
     }
 
+    [HttpGet("{id}")]
     public async Task<ActionResult<ProductDto>> GetProductById(
         long id,
         CancellationToken cancellationToken = default)

@@ -61,7 +61,7 @@
     {
         try
         {
-            Response = await ProductsHttpService.GetPagedListAsync(page, PerPage, Category);
+            Response = await ProductsHttpService.GetPagedListByCategoryAsync(page, PerPage, Category);
         }
         catch (Exception ex)
         {
