@@ -134,4 +134,58 @@ public class ProductsService : IProductsService
         var dtos = attributes.Adapt<List<ProductAttributeListDto>>();
         return dtos;
     }
+
+    /// <inheritdoc/>
+    public async Task<IEnumerable<ProductAttributeListDto>> UpdateProductAttributesAsync(
+        long productId, ProductAttributeValuesPutDto value, CancellationToken cancellationToken = default)
+    {
+        var product = await _context.Products
+            .AsNoTracking()
+            .Include(p => p.Category)
+                .ThenInclude(attr => attr!.Attributes)
+                .ThenInclude(attr => attr.ProductValues.Where(v => v.ProductId == productId).Take(1))
+                .FirstOrDefaultAsync(p => p.Id == productId, cancellationToken)
+                ?? throw new NotFoundException($"The product with Id {productId} not found.");
+
+        var attributesByKeyMap = product.Category!.Attributes.ToDictionary(
+            a => a.Key);
+
+        foreach (var attributePutDto in value.Values)
+        {
+            if (!attributesByKeyMap.TryGetValue(attributePutDto.AttributeKey, out var attribute)
+                || attribute == null)
+                throw new FailedPreconditionException($"Attribute key {attributePutDto.AttributeKey} not found.");
+
+            if (attribute.ProductValues.Count == 0)
+                attribute.ProductValues.Add(
+                    new ProductAttributeValue()
+                    {
+                        ProductId = productId,
+                    });
+
+            var attributeValue = attribute.ProductValues.First().Value;
+            attributeValue.NumericValue = null;
+            attributeValue.StringValue = null;
+            attributeValue.BoolValue = null;
+
+            switch (attribute.DataType)
+            {
+                case CategoryAttributeDataTypes.Numeric:
+                    attributeValue.NumericValue = attributePutDto.NumericValue;
+                    break;
+                case CategoryAttributeDataTypes.String:
+                    attributeValue.StringValue = attributePutDto.StringValue;
+                    break;
+                case CategoryAttributeDataTypes.Boolean:
+                    attributeValue.BoolValue = attributePutDto.BooleanValue;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(
+                        nameof(value), $"Unexpected value: '{attribute.DataType}'");
+            }
+        }
+        await _context.SaveChangesAsync(cancellationToken);
+        var dtos = attributesByKeyMap.Values.Adapt<List<ProductAttributeListDto>>();
+        return dtos;
+    }
 }

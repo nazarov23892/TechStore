@@ -14,7 +14,7 @@ public interface IProductsService
     /// <param name="category">Категория товаров.</param>
     /// <param name="cancellationToken">Токен отмены операции.</param> 
     Task<PagedListResponseDto<ProductListItemDto>> GetProductPagedListAsync(
-        PagingRequestDto pagingRequest, 
+        PagingRequestDto pagingRequest,
         string? category,
         CancellationToken cancellationToken = default);
 
@@ -59,4 +59,13 @@ public interface IProductsService
     /// <param name="cancellationToken">Токен отмены.</param>
     Task<IEnumerable<ProductAttributeListDto>> GetProductAttributesAsync(
         long productId, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Обновляет значения атрибутов товара.
+    /// </summary>
+    /// <param name="productId">Идентификатор товара.</param>
+    /// <param name="value">Модель запроса на обновление.</param>
+    /// <param name="cancellationToken">Токен отмены операции.</param> 
+    Task<IEnumerable<ProductAttributeListDto>> UpdateProductAttributesAsync(
+        long productId, ProductAttributeValuesPutDto value, CancellationToken cancellationToken = default);
 }
