@@ -19,9 +19,4 @@ public class Product
     /// Категория товара.
     /// </summary>
     public Category? Category { get; set; }
-
-    /// <summary>
-    /// Атрибуты товара.
-    /// </summary>
-    public ICollection<ProductAttribute> Attributes { get; set; } = [];
 }

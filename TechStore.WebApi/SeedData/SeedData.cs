@@ -119,15 +119,16 @@ public static class SeedData
                 CategoryId = category.Id,
             };
 
-            var attributes = new List<ProductAttribute>();
+            var attributes = new List<ProductAttributeValue>();
             foreach (var attr in item.Attributes ?? [])
             {
                 if (!categoryAttributeMap.TryGetValue(attr.Key, out var categoryAttr)
                     || categoryAttr == null)
                     continue;
-                var productAttribute = new ProductAttribute()
+
+                var productAttribute = new ProductAttributeValue()
                 {
-                    CategoryAttributeId = categoryAttr.Id,
+                    ProductId = product.Id,
                     Value = new AttributeValue()
                     {
                         BoolValue = attr.Value.BooleanValue,
@@ -135,7 +136,7 @@ public static class SeedData
                         StringValue = attr.Value.Stringvalue,
                     }
                 };
-                product.Attributes.Add(productAttribute);
+                categoryAttr.ProductValues.Add(productAttribute);
             }
             dbContext.Products.Add(product);
         }

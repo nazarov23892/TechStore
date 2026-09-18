@@ -21,4 +21,9 @@ public class CategoryAttribute
     /// Тип данных.
     /// </summary>
     public CategoryAttributeDataTypes DataType { get; set; }
+
+    /// <summary>
+    /// Значения атрибута назначенные в конкретных товарах.
+    /// </summary>
+    public ICollection<ProductAttributeValue> ProductValues { get; set; } = [];
 }

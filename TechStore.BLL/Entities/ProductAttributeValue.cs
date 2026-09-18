@@ -1,9 +1,9 @@
 ﻿namespace TechStore.BLL.Entities;
 
 /// <summary>
-/// Атрибут товара.
+/// Значение атрибута товара.
 /// </summary>
-public class ProductAttribute
+public class ProductAttributeValue
 {
     public long Id { get; set; }
 
@@ -11,6 +11,11 @@ public class ProductAttribute
     /// Идентификатор товара.
     /// </summary>
     public long ProductId { get; set; }
+
+    /// <summary>
+    /// Товар, которому принадлежит значение атрибута.
+    /// </summary>
+    public Product? Product { get; set; }
 
     /// <summary>
     /// Идентификатор атрибута категории товара.

@@ -20,7 +20,7 @@ public class ProductProfile : IRegister
             .Map(dst => dst.Category, src => src.Category!.Key)
             .IgnoreIf((src, dst) => src.Category == null, dst => dst.Category);
 
-        config.NewConfig<ProductAttribute, ProductAttributeListDto>()
+        config.NewConfig<ProductAttributeValue, ProductAttributeListDto>()
             .Map(dst => dst.Key, src => src.CategoryAttribute!.Key)
             .Map(dst => dst.DataType, src => src.CategoryAttribute!.DataType)
             .IgnoreIf(

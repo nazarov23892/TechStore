@@ -124,12 +124,14 @@ public class ProductsService : IProductsService
     {
         var product = await _context.Products
             .AsNoTracking()
-            .Include(p => p.Attributes).ThenInclude(attr => attr.CategoryAttribute)
-            .Include(p => p.Attributes).ThenInclude(attr => attr.Value)
+            .Include(p => p.Category)
+                .ThenInclude(attr => attr!.Attributes)
+                .ThenInclude(attr => attr.ProductValues.Where(v => v.ProductId == productId))
             .FirstOrDefaultAsync(p => p.Id == productId, cancellationToken)
             ?? throw new NotFoundException($"The product with Id {productId} not found.");
 
-        var dtos = product.Attributes.Adapt<List<ProductAttributeListDto>>();
+        var attributes = product.Category?.Attributes;
+        var dtos = attributes.Adapt<List<ProductAttributeListDto>>();
         return dtos;
     }
 }

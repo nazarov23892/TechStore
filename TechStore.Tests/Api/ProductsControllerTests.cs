@@ -282,7 +282,6 @@ public class ProductsControllerTests
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
         {
             var category = await dbContext.Categories
-                .AsNoTracking()
                 .Include(c => c.Attributes.OrderBy(a => a.Key))
                 .FirstOrDefaultAsync(c => c.Id == categoryId);
             Assert.NotNull(category);
@@ -298,28 +297,28 @@ public class ProductsControllerTests
             Assert.Equal("attr2_string", categoryAttributes[1].Key);
             Assert.Equal("attr3_boolean", categoryAttributes[2].Key);
 
-            product.Attributes.Add(
-                new ProductAttribute()
+            categoryAttributes[0].ProductValues.Add(
+                new ProductAttributeValue()
                 {
-                    CategoryAttributeId = categoryAttributes[0].Id,
+                    ProductId = productId,
                     Value = new AttributeValue()
                     {
                         NumericValue = 1,
                     }
                 });
-            product.Attributes.Add(
-               new ProductAttribute()
+            categoryAttributes[1].ProductValues.Add(
+               new ProductAttributeValue()
                {
-                   CategoryAttributeId = categoryAttributes[1].Id,
+                   ProductId = productId,
                    Value = new AttributeValue()
                    {
                        StringValue = "string1",
                    }
                });
-            product.Attributes.Add(
-              new ProductAttribute()
+            categoryAttributes[2].ProductValues.Add(
+              new ProductAttributeValue()
               {
-                  CategoryAttributeId = categoryAttributes[2].Id,
+                  ProductId = productId,
                   Value = new AttributeValue()
                   {
                       BoolValue = true,
@@ -338,7 +337,7 @@ public class ProductsControllerTests
             //Act.
             var actionResult = await controller.GetProductAttributes(productId, default);
             Assert.IsType<ActionResult<IEnumerable<ProductAttributeListDto>>>(actionResult);
-            response = actionResult.Value?.ToList();
+            response = actionResult.Value?.OrderBy(a => a.Key).ToList();
         }
         Assert.NotNull(response);
         Assert.NotEmpty(response);

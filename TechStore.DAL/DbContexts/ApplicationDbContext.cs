@@ -29,10 +29,6 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
                     .WithMany()
                     .HasForeignKey(p => p.CategoryId)
                     .OnDelete(DeleteBehavior.Restrict);
-                entity.HasMany(p => p.Attributes)
-                    .WithOne()
-                    .HasForeignKey(pa => pa.ProductId)
-                    .OnDelete(DeleteBehavior.Cascade);
             });
 
         modelBuilder.Entity<Category>(
@@ -57,16 +53,20 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
                     .HasConversion<string>();
             });
 
-        modelBuilder.Entity<ProductAttribute>(
+        modelBuilder.Entity<ProductAttributeValue>(
             entity =>
             {
                 entity.HasOne(pa => pa.CategoryAttribute)
-                    .WithMany()
+                    .WithMany(ca => ca.ProductValues)
                     .HasForeignKey(pa => pa.CategoryAttributeId)
                     .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(p => p.Product)
+                    .WithMany()
+                    .HasForeignKey(pa => pa.ProductId)
+                    .OnDelete(DeleteBehavior.Cascade);
                 entity.OwnsOne(
-                    pa => pa.Value, 
-                    builder => 
+                    pa => pa.Value,
+                    builder =>
                     {
                         builder.WithOwner();
                         builder.Property(p => p.NumericValue)
