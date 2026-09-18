@@ -10,7 +10,6 @@ using TechStore.WebApi.Controllers;
 
 namespace TechStore.Tests.Api;
 
-
 public class CategoriesControllerTest
 {
     readonly DbContextOptions<ApplicationDbContext> _dbContextOptions;
@@ -101,7 +100,63 @@ public class CategoriesControllerTest
         Assert.Equal("name1", domainModel.DisplayName);
     }
 
-    [Fact(DisplayName = "Атрибуты категории: создание: успешно.")]
+    [Fact(DisplayName = "Категории: Атрибуты: получение списка: успешно.")]
+    public async Task GetAttributeList_Successfully()
+    {
+        var categoryId = 0L;
+        using (var dbContext = new ApplicationDbContext(_dbContextOptions))
+        {
+            await SeedData(dbContext, 10);
+            var category = await dbContext.Categories
+                .FirstOrDefaultAsync(c => c.Key == "category-1");
+            Assert.NotNull(category);
+            categoryId = category.Id;
+            category.Attributes.Add(
+                new CategoryAttribute()
+                {
+                    Key = "attr1_numeric",
+                    DataType = CategoryAttributeDataTypes.Numeric,
+                });
+            category.Attributes.Add(
+                new CategoryAttribute()
+                {
+                    Key = "attr2_string",
+                    DataType = CategoryAttributeDataTypes.String,
+                });
+            category.Attributes.Add(
+               new CategoryAttribute()
+               {
+                   Key = "attr3_boolean",
+                   DataType = CategoryAttributeDataTypes.Boolean,
+               });
+
+            await dbContext.SaveChangesAsync();
+        }
+
+        List<CategoryAttributeListDto>? response;
+        using (var dbContext = new ApplicationDbContext(_dbContextOptions))
+        {
+            var categoryService = new CategoryService(dbContext);
+            var controller = new CategoriesController(categoryService);
+
+            //Act.
+            var actionResult = await controller.GetCategoryAttributes(categoryId, default);
+            Assert.IsType<ActionResult<IEnumerable<CategoryAttributeListDto>>>(actionResult);
+            response = actionResult.Value?.ToList();
+        }
+        Assert.NotNull(response);
+        Assert.NotEmpty(response);
+        Assert.Equal("attr1_numeric", response[0].Key);
+        Assert.Equal("Numeric", response[0].DataType);
+
+        Assert.Equal("attr2_string", response[1].Key);
+        Assert.Equal("String", response[1].DataType);
+
+        Assert.Equal("attr3_boolean", response[2].Key);
+        Assert.Equal("Boolean", response[2].DataType);
+    }
+
+    [Fact(DisplayName = "Категории: Атрибуты: создание: успешно.")]
     public async Task CreateAttribute_Successfully()
     {
         var categoryId = 0L;
