@@ -67,6 +67,38 @@ public class CategoriesControllerTest
         Assert.Equal("display-name-3", categories[2].DisplayName);
     }
 
+    [Fact(DisplayName = "Категории: получение по Id: успешно.")]
+    public async Task Categories_GetById_ReturnsOk()
+    {
+        var categoryId = 0L;
+        using (var dbContext = new ApplicationDbContext(_dbContextOptions))
+        {
+            await SeedData(dbContext, 1);
+            var category = await dbContext.Categories
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
+
+            Assert.NotNull(category);
+            categoryId = category.Id;
+        }
+
+        CategoryDto? response = null;
+        using (var dbContext = new ApplicationDbContext(_dbContextOptions))
+        {
+            var categoryService = new CategoryService(dbContext);
+            var controller = new CategoriesController(categoryService);
+
+            //Act.
+            var actionResult = await controller.GetCategoryById(categoryId, default);
+            Assert.IsType<ActionResult<CategoryDto>>(actionResult);
+            response = actionResult.Value;
+        }
+        Assert.NotNull(response);
+        Assert.InRange(response.Id, 0, long.MaxValue);
+        Assert.Equal("category-1", response.Key);
+        Assert.Equal("display-name-1", response.DisplayName);
+    }
+
     [Fact(DisplayName = "Категории: создание: успешно.")]
     public async Task Categories_Create_Successfully()
     {
