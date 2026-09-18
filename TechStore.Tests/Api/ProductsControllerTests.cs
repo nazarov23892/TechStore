@@ -163,6 +163,65 @@ public class ProductsControllerTests
         Assert.Equal("cat1", domainModel.Category!.Key);
     }
 
+    [Fact(DisplayName = "Товары: обновление: успешно.")]
+    public async Task Products_Update_Successfully()
+    {
+        // Arrange.
+        long productId = 0;
+        using (var dbContext = new ApplicationDbContext(_dbContextOptions))
+        {
+            await SeedData(dbContext, count: 1);
+            var product = await dbContext.Products
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
+            Assert.NotNull(product);
+            productId = product.Id;
+        }
+
+        var request = new ProductPutDto()
+        {
+            Name = "new-product1",
+            Description = "new-description1",
+            Price = 42M,
+        };
+        ProductDto? response = null;
+        using (var dbContext = new ApplicationDbContext(_dbContextOptions))
+        {
+            var catalogService = new ProductsService(dbContext);
+            var controller = new ProductsController(catalogService);
+
+            //Act.
+            var actionResult = await controller.UpdateProduct(productId, request, default);
+            Assert.IsType<ActionResult<ProductDto>>(actionResult);
+            response = actionResult.Value;
+        }
+
+        // Assert.
+        Assert.NotNull(response);
+
+        Assert.Equal("new-product1", response.Name);
+        Assert.Equal("new-description1", response.Description);
+        Assert.Equal(42M, response.Price);
+        Assert.NotNull(response.Category);
+        Assert.Equal("category1", response.Category.Key);
+        Assert.Equal("displayname1", response.Category.DisplayName);
+
+        Product? domainModel = null;
+        using (var dbContext = new ApplicationDbContext(_dbContextOptions))
+        {
+            domainModel = await dbContext.Products
+                .Include(p => p.Category)
+                .FirstOrDefaultAsync(p => p.Id == response.Id);
+        }
+        Assert.NotNull(domainModel);
+        Assert.Equal("new-product1", domainModel.Name);
+        Assert.Equal("new-description1", domainModel.Description);
+        Assert.Equal(42M, domainModel.Price);
+        Assert.NotNull(domainModel.Category);
+        Assert.Equal("category1", domainModel.Category.Key);
+        Assert.Equal("displayname1", domainModel.Category.DisplayName);
+    }
+
     [Fact(DisplayName = "Товары: создание: в несуществующей категории: ошибка.")]
     public async Task Products_Create_NonExistingCategory_Error()
     {
@@ -313,11 +372,13 @@ public class ProductsControllerTests
     {
         var category1 = new Category()
         {
-            Key = "category1"
+            Key = "category1",
+            DisplayName = "displayname1",
         };
         var category2 = new Category()
         {
-            Key = "category2"
+            Key = "category2",
+            DisplayName = "displayname2",
         };
         for (var i = 0; i < count; i++)
         {
