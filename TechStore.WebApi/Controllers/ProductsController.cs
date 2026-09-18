@@ -70,12 +70,12 @@ public class ProductsController : ControllerBase
     }
 
     [HttpPut("{id:long}/attributes")]
-    public async Task<ActionResult<ProductDto>> UpdateProductAttributes(
+    public async Task<ActionResult<IEnumerable<ProductAttributeListDto>>> UpdateProductAttributes(
         long id,
         ProductAttributeValuesPutDto value,
         CancellationToken cancellationToken)
     {
-        var result = await _productsService.UpdateProductAsync(id, value, cancellationToken);
-        return result;
+        var result = await _productsService.UpdateProductAttributesAsync(id, value, cancellationToken);
+        return result.ToList();
     }
 }

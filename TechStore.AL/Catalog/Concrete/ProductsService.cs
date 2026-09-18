@@ -154,7 +154,7 @@ public class ProductsService : IProductsService
         {
             if (!attributesByKeyMap.TryGetValue(attributePutDto.AttributeKey, out var attribute)
                 || attribute == null)
-                throw new FailedPreconditionException($"Attribute key {attributePutDto.AttributeKey} not found.");
+                throw new FailedPreconditionException($"Attribute key '{attributePutDto.AttributeKey}' not found.");
 
             if (attribute.ProductValues.Count == 0)
                 attribute.ProductValues.Add(

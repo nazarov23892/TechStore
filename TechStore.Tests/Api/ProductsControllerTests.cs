@@ -446,6 +446,115 @@ public class ProductsControllerTests
         Assert.Null(response[2].Value.BoolValue);
     }
 
+    [Fact(DisplayName = "Товары: Атрибуты: обновление значений: успешно.")]
+    public async Task Attributes_Values_Put_Successfully()
+    {
+        // Arrange.
+        long categoryId = 0;
+        long productId = 0;
+        using (var dbContext = new ApplicationDbContext(_dbContextOptions))
+        {
+            await SeedData(dbContext, 2);
+            var category = await dbContext.Categories.FirstOrDefaultAsync();
+            Assert.NotNull(category);
+
+            category.Attributes.Add(
+                new CategoryAttribute()
+                {
+                    Key = "attr1_numeric",
+                    DataType = CategoryAttributeDataTypes.Numeric,
+                });
+            category.Attributes.Add(
+                new CategoryAttribute()
+                {
+                    Key = "attr2_string",
+                    DataType = CategoryAttributeDataTypes.String,
+                });
+            category.Attributes.Add(
+               new CategoryAttribute()
+               {
+                   Key = "attr3_boolean",
+                   DataType = CategoryAttributeDataTypes.Boolean,
+               });
+
+            await dbContext.SaveChangesAsync();
+            categoryId = category.Id;
+
+            var product = await dbContext.Products
+                .AsNoTracking()
+                .FirstOrDefaultAsync(p => p.CategoryId == categoryId);
+            Assert.NotNull(product);
+            productId = product.Id;
+        }
+
+        var request = new ProductAttributeValuesPutDto()
+        {
+            Values = [
+               new ProductAttributeValueListPutDto()
+               {
+                   AttributeKey = "attr1_numeric",
+                   NumericValue = 57M,
+               },
+               new ProductAttributeValueListPutDto()
+               {
+                   AttributeKey = "attr2_string",
+                   StringValue = "updated-string-value"
+               },
+               new ProductAttributeValueListPutDto()
+               {
+                   AttributeKey = "attr3_boolean",
+                   BooleanValue = true,
+               },
+            ],
+        };
+        List<ProductAttributeListDto>? response = null;
+        using (var dbContext = new ApplicationDbContext(_dbContextOptions))
+        {
+            var catalogService = new ProductsService(dbContext);
+            var controller = new ProductsController(catalogService);
+
+            //Act.
+            var actionResult = await controller.UpdateProductAttributes(
+                productId, request, default);
+            Assert.IsType<ActionResult<IEnumerable<ProductAttributeListDto>>>(actionResult);
+            response = actionResult.Value?.OrderBy(attr => attr.Key).ToList();
+        }
+
+        Assert.NotNull(response);
+        Assert.NotEmpty(response);
+
+        Assert.Equal("attr1_numeric", response[0].Key);
+        Assert.Equal(57M, response[0].Value.NumericValue);
+
+        Assert.Equal("attr2_string", response[1].Key);
+        Assert.Equal("updated-string-value", response[1].Value.StringValue);
+
+        Assert.Equal("attr3_boolean", response[2].Key);
+        Assert.Equal(true, response[2].Value.BoolValue);
+
+        List<CategoryAttribute>? domainModel = null;
+        using (var dbContext = new ApplicationDbContext(_dbContextOptions))
+        {
+            var category = await dbContext.Categories
+                .AsNoTracking()
+                .Include(c => c.Attributes)
+                    .ThenInclude(a => a.ProductValues.Take(1))
+                .FirstOrDefaultAsync(c => c.Id == categoryId);
+            domainModel = category?.Attributes.OrderBy(a => a.Key).ToList();
+        }
+        Assert.NotNull(domainModel);
+        Assert.NotEmpty(domainModel);
+
+        Assert.Equal("attr1_numeric", domainModel[0].Key);
+        Assert.Equal(57M, domainModel[0].ProductValues.First().Value.NumericValue);
+
+        Assert.Equal("attr2_string", domainModel[1].Key);
+        Assert.Equal("updated-string-value", domainModel[1].ProductValues.First().Value.StringValue);
+
+        Assert.Equal("attr3_boolean", domainModel[2].Key);
+        Assert.Equal(true, domainModel[2].ProductValues.First().Value.BoolValue);
+    }
+
     static async Task SeedData(ApplicationDbContext dbContext, int count)
     {
         var category1 = new Category()
