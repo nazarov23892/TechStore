@@ -100,6 +100,50 @@ public class CategoriesControllerTest
         Assert.Equal("name1", domainModel.DisplayName);
     }
 
+    [Fact(DisplayName = "Категории: обновление: успешно.")]
+    public async Task Categories_Update_Successfully()
+    {
+        var categoryId = 0L;
+        using (var dbContext = new ApplicationDbContext(_dbContextOptions))
+        {
+            await SeedData(dbContext, 1);
+            var category = await dbContext.Categories
+                .AsNoTracking()
+                .FirstOrDefaultAsync(c => c.Key == "category-1");
+
+            Assert.NotNull(category);
+            categoryId = category.Id;
+        }
+        var request = new CategoryPutDto()
+        {
+            Key = "new-cat1",
+            DisplayName = "new-display-name1",
+        };
+        CategoryDto? response = null;
+        using (var dbContext = new ApplicationDbContext(_dbContextOptions))
+        {
+            var categoryService = new CategoryService(dbContext);
+            var controller = new CategoriesController(categoryService);
+
+            //Act.
+            var actionResult = await controller.UpdateCategory(categoryId, request, default);
+            Assert.IsType<ActionResult<CategoryDto>>(actionResult);
+            response = actionResult.Value;
+        }
+        Assert.NotNull(response);
+        Assert.Equal("new-cat1", response.Key);
+        Assert.Equal("new-display-name1", response.DisplayName);
+
+        Category? domainModel = null;
+        using (var dbContext = new ApplicationDbContext(_dbContextOptions))
+        {
+            domainModel = await dbContext.Categories.FirstOrDefaultAsync(c => c.Id == response.Id);
+        }
+        Assert.NotNull(domainModel);
+        Assert.Equal("new-cat1", domainModel.Key);
+        Assert.Equal("new-display-name1", domainModel.DisplayName);
+    }
+
     [Fact(DisplayName = "Категории: Атрибуты: получение списка: успешно.")]
     public async Task Attributes_GetList_Successfully()
     {
@@ -166,7 +210,9 @@ public class CategoriesControllerTest
             var category = await dbContext.Categories
                 .AsNoTracking()
                 .FirstOrDefaultAsync(c => c.Key == "category-1");
-            categoryId = category!.Id;
+
+            Assert.NotNull(category);
+            categoryId = category.Id;
         }
 
         var request = new CategoryAttributePostDto()
