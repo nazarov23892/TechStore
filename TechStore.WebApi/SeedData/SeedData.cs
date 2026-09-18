@@ -118,6 +118,8 @@ public static class SeedData
                 Price = item.Price,
                 CategoryId = category.Id,
             };
+            dbContext.Products.Add(product);
+            await dbContext.SaveChangesAsync(cancellationToken);
 
             var attributes = new List<ProductAttributeValue>();
             foreach (var attr in item.Attributes ?? [])
@@ -126,7 +128,7 @@ public static class SeedData
                     || categoryAttr == null)
                     continue;
 
-                var productAttribute = new ProductAttributeValue()
+                var attributeValue = new ProductAttributeValue()
                 {
                     ProductId = product.Id,
                     Value = new AttributeValue()
@@ -134,11 +136,10 @@ public static class SeedData
                         BoolValue = attr.Value.BooleanValue,
                         NumericValue = attr.Value.NumericValue,
                         StringValue = attr.Value.Stringvalue,
-                    }
+                    },
                 };
-                categoryAttr.ProductValues.Add(productAttribute);
+                categoryAttr.ProductValues.Add(attributeValue);
             }
-            dbContext.Products.Add(product);
         }
         var total = await dbContext.SaveChangesAsync(cancellationToken);
         logger.LogInformation("Seeding products done. Records: {Total}", total);
