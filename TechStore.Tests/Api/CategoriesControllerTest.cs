@@ -30,7 +30,7 @@ public class CategoriesControllerTest
     }
 
     [Fact(DisplayName = "Категории: получение списка: успешно.")]
-    public async Task GetPagedCategories_ReturnsOk()
+    public async Task Categories_GetList_Paged_ReturnsOk()
     {
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
         {
@@ -68,7 +68,7 @@ public class CategoriesControllerTest
     }
 
     [Fact(DisplayName = "Категории: создание: успешно.")]
-    public async Task CreateCategory_Successfully()
+    public async Task Categories_Create_Successfully()
     {
         var request = new CategoryPostDto()
         {
@@ -101,7 +101,7 @@ public class CategoriesControllerTest
     }
 
     [Fact(DisplayName = "Категории: Атрибуты: получение списка: успешно.")]
-    public async Task GetAttributeList_Successfully()
+    public async Task Attributes_GetList_Successfully()
     {
         var categoryId = 0L;
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
@@ -157,7 +157,7 @@ public class CategoriesControllerTest
     }
 
     [Fact(DisplayName = "Категории: Атрибуты: создание: успешно.")]
-    public async Task CreateAttribute_Successfully()
+    public async Task Attributes_Create_Successfully()
     {
         var categoryId = 0L;
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
