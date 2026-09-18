@@ -287,8 +287,10 @@ public class ProductsControllerTests
             Assert.NotNull(category);
 
             var product = await dbContext.Products
+                .AsNoTracking()
                 .FirstOrDefaultAsync(p => p.CategoryId == categoryId);
             Assert.NotNull(product);
+            productId = product.Id;
 
             var categoryAttributes = category.Attributes.ToArray();
             Assert.NotNull(categoryAttributes);
@@ -325,7 +327,6 @@ public class ProductsControllerTests
                   }
               });
             await dbContext.SaveChangesAsync();
-            productId = product.Id;
         }
 
         List<ProductAttributeListDto>? response = null;

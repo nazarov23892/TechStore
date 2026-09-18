@@ -11,23 +11,25 @@ public class ProductProfile : IRegister
         config.NewConfig<Product, ProductDto>()
             .IgnoreIf((src, dst) => src.Category == null, dst => dst.Category!)
             .AfterMapping(
-                (src, dst) => dst.Category ??= new CategoryShortDto() 
-                { 
-                    Id = src.CategoryId, 
+                (src, dst) => dst.Category ??= new CategoryShortDto()
+                {
+                    Id = src.CategoryId,
                 });
 
         config.NewConfig<Product, ProductListItemDto>()
             .Map(dst => dst.Category, src => src.Category!.Key)
             .IgnoreIf((src, dst) => src.Category == null, dst => dst.Category);
 
-        config.NewConfig<ProductAttributeValue, ProductAttributeListDto>()
-            .Map(dst => dst.Key, src => src.CategoryAttribute!.Key)
-            .Map(dst => dst.DataType, src => src.CategoryAttribute!.DataType)
+        config.NewConfig<CategoryAttribute, ProductAttributeListDto>()
+            .Map(dst => dst.Key, src => src.Key)
+            .Map(dst => dst.DataType, src => src.DataType)
+            .Map(dst => dst.Value, src => src.ProductValues.FirstOrDefault())
             .IgnoreIf(
-                (src, dst) => src.CategoryAttribute == null,
-                dst => dst.Key,
-                dst => dst.DataType
+                (src, dst) => !src.ProductValues.Any(),
+                dst => dst.Value
             );
+        config.NewConfig<ProductAttributeValue, ProductAttributeValueDto>()
+            .Map(dst => dst, src => src.Value);
 
         config.NewConfig<AttributeValue, ProductAttributeValueDto>();
     }
