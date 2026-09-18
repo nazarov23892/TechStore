@@ -419,7 +419,7 @@ public class ProductsControllerTests
             //Act.
             var actionResult = await controller.GetProductAttributes(productId, default);
             Assert.IsType<ActionResult<IEnumerable<ProductAttributeListDto>>>(actionResult);
-            response = actionResult.Value?.ToList();
+            response = actionResult.Value?.OrderBy(a => a.Key).ToList();
         }
         Assert.NotNull(response);
         Assert.NotEmpty(response);
