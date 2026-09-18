@@ -185,6 +185,130 @@ public class ProductsControllerTests
         Assert.NotNull(exception);
     }
 
+    [Fact(DisplayName = "Товары: Атрибуты: получение списка: успешно.")]
+    public async Task Attributes_GetList_Successfully()
+    {
+        // Arrange.
+        long categoryId = 0;
+        using (var dbContext = new ApplicationDbContext(_dbContextOptions))
+        {
+            await SeedData(dbContext, 2);
+            var category = await dbContext.Categories.FirstOrDefaultAsync();
+            Assert.NotNull(category);
+
+            category.Attributes.Add(
+                new CategoryAttribute()
+                {
+                    Key = "attr1_numeric",
+                    DataType = CategoryAttributeDataTypes.Numeric,
+                });
+            category.Attributes.Add(
+                new CategoryAttribute()
+                {
+                    Key = "attr2_string",
+                    DataType = CategoryAttributeDataTypes.String,
+                });
+            category.Attributes.Add(
+               new CategoryAttribute()
+               {
+                   Key = "attr3_boolean",
+                   DataType = CategoryAttributeDataTypes.Boolean,
+               });
+
+            await dbContext.SaveChangesAsync();
+            categoryId = category.Id;
+        }
+
+        long productId = 0;
+        using (var dbContext = new ApplicationDbContext(_dbContextOptions))
+        {
+            var category = await dbContext.Categories
+                .AsNoTracking()
+                .Include(c => c.Attributes.OrderBy(a => a.Key))
+                .FirstOrDefaultAsync(c => c.Id == categoryId);
+            Assert.NotNull(category);
+
+            var product = await dbContext.Products
+                .FirstOrDefaultAsync(p => p.CategoryId == categoryId);
+            Assert.NotNull(product);
+
+            var categoryAttributes = category.Attributes.ToArray();
+            Assert.NotNull(categoryAttributes);
+            Assert.Equal(3, categoryAttributes.Length);
+            Assert.Equal("attr1_numeric", categoryAttributes[0].Key);
+            Assert.Equal("attr2_string", categoryAttributes[1].Key);
+            Assert.Equal("attr3_boolean", categoryAttributes[2].Key);
+
+            product.Attributes.Add(
+                new ProductAttribute()
+                {
+                    CategoryAttributeId = categoryAttributes[0].Id,
+                    Value = new AttributeValue()
+                    {
+                        NumericValue = 1,
+                    }
+                });
+            product.Attributes.Add(
+               new ProductAttribute()
+               {
+                   CategoryAttributeId = categoryAttributes[1].Id,
+                   Value = new AttributeValue()
+                   {
+                       StringValue = "string1",
+                   }
+               });
+            product.Attributes.Add(
+              new ProductAttribute()
+              {
+                  CategoryAttributeId = categoryAttributes[2].Id,
+                  Value = new AttributeValue()
+                  {
+                      BoolValue = true,
+                  }
+              });
+            await dbContext.SaveChangesAsync();
+            productId = product.Id;
+        }
+
+        List<ProductAttributeListDto>? response = null;
+        using (var dbContext = new ApplicationDbContext(_dbContextOptions))
+        {
+            var catalogService = new ProductsService(dbContext);
+            var controller = new ProductsController(catalogService);
+
+            //Act.
+            var actionResult = await controller.GetProductAttributes(productId, default);
+            Assert.IsType<ActionResult<IEnumerable<ProductAttributeListDto>>>(actionResult);
+            response = actionResult.Value?.ToList();
+        }
+        Assert.NotNull(response);
+        Assert.NotEmpty(response);
+
+        Assert.NotNull(response);
+        Assert.NotEmpty(response);
+
+        Assert.Equal("attr1_numeric", response[0].Key);
+        Assert.Equal("Numeric", response[0].DataType);
+        Assert.NotNull(response[0].Value);
+        Assert.NotNull(response[0].Value.NumericValue);
+        Assert.Null(response[0].Value.StringValue);
+        Assert.Null(response[0].Value.BoolValue);
+
+        Assert.Equal("attr2_string", response[1].Key);
+        Assert.Equal("String", response[1].DataType);
+        Assert.NotNull(response[1].Value);
+        Assert.Null(response[1].Value.NumericValue);
+        Assert.NotNull(response[1].Value.StringValue);
+        Assert.Null(response[1].Value.BoolValue);
+
+        Assert.Equal("attr3_boolean", response[2].Key);
+        Assert.Equal("Boolean", response[2].DataType);
+        Assert.NotNull(response[2].Value);
+        Assert.Null(response[2].Value.NumericValue);
+        Assert.Null(response[2].Value.StringValue);
+        Assert.NotNull(response[2].Value.BoolValue);
+    }
+
     static async Task SeedData(ApplicationDbContext dbContext, int count)
     {
         var category1 = new Category()
