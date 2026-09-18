@@ -101,6 +101,54 @@ public class CategoriesControllerTest
         Assert.Equal("name1", domainModel.DisplayName);
     }
 
+    [Fact(DisplayName = "Атрибуты категории: создание: успешно.")]
+    public async Task CreateAttribute_Successfully()
+    {
+        var categoryId = 0L;
+        using (var dbContext = new ApplicationDbContext(_dbContextOptions))
+        {
+            await SeedData(dbContext, 10);
+            var category = await dbContext.Categories
+                .AsNoTracking()
+                .FirstOrDefaultAsync(c => c.Key == "category-1");
+            categoryId = category!.Id;
+        }
+
+        var request = new CategoryAttributePostDto()
+        {
+            Key = "attribute1",
+            DataType = "Numeric",
+        };
+        CategoryAttributetDto? response;
+        using (var dbContext = new ApplicationDbContext(_dbContextOptions))
+        {
+            var categoryService = new CategoryService(dbContext);
+            var controller = new CategoriesController(categoryService);
+
+            //Act.
+            var actionResult = await controller.CreateCategoryAttribute(categoryId, request, default);
+            Assert.IsType<ActionResult<CategoryAttributetDto>>(actionResult);
+            response = actionResult.Value;
+        }
+        Assert.NotNull(response);
+        Assert.Equal("attribute1", response.Key);
+        Assert.Equal("Numeric", response.DataType);
+        Assert.NotEqual(0, response.Id);
+
+        CategoryAttribute? domainModel = null;
+        using (var dbContext = new ApplicationDbContext(_dbContextOptions))
+        {
+            var category = await dbContext.Categories
+                .Include(c => c.Attributes)
+                .FirstOrDefaultAsync(c => c.Id == categoryId);
+            domainModel = category?.Attributes.FirstOrDefault(a => a.Id == categoryId);
+        }
+        Assert.NotNull(domainModel);
+        Assert.Equal("attribute1", domainModel.Key);
+        Assert.Equal(CategoryAttributeDataTypes.Numeric, domainModel.DataType);
+        Assert.Equal(categoryId, domainModel.CategoryId);
+    }
+
     static async Task SeedData(ApplicationDbContext dbContext, int count)
     {
         for (var i = 0; i < count; i++)
