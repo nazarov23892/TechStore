@@ -4,8 +4,8 @@ using TechStore.AL.Abstractions;
 using TechStore.AL.Catalog;
 using TechStore.AL.Catalog.Concrete;
 using TechStore.DAL.DbContexts;
-using TechStore.DAL.SeedData;
 using TechStore.WebApi.ExceptionHandlers;
+using TechStore.WebApi.SeedData;
 
 var builder = WebApplication.CreateBuilder(args);
 

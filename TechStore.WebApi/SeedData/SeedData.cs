@@ -4,14 +4,14 @@ using System.Text.Json.Serialization;
 using TechStore.BLL.Entities;
 using TechStore.DAL.DbContexts;
 
-namespace TechStore.DAL.SeedData;
+namespace TechStore.WebApi.SeedData;
 
 public static class SeedData
 {
     const string CategoriesFileName = "categories.json";
     const string ProductsFileName = "products.json";
 
-    static JsonSerializerOptions _jsonSerializerOptions = new()
+    static readonly JsonSerializerOptions _jsonSerializerOptions = new()
     {
         Converters = { new JsonStringEnumConverter() },
         PropertyNameCaseInsensitive = true,
