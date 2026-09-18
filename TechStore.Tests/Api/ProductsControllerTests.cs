@@ -31,7 +31,7 @@ public class ProductsControllerTests
     }
 
     [Fact(DisplayName = "Товары: получение списка: по выбранной категории успешно.")]
-    public async Task GetPagedProductsByCategory_ReturnsOk()
+    public async Task Products_GetList_Paged_ByCategory_ReturnsOk()
     {
         // Arrange.
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
@@ -72,7 +72,7 @@ public class ProductsControllerTests
     }
 
     [Fact(DisplayName = "Товары: получение списка: без выбранной категории пустой список.")]
-    public async Task GetPagedProductsWithoutCategory_ReturnsEmpty()
+    public async Task Products_GetList_Paged_WithoutCategory_ReturnsEmpty()
     {
         // Arrange.
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
@@ -104,7 +104,7 @@ public class ProductsControllerTests
     }
 
     [Fact(DisplayName = "Товары: создание: успешно.")]
-    public async Task CreateProduct_Successfully()
+    public async Task Products_Create_Successfully()
     {
         // Arrange.
         long categoryId = 0;
@@ -163,8 +163,8 @@ public class ProductsControllerTests
         Assert.Equal("cat1", domainModel.Category!.Key);
     }
 
-    [Fact(DisplayName = "Товары: создание с несуществующей категории: ошибка.")]
-    public async Task CreateProduct_NonExistingCategory_Error()
+    [Fact(DisplayName = "Товары: создание: в несуществующей категории: ошибка.")]
+    public async Task Products_Create_NonExistingCategory_Error()
     {
         // Arrange.
         long nonExistingCategoryId = 501;
