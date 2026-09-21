@@ -65,7 +65,9 @@
                                 <option value="Boolean">Да/Нет</option>
                             </select>
 
-                            <select class="form-select form-select-sm" style="max-width: 120px;">
+                            <select class="form-select form-select-sm"
+                                    @bind="attributePostModel.UnitId"
+                                    style="max-width: 120px;">
                                 <option value="">(без ед. изм.)</option>
                                 @foreach (var unit in units)
                                 {

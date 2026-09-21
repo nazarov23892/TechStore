@@ -16,4 +16,9 @@ public class CategoryAttributetDto
     /// Тип данных.
     /// </summary>
     public string DataType { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Идентификатор единицы измерения.
+    /// </summary>
+    public long? UnitId { get; set; }
 }
