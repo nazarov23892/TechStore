@@ -17,6 +17,8 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
 
     public DbSet<Category> Categories => Set<Category>();
 
+    public DbSet<Unit> Units => Set<Unit>();
+
     /// <inheritdoc/>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -51,6 +53,10 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
                 entity.Property(a => a.DataType)
                     .HasDefaultValue(CategoryAttributeDataTypes.String)
                     .HasConversion<string>();
+                entity.HasOne(a => a.Unit)
+                    .WithMany()
+                    .HasForeignKey(a => a.UnitId)
+                    .OnDelete(DeleteBehavior.Restrict);
             });
 
         modelBuilder.Entity<ProductAttributeValue>(
@@ -71,6 +77,85 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
                         builder.WithOwner();
                         builder.Property(p => p.NumericValue)
                             .HasPrecision(10, 2);
+                    });
+            });
+
+        modelBuilder.Entity<Unit>(
+            entity =>
+            {
+                entity.HasIndex(u => u.Name)
+                    .IsUnique();
+
+                entity.HasData(
+
+                    // Length.
+                    new Unit()
+                    {
+                        Id = 1,
+                        Name = "м",
+                    },
+                    new Unit()
+                    {
+                        Id = 2,
+                        Name = "см",
+                    },
+                    new Unit()
+                    {
+                        Id = 3,
+                        Name = "мм",
+                    },
+
+                    // Mass.
+                    new Unit()
+                    {
+                        Id = 4,
+                        Name = "г",
+                    },
+                    new Unit()
+                    {
+                        Id = 5,
+                        Name = "кг",
+                    },
+
+                    // Memory.
+                    new Unit()
+                    {
+                        Id = 6,
+                        Name = "Б",
+                    },
+                    new Unit()
+                    {
+                        Id = 7,
+                        Name = "КБ",
+                    },
+                    new Unit()
+                    {
+                        Id = 8,
+                        Name = "МБ",
+                    },
+
+                    // Frequency.
+                    new Unit()
+                    {
+                        Id = 9,
+                        Name = "МГц",
+                    },
+                    new Unit()
+                    {
+                        Id = 10,
+                        Name = "КГц",
+                    },
+
+                    // Other.
+                    new Unit()
+                    {
+                        Id = 11,
+                        Name = "Вт",
+                    },
+                    new Unit()
+                    {
+                        Id = 12,
+                        Name = "шт",
                     });
             });
     }

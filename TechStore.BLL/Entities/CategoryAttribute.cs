@@ -23,6 +23,17 @@ public class CategoryAttribute
     public CategoryAttributeDataTypes DataType { get; set; }
 
     /// <summary>
+    /// Id единицы измерения.
+    /// </summary>
+    public long? UnitId { get; set; }
+
+    /// <summary>
+    /// Единица измерения атрибута.
+    /// </summary>
+    /// <remarks>Примеры: килограмм, метр.</remarks>
+    public Unit? Unit { get; set; }
+
+    /// <summary>
     /// Значения атрибута назначенные в конкретных товарах.
     /// </summary>
     public ICollection<ProductAttributeValue> ProductValues { get; set; } = [];
