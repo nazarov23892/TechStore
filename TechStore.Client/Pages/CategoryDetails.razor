@@ -4,6 +4,7 @@
 @using TechStore.Contracts.DTOs
 
 @inject ICategoriesHttpService CategoriesHttpService;
+@inject IUnitsHttpService UnitsHttpService;
 @inject NavigationManager Navigation
 
 <div class="container my-3">
@@ -64,6 +65,14 @@
                                 <option value="Boolean">Да/Нет</option>
                             </select>
 
+                            <select class="form-select form-select-sm" style="max-width: 120px;">
+                                <option value="">(без ед. изм.)</option>
+                                @foreach (var unit in units)
+                                {
+                                    <option value="@unit.Id">@unit.Name</option>
+                                }
+                            </select>
+
                             <button class="btn btn-sm btn-success" @onclick="AddAttribute">Добавить</button>
                         </div>
                     </div>
@@ -82,12 +91,17 @@
     CategoryPutDto? categoryPutModel;
     CategoryAttributePostDto attributePostModel = new();
     List<CategoryAttributeListDto> categoryAttributes = [];
+    List<UnitListDto> units = [];
 
     protected override async Task OnInitializedAsync()
     {
         var loadCategoriesTask = LoadCategory(CategoryId);
         var loadAttributesTask = LoadAttributes(CategoryId);
-        await Task.WhenAll(loadCategoriesTask, loadAttributesTask);
+        var loadUnitsTask = LoadUnits();
+        await Task.WhenAll(
+            loadCategoriesTask,
+            loadAttributesTask,
+            loadUnitsTask);
     }
 
     async Task LoadCategory(long id)
@@ -113,6 +127,19 @@
         {
             var response = await CategoriesHttpService.GetAttributeListAsync(CategoryId);
             categoryAttributes = response?.ToList() ?? [];
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Ошибка загрузки: {ex.Message}");
+        }
+    }
+
+    async Task LoadUnits()
+    {
+        try
+        {
+            var response = await UnitsHttpService.GetListAsync();
+            units = response?.ToList() ?? [];
         }
         catch (Exception ex)
         {

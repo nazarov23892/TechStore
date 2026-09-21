@@ -9,10 +9,9 @@ builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
 // Http clients.
-var apiBaseUri = builder.Configuration["ApiBaseUrl"] ?? builder.HostEnvironment.BaseAddress;
-builder.Services.AddHttpClient<IProductHttpService, ProductHttpService>(
-    client => client.BaseAddress = new Uri(apiBaseUri));
-builder.Services.AddHttpClient<ICategoriesHttpService, CategoriesHttpService>(
-    client => client.BaseAddress = new Uri(apiBaseUri));
+var apiBaseUri = new Uri(builder.Configuration["ApiBaseUrl"] ?? builder.HostEnvironment.BaseAddress);
+builder.Services.AddHttpClient<IProductHttpService, ProductHttpService>(client => client.BaseAddress = apiBaseUri);
+builder.Services.AddHttpClient<ICategoriesHttpService, CategoriesHttpService>(client => client.BaseAddress = apiBaseUri);
+builder.Services.AddHttpClient<IUnitsHttpService, UnitsHttpService>(client => client.BaseAddress = apiBaseUri);
 
 await builder.Build().RunAsync();

@@ -13,5 +13,10 @@ public static class SharedConstants
         /// Базовый URI апи категорий товаров.
         /// </summary>
         public const string Categories = "api/categories";
+
+        /// <summary>
+        /// Базовый URI апи единиц измерения.
+        /// </summary>
+        public const string Units = "api/units";
     }
 }
