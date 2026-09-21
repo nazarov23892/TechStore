@@ -125,6 +125,15 @@ public class CategoryService : ICategoryService
             Key = value.Key,
             DataType = dataType,
         };
+
+        if (value.UnitId != null)
+        {
+            var unit = await _context.Units
+                .FirstOrDefaultAsync(u => u.Id == value.UnitId, cancellationToken)
+                ?? throw new NotFoundException($"Unit {value.UnitId} not found.");
+            attribute.Unit = unit;
+        }
+
         category.Attributes.Add(attribute);
         await _context.SaveChangesAsync(cancellationToken);
         var dto = attribute.Adapt<CategoryAttributetDto>();

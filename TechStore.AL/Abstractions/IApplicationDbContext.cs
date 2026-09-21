@@ -10,6 +10,7 @@ public interface IApplicationDbContext
 {
     DbSet<Product> Products { get; }
     DbSet<Category> Categories { get; }
+    DbSet<Unit> Units { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }
