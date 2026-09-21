@@ -361,7 +361,7 @@ public class CategoriesControllerTest
             },
 
             // checkResponseCallback.
-            (CategoryDto response) => 
+            (CategoryDto response) =>
                 response.Key == "new-cat1"
                 && response.DisplayName == "new-display-name1",
 
@@ -370,6 +370,35 @@ public class CategoriesControllerTest
                 domain.Key == "new-key1"
                 && domain.DisplayName == "new-display-name1"
         };
+
+        yield return new object[]
+        { 
+            // domainInitialModel.
+            new Category()
+            {
+                Id = 501,
+                Key = "processors",
+                DisplayName = "CPUs",
+                Attributes = [],
+            },
+
+            // putRequest.
+            new CategoryPutDto()
+            {
+                Key = null,
+                DisplayName = "new-display-name1",
+            },
+
+            // checkResponseCallback.
+            (CategoryDto response) =>
+                response.Key == "processors"
+                && response.DisplayName == "new-display-name1",
+
+            // checkDomainModelCallback.
+            (Category domain) =>
+                domain.Key == "processors"
+                && domain.DisplayName == "new-display-name1"
+       };
     }
 
     static async Task SeedData(ApplicationDbContext dbContext, int count)
