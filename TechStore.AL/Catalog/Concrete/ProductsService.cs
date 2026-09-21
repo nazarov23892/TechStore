@@ -140,7 +140,6 @@ public class ProductsService : IProductsService
         long productId, ProductAttributeValuesPutDto value, CancellationToken cancellationToken = default)
     {
         var product = await _context.Products
-            .AsNoTracking()
             .Include(p => p.Category)
                 .ThenInclude(attr => attr!.Attributes)
                 .ThenInclude(attr => attr.ProductValues.Where(v => v.ProductId == productId).Take(1))
@@ -180,8 +179,8 @@ public class ProductsService : IProductsService
                     attributeValue.BoolValue = attributePutDto.BooleanValue;
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException(
-                        nameof(value), $"Unexpected value: '{attribute.DataType}'");
+                    throw new NotSupportedException(
+                        $"Unexpected data type: '{attribute.DataType}'");
             }
         }
         await _context.SaveChangesAsync(cancellationToken);
