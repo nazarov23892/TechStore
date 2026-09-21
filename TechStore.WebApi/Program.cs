@@ -30,6 +30,7 @@ builder.Services.AddExceptionHandler<NotFoundExceptionHandler>();
 // Services.
 builder.Services.AddScoped<IProductsService, ProductsService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IUnitsService, UnitsService>();
 builder.Services.AddScoped<IApplicationDbContext>(
     provider => provider.GetRequiredService<ApplicationDbContext>());
 
