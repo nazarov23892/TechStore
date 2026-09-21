@@ -66,7 +66,12 @@ namespace TechStore.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<long?>("UnitId")
+                        .HasColumnType("bigint");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UnitId");
 
                     b.HasIndex("CategoryId", "Key")
                         .IsUnique();
@@ -126,6 +131,88 @@ namespace TechStore.DAL.Migrations
                     b.ToTable("ProductAttributeValue");
                 });
 
+            modelBuilder.Entity("TechStore.BLL.Entities.Unit", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("Units");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1L,
+                            Name = "м"
+                        },
+                        new
+                        {
+                            Id = 2L,
+                            Name = "см"
+                        },
+                        new
+                        {
+                            Id = 3L,
+                            Name = "мм"
+                        },
+                        new
+                        {
+                            Id = 4L,
+                            Name = "г"
+                        },
+                        new
+                        {
+                            Id = 5L,
+                            Name = "кг"
+                        },
+                        new
+                        {
+                            Id = 6L,
+                            Name = "Б"
+                        },
+                        new
+                        {
+                            Id = 7L,
+                            Name = "КБ"
+                        },
+                        new
+                        {
+                            Id = 8L,
+                            Name = "МБ"
+                        },
+                        new
+                        {
+                            Id = 9L,
+                            Name = "МГц"
+                        },
+                        new
+                        {
+                            Id = 10L,
+                            Name = "КГц"
+                        },
+                        new
+                        {
+                            Id = 11L,
+                            Name = "Вт"
+                        },
+                        new
+                        {
+                            Id = 12L,
+                            Name = "шт"
+                        });
+                });
+
             modelBuilder.Entity("TechStore.BLL.Entities.CategoryAttribute", b =>
                 {
                     b.HasOne("TechStore.BLL.Entities.Category", null)
@@ -133,6 +220,13 @@ namespace TechStore.DAL.Migrations
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("TechStore.BLL.Entities.Unit", "Unit")
+                        .WithMany()
+                        .HasForeignKey("UnitId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Unit");
                 });
 
             modelBuilder.Entity("TechStore.BLL.Entities.Product", b =>
