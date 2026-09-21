@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using TechStore.AL.Catalog.Concrete;
-using TechStore.BLL.Entities;
 using TechStore.Contracts.DTOs;
 using TechStore.DAL.DbContexts;
+using TechStore.Tests.TestData;
 using TechStore.WebApi.Controllers;
 
 namespace TechStore.Tests.Api;
@@ -61,31 +61,7 @@ public class UnitsControllerTest
 
     static async Task SeedData(ApplicationDbContext dbContext)
     {
-        dbContext.Units.AddRange(
-            new Unit()
-            {
-                Name = "1-GB",
-            },
-            new Unit()
-            {
-                Name = "2-kB",
-            },
-            new Unit()
-            {
-                Name = "3-MHz",
-            },
-            new Unit()
-            {
-                Name = "4-kg",
-            },
-            new Unit()
-            {
-                Name = "5-cm",
-            },
-            new Unit()
-            {
-                Name = "6-W",
-            });
+        dbContext.Units.AddRange(DataForSeed.DomainModels.Units);
 
         await dbContext.SaveChangesAsync();
     }

@@ -6,6 +6,7 @@ using TechStore.AL.Catalog.Concrete;
 using TechStore.BLL.Entities;
 using TechStore.Contracts.DTOs;
 using TechStore.DAL.DbContexts;
+using TechStore.Tests.TestData;
 using TechStore.WebApi.Controllers;
 
 namespace TechStore.Tests.Api;
@@ -345,13 +346,7 @@ public class CategoriesControllerTest
         yield return new object[]
         { 
             // domainInitialModel.
-            new Category()
-            {
-                Id = 501,
-                Key = "processors",
-                DisplayName = "CPUs",
-                Attributes = [],
-            },
+            DataForSeed.DomainModels.Category1_Processors,
 
             // putRequest.
             new CategoryPutDto()
@@ -374,13 +369,7 @@ public class CategoriesControllerTest
         yield return new object[]
         { 
             // domainInitialModel.
-            new Category()
-            {
-                Id = 501,
-                Key = "processors",
-                DisplayName = "CPUs",
-                Attributes = [],
-            },
+            DataForSeed.DomainModels.Category1_Processors,
 
             // putRequest.
             new CategoryPutDto()
@@ -403,13 +392,7 @@ public class CategoriesControllerTest
         yield return new object[]
         { 
             // domainInitialModel.
-            new Category()
-            {
-                Id = 501,
-                Key = "processors",
-                DisplayName = "CPUs",
-                Attributes = [],
-            },
+            DataForSeed.DomainModels.Category1_Processors,
 
             // putRequest.
             new CategoryPutDto()
