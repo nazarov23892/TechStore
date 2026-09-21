@@ -16,4 +16,9 @@ public class CategoryAttributeListDto
     /// Тип данных.
     /// </summary>
     public string DataType { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Единица измерения.
+    /// </summary>
+    public UnitDto? Unit { get; set; }
 }

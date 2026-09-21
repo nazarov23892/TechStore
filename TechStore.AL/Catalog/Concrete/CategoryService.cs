@@ -97,7 +97,7 @@ public class CategoryService : ICategoryService
     {
         var category = await _context.Categories
             .AsNoTracking()
-            .Include(c => c.Attributes.OrderBy(a => a.Key))
+            .Include(c => c.Attributes.OrderBy(a => a.Key)).ThenInclude(a => a.Unit)
             .FirstOrDefaultAsync(c => c.Id == categoryId, cancellationToken)
             ?? throw new NotFoundException($"Category {categoryId} not found.");
 

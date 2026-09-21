@@ -14,6 +14,9 @@ public class CategoryProfile : IRegister
         config.NewConfig<Category, CategoryDto>();
 
         config.NewConfig<CategoryAttribute, CategoryAttributetDto>();
-        config.NewConfig<CategoryAttribute, CategoryAttributeListDto>();
+        config.NewConfig<CategoryAttribute, CategoryAttributeListDto>()
+            .IgnoreIf((src, dst) => src.Unit == null, dst => dst.Unit!);
+
+        config.NewConfig<Unit, UnitDto>();
     }
 }
