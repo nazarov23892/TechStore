@@ -22,7 +22,7 @@ public interface IProductHttpService
     /// </summary>
     /// <param name="id">Идентификатор товара.</param>
     /// <param name="cancellationToken">Токен отмены операции.</param>
-    Task<ProductDto> GetByIdAsync(long id, CancellationToken cancellationToken = default); 
+    Task<ProductDto> GetByIdAsync(long id, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Выполняет запрос создания товара.
@@ -57,4 +57,13 @@ public interface IProductHttpService
     /// <param name="cancellationToken">Токен отмены операции.</param>
     Task<IEnumerable<ProductAttributeListDto>?> GetAttributeListAsync(
         long id, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Выполняет запрос обновления значений атрибутов товара.
+    /// </summary>
+    /// <param name="productId">Идентификатор товара.</param>
+    /// <param name="value">Модель запроса на обновление.</param>
+    /// <param name="cancellationToken">Токен отмены операции.</param> 
+    Task<IEnumerable<ProductAttributeListDto>> UpdateProductAttributesAsync(
+        long productId, ProductAttributeValuesPutDto value, CancellationToken cancellationToken = default);
 }

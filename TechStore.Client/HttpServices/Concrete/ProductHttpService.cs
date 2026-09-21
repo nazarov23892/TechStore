@@ -70,4 +70,15 @@ public class ProductHttpService : IProductHttpService
         var uri = $"{BaseUri}/{id}/attributes";
         return _httpClient.GetFromJsonAsync<IEnumerable<ProductAttributeListDto>>(uri, cancellationToken);
     }
+
+    /// <inheritdoc/>
+    public async Task<IEnumerable<ProductAttributeListDto>> UpdateProductAttributesAsync(
+        long productId, ProductAttributeValuesPutDto value, CancellationToken cancellationToken = default)
+    {
+        var uri = $"{BaseUri}/{productId}/attributes";
+        var response = await _httpClient.PutAsJsonAsync(uri, value, cancellationToken);
+        response.EnsureSuccessStatusCode();
+        var result = await response.Content.ReadFromJsonAsync<IEnumerable<ProductAttributeListDto>>(cancellationToken);
+        return result!;
+    }
 }

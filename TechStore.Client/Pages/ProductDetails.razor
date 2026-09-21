@@ -45,7 +45,7 @@
                     </div>
 
                     <div class="d-flex gap-2 border-top pt-3">
-                        <button class="btn btn-sm btn-primary flex-grow-1" @onclick="UpdateProduct">Сохранить</button>
+                        <button class="btn btn-sm btn-outline-primary flex-grow-1" @onclick="UpdateProduct">Сохранить</button>
                         <button class="btn btn-sm btn-outline-secondary" @onclick="Cancel">Отмена</button>
                     </div>
                 </div>
@@ -97,6 +97,9 @@
                                 }
                             </div>
                         }
+                    </div>
+                    <div class="border-top mt-4 pt-3 text-end">
+                        <button class="btn btn-sm btn-outline-primary" @onclick="UpdateAttributes">Сохранить атрибуты</button>
                     </div>
                 </div>
             </div>
@@ -165,6 +168,28 @@
         {
             Console.WriteLine($"Ошибка загрузки: {ex.Message}");
         }
+    }
+
+    async Task UpdateAttributes()
+    {
+        if (productAttributes.Count == 0)
+            return;
+
+        var request = new ProductAttributeValuesPutDto()
+        {
+            Values = productAttributes.Select(
+                attr => new ProductAttributeValueListPutDto()
+                {
+                    AttributeKey = attr.Key,
+                    BooleanValue = attr.Value.BoolValue,
+                    NumericValue = attr.Value.NumericValue,
+                    StringValue = attr.Value.StringValue,
+                }),
+        };
+        var response = await ProductsHttpService.UpdateProductAttributesAsync(
+             ProductId, request);
+
+        productAttributes = response?.ToList() ?? [];
     }
 
     void Cancel()
