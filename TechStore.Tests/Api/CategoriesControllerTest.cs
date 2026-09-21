@@ -132,25 +132,24 @@ public class CategoriesControllerTest
         Assert.Equal("name1", domainModel.DisplayName);
     }
 
-    [Fact(DisplayName = "Категории: обновление: успешно.")]
-    public async Task Categories_Update_Successfully()
+    [Theory(DisplayName = "Категории: обновление: успешно.")]
+    [MemberData(nameof(GetInlineDataForPut))]
+    public async Task Categories_Update_Successfully(
+        Category domainInitialModel,
+        CategoryPutDto putRequest,
+        Func<CategoryDto, bool> checkResponseCallback,
+        Func<Category, bool> checkDomainModelCallback)
     {
         var categoryId = 0L;
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
         {
             await SeedData(dbContext, 1);
-            var category = await dbContext.Categories
-                .AsNoTracking()
-                .FirstOrDefaultAsync(c => c.Key == "category-1");
 
-            Assert.NotNull(category);
-            categoryId = category.Id;
+            dbContext.Categories.Add(domainInitialModel);
+            await dbContext.SaveChangesAsync();
+            categoryId = domainInitialModel.Id;
         }
-        var request = new CategoryPutDto()
-        {
-            Key = "new-cat1",
-            DisplayName = "new-display-name1",
-        };
+
         CategoryDto? response = null;
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
         {
@@ -158,13 +157,12 @@ public class CategoriesControllerTest
             var controller = new CategoriesController(categoryService);
 
             //Act.
-            var actionResult = await controller.UpdateCategory(categoryId, request, default);
+            var actionResult = await controller.UpdateCategory(categoryId, putRequest, default);
             Assert.IsType<ActionResult<CategoryDto>>(actionResult);
             response = actionResult.Value;
         }
         Assert.NotNull(response);
-        Assert.Equal("new-cat1", response.Key);
-        Assert.Equal("new-display-name1", response.DisplayName);
+        checkResponseCallback.Invoke(response);
 
         Category? domainModel = null;
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
@@ -172,8 +170,7 @@ public class CategoriesControllerTest
             domainModel = await dbContext.Categories.FirstOrDefaultAsync(c => c.Id == response.Id);
         }
         Assert.NotNull(domainModel);
-        Assert.Equal("new-cat1", domainModel.Key);
-        Assert.Equal("new-display-name1", domainModel.DisplayName);
+        checkDomainModelCallback.Invoke(domainModel);
     }
 
     [Fact(DisplayName = "Категории: Атрибуты: получение списка: успешно.")]
@@ -341,6 +338,38 @@ public class CategoriesControllerTest
         Assert.Equal(categoryId, domainModel.CategoryId);
         Assert.NotNull(domainModel.UnitId);
         Assert.Equal(1, domainModel.UnitId);
+    }
+
+    public static IEnumerable<object[]> GetInlineDataForPut()
+    {
+        yield return new object[]
+        { 
+            // domainInitialModel.
+            new Category()
+            {
+                Id = 501,
+                Key = "processors",
+                DisplayName = "CPUs",
+                Attributes = [],
+            },
+
+            // putRequest.
+            new CategoryPutDto()
+            {
+                Key = "new-key1",
+                DisplayName = "new-display-name1",
+            },
+
+            // checkResponseCallback.
+            (CategoryDto response) => 
+                response.Key == "new-cat1"
+                && response.DisplayName == "new-display-name1",
+
+            // checkDomainModelCallback.
+            (Category domain) =>
+                domain.Key == "new-key1"
+                && domain.DisplayName == "new-display-name1"
+        };
     }
 
     static async Task SeedData(ApplicationDbContext dbContext, int count)
