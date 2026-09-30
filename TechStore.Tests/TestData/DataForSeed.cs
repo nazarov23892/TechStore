@@ -6,25 +6,67 @@ public static class DataForSeed
 {
     public static class DomainModels
     {
-        public static Unit Unit1_Gb => new Unit()
+        public static Unit Unit1_Gb => new()
         {
+            Id = 101,
             Name = "1-GB",
         };
-        public static Unit Unit2_Kb => new Unit()
+        public static Unit Unit2_Kb => new()
         {
+            Id = 102,
             Name = "2-kB",
         };
-        public static Unit Unit3_Mhz => new Unit()
+        public static Unit Unit3_Mhz => new()
         {
+            Id = 103,
             Name = "3-MHz",
         };
-
-        public static Category Category1_Processors => new()
+        public static Unit Unit4_W => new()
         {
-            Id = 501,
-            Key = "processors",
-            DisplayName = "CPUs",
-            Attributes = [],
+            Id = 104,
+            Name = "4-W",
+        };
+        public static Unit Unit5_Kg => new()
+        {
+            Id = 105,
+            Name = "5-kg",
+        };
+        public static Unit Unit6_Cm => new()
+        {
+            Id = 106,
+            Name = "6-cm",
+        };
+
+        public static CategoryAttribute Attribute1_Frequency => new()
+        { 
+            Id = 201,
+            Key = "Frequency",
+            DataType = CategoryAttributeDataTypes.Numeric,
+            Unit = Unit3_Mhz,
+        };
+
+        public static CategoryAttribute Attribute2_Socket => new()
+        {
+            Id = 202,
+            Key = "Socket",
+            DataType = CategoryAttributeDataTypes.String,
+            Unit = null,
+        };
+
+        public static CategoryAttribute Attribute3_Tdp => new()
+        {
+            Id = 203,
+            Key = "TDP",
+            DataType = CategoryAttributeDataTypes.Numeric,
+            Unit = Unit4_W,
+        };
+
+        public static CategoryAttribute Attribute4_GpuIntegrated => new()
+        {
+            Id = 204,
+            Key = "Integrated GPU",
+            DataType = CategoryAttributeDataTypes.Boolean,
+            Unit = null,
         };
 
         public static IEnumerable<Unit> Units =>
@@ -32,17 +74,30 @@ public static class DataForSeed
             Unit1_Gb,
             Unit2_Kb,
             Unit3_Mhz,
-            new Unit()
-            {
-                Name = "4-kg",
-            },
-            new Unit()
-            {
-                Name = "5-cm",
-            },
-            new Unit()
-            {
-                Name = "6-W",
-            }];
+            Unit4_W,
+            Unit5_Kg,
+            Unit6_Cm,
+        ];
+
+        public static Category Category1_Empty=> new()
+        {
+            Id = 501,
+            Key = "EmptyCategory1",
+            DisplayName = "Empty categoty #1",
+            Attributes = [],
+        };
+
+        public static Category Category2_CPUs => new()
+        {
+            Id = 502,
+            Key = "CPUs",
+            DisplayName = "CPUs for display",
+            Attributes = [
+                Attribute1_Frequency,
+                Attribute2_Socket, 
+                Attribute3_Tdp,
+                Attribute4_GpuIntegrated,
+            ],
+        };
     }
 }

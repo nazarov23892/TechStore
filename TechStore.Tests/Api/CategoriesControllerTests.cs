@@ -11,11 +11,11 @@ using TechStore.WebApi.Controllers;
 
 namespace TechStore.Tests.Api;
 
-public class CategoriesControllerTest
+public class CategoriesControllerTests
 {
     readonly DbContextOptions<ApplicationDbContext> _dbContextOptions;
 
-    public CategoriesControllerTest()
+    public CategoriesControllerTests()
     {
         TypeAdapterConfig.GlobalSettings.Scan(typeof(AL.Configuration.AppConstants).Assembly);
 
@@ -291,14 +291,14 @@ public class CategoriesControllerTest
             await SeedData(dbContext, 10);
             var category = await dbContext.Categories
                 .AsNoTracking()
-                .FirstOrDefaultAsync(c => c.Key == "category-1");
+                .FirstOrDefaultAsync(c => c.Id == DataForSeed.DomainModels.Category1_Empty.Id);
 
             Assert.NotNull(category);
             categoryId = category.Id;
 
             var unit = await dbContext.Units
                 .AsNoTracking()
-                .FirstOrDefaultAsync(u => u.Id == 1);
+                .FirstOrDefaultAsync(u => u.Id == DataForSeed.DomainModels.Unit1_Gb.Id);
             Assert.NotNull(unit);
             unitId = unit.Id;
         }
@@ -330,15 +330,15 @@ public class CategoriesControllerTest
         {
             var category = await dbContext.Categories
                 .Include(c => c.Attributes)
-                .FirstOrDefaultAsync(c => c.Id == categoryId);
-            domainModel = category?.Attributes.FirstOrDefault(a => a.Id == categoryId);
+                .SingleOrDefaultAsync(c => c.Id == categoryId);
+            domainModel = category?.Attributes.FirstOrDefault();
         }
         Assert.NotNull(domainModel);
         Assert.Equal("attribute1", domainModel.Key);
         Assert.Equal(CategoryAttributeDataTypes.Numeric, domainModel.DataType);
         Assert.Equal(categoryId, domainModel.CategoryId);
         Assert.NotNull(domainModel.UnitId);
-        Assert.Equal(1, domainModel.UnitId);
+        Assert.Equal(DataForSeed.DomainModels.Unit1_Gb.Id, domainModel.UnitId);
     }
 
     public static IEnumerable<object[]> GetInlineDataForPut()
@@ -346,7 +346,7 @@ public class CategoriesControllerTest
         yield return new object[]
         { 
             // domainInitialModel.
-            DataForSeed.DomainModels.Category1_Processors,
+            DataForSeed.DomainModels.Category1_Empty,
 
             // putRequest.
             new CategoryPutDto()
@@ -369,7 +369,7 @@ public class CategoriesControllerTest
         yield return new object[]
         { 
             // domainInitialModel.
-            DataForSeed.DomainModels.Category1_Processors,
+            DataForSeed.DomainModels.Category1_Empty,
 
             // putRequest.
             new CategoryPutDto()
@@ -392,7 +392,7 @@ public class CategoriesControllerTest
         yield return new object[]
         { 
             // domainInitialModel.
-            DataForSeed.DomainModels.Category1_Processors,
+            DataForSeed.DomainModels.Category1_Empty,
 
             // putRequest.
             new CategoryPutDto()
@@ -415,15 +415,8 @@ public class CategoriesControllerTest
 
     static async Task SeedData(ApplicationDbContext dbContext, int count)
     {
-        dbContext.Units.AddRange(
-            new Unit()
-            {
-                Name = "GB",
-            },
-            new Unit()
-            {
-                Name = "MHz",
-            });
+        dbContext.Units.AddRange(DataForSeed.DomainModels.Units);
+        dbContext.Categories.Add(DataForSeed.DomainModels.Category1_Empty);
 
         for (var i = 0; i < count; i++)
         {

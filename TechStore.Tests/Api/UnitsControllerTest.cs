@@ -54,9 +54,9 @@ public class UnitsControllerTest
         Assert.Equal("1-GB", response[0].Name);
         Assert.Equal("2-kB", response[1].Name);
         Assert.Equal("3-MHz", response[2].Name);
-        Assert.Equal("4-kg", response[3].Name);
-        Assert.Equal("5-cm", response[4].Name);
-        Assert.Equal("6-W", response[5].Name);
+        Assert.Equal("4-W", response[3].Name);
+        Assert.Equal("5-kg", response[4].Name);
+        Assert.Equal("6-cm", response[5].Name);
     }
 
     static async Task SeedData(ApplicationDbContext dbContext)
