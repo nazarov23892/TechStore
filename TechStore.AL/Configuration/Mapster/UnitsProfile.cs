@@ -10,5 +10,6 @@ public class UnitsProfile : IRegister
     {
         config.NewConfig<Unit, UnitDto>();
         config.NewConfig<Unit, UnitListDto>();
+        config.NewConfig<Unit, UnitShortDto>();
     }
 }

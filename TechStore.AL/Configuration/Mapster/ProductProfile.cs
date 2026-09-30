@@ -24,6 +24,7 @@ public class ProductProfile : IRegister
             .Map(dst => dst.Key, src => src.Key)
             .Map(dst => dst.DataType, src => src.DataType)
             .Map(dst => dst.Value, src => src.ProductValues.FirstOrDefault())
+            .IgnoreIf((src, dst) => src.Unit == null, dst => dst.Unit!)
             .IgnoreIf(
                 (src, dst) => !src.ProductValues.Any(),
                 dst => dst.Value

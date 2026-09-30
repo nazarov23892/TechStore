@@ -21,4 +21,9 @@ public class ProductAttributeListDto
     /// Значение.
     /// </summary>
     public ProductAttributeValueDto Value { get; set; } = new();
+
+    /// <summary>
+    /// Единица измерения.
+    /// </summary>
+    public UnitShortDto? Unit { get; set; }
 }
