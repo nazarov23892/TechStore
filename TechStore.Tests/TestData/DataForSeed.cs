@@ -40,34 +40,35 @@ public static class DataForSeed
         public static CategoryAttribute Attribute1_Frequency => new()
         { 
             Id = 201,
-            Key = "Frequency",
+            Key = "1-Frequency",
             DataType = CategoryAttributeDataTypes.Numeric,
-            Unit = Unit3_Mhz,
+            UnitId = Unit3_Mhz.Id,
         };
 
-        public static CategoryAttribute Attribute2_Socket => new()
+        public static CategoryAttribute Attribute2_GpuIntegrated => new()
         {
             Id = 202,
-            Key = "Socket",
-            DataType = CategoryAttributeDataTypes.String,
-            Unit = null,
+            Key = "2-Integrated GPU",
+            DataType = CategoryAttributeDataTypes.Boolean,
+            UnitId = null,
         };
 
-        public static CategoryAttribute Attribute3_Tdp => new()
+        public static CategoryAttribute Attribute3_Socket => new()
         {
             Id = 203,
-            Key = "TDP",
-            DataType = CategoryAttributeDataTypes.Numeric,
-            Unit = Unit4_W,
+            Key = "3-Socket",
+            DataType = CategoryAttributeDataTypes.String,
+            UnitId = null,
         };
 
-        public static CategoryAttribute Attribute4_GpuIntegrated => new()
+        public static CategoryAttribute Attribute4_Tdp => new()
         {
             Id = 204,
-            Key = "Integrated GPU",
-            DataType = CategoryAttributeDataTypes.Boolean,
-            Unit = null,
+            Key = "4-TDP",
+            DataType = CategoryAttributeDataTypes.Numeric,
+            UnitId = Unit4_W.Id,
         };
+
 
         public static IEnumerable<Unit> Units =>
             [
@@ -94,9 +95,9 @@ public static class DataForSeed
             DisplayName = "CPUs for display",
             Attributes = [
                 Attribute1_Frequency,
-                Attribute2_Socket, 
-                Attribute3_Tdp,
-                Attribute4_GpuIntegrated,
+                Attribute2_GpuIntegrated,
+                Attribute3_Socket, 
+                Attribute4_Tdp,
             ],
         };
     }
