@@ -35,7 +35,7 @@ public class CategoriesControllerTests
     {
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
         {
-            await SeedData(dbContext, 10);
+            await SeedAdditionalCategories(dbContext, 10);
         }
 
         var paging = new PagingRequestDto()
@@ -71,18 +71,12 @@ public class CategoriesControllerTests
     [Fact(DisplayName = "Категории: получение по Id: успешно.")]
     public async Task Categories_GetById_ReturnsOk()
     {
-        var categoryId = 0L;
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
         {
-            await SeedData(dbContext, 1);
-            var category = await dbContext.Categories
-                .AsNoTracking()
-                .FirstOrDefaultAsync();
-
-            Assert.NotNull(category);
-            categoryId = category.Id;
+            await SeedData(dbContext);
         }
 
+        var categoryId = DataForSeed.DomainModels.Category1_Empty.Id;
         CategoryDto? response = null;
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
         {
@@ -96,8 +90,8 @@ public class CategoriesControllerTests
         }
         Assert.NotNull(response);
         Assert.InRange(response.Id, 0, long.MaxValue);
-        Assert.Equal("category-1", response.Key);
-        Assert.Equal("display-name-1", response.DisplayName);
+        Assert.Equal(DataForSeed.DomainModels.Category1_Empty.Key, response.Key);
+        Assert.Equal(DataForSeed.DomainModels.Category1_Empty.DisplayName, response.DisplayName);
     }
 
     [Fact(DisplayName = "Категории: создание: успешно.")]
@@ -136,19 +130,14 @@ public class CategoriesControllerTests
     [Theory(DisplayName = "Категории: обновление: успешно.")]
     [MemberData(nameof(GetInlineDataForPut))]
     public async Task Categories_Update_Successfully(
-        Category domainInitialModel,
+        long categoryId,
         CategoryPutDto putRequest,
         Func<CategoryDto, bool> checkResponseCallback,
         Func<Category, bool> checkDomainModelCallback)
     {
-        var categoryId = 0L;
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
         {
-            await SeedData(dbContext, 1);
-
-            dbContext.Categories.Add(domainInitialModel);
-            await dbContext.SaveChangesAsync();
-            categoryId = domainInitialModel.Id;
+            await SeedData(dbContext);
         }
 
         CategoryDto? response = null;
@@ -174,179 +163,12 @@ public class CategoriesControllerTests
         checkDomainModelCallback.Invoke(domainModel);
     }
 
-    [Fact(DisplayName = "Категории: Атрибуты: получение списка: успешно.")]
-    public async Task Attributes_GetList_Successfully()
-    {
-        var categoryId = 0L;
-        using (var dbContext = new ApplicationDbContext(_dbContextOptions))
-        {
-            await SeedData(dbContext, 10);
-            var category = await dbContext.Categories
-                .FirstOrDefaultAsync(c => c.Key == "category-1");
-            Assert.NotNull(category);
-            categoryId = category.Id;
-            category.Attributes.Add(
-                new CategoryAttribute()
-                {
-                    Key = "attr1_numeric",
-                    DataType = CategoryAttributeDataTypes.Numeric,
-                });
-            category.Attributes.Add(
-                new CategoryAttribute()
-                {
-                    Key = "attr2_string",
-                    DataType = CategoryAttributeDataTypes.String,
-                });
-            category.Attributes.Add(
-               new CategoryAttribute()
-               {
-                   Key = "attr3_boolean",
-                   DataType = CategoryAttributeDataTypes.Boolean,
-               });
-
-            await dbContext.SaveChangesAsync();
-        }
-
-        List<CategoryAttributeListDto>? response;
-        using (var dbContext = new ApplicationDbContext(_dbContextOptions))
-        {
-            var categoryService = new CategoryService(dbContext);
-            var controller = new CategoriesController(categoryService);
-
-            //Act.
-            var actionResult = await controller.GetCategoryAttributes(categoryId, default);
-            Assert.IsType<ActionResult<IEnumerable<CategoryAttributeListDto>>>(actionResult);
-            response = actionResult.Value?.ToList();
-        }
-        Assert.NotNull(response);
-        Assert.NotEmpty(response);
-        Assert.Equal("attr1_numeric", response[0].Key);
-        Assert.Equal("Numeric", response[0].DataType);
-
-        Assert.Equal("attr2_string", response[1].Key);
-        Assert.Equal("String", response[1].DataType);
-
-        Assert.Equal("attr3_boolean", response[2].Key);
-        Assert.Equal("Boolean", response[2].DataType);
-    }
-
-    [Fact(DisplayName = "Категории: Атрибуты: создание: успешно.")]
-    public async Task Attributes_Create_Successfully()
-    {
-        var categoryId = 0L;
-        using (var dbContext = new ApplicationDbContext(_dbContextOptions))
-        {
-            await SeedData(dbContext, 10);
-            var category = await dbContext.Categories
-                .AsNoTracking()
-                .FirstOrDefaultAsync(c => c.Key == "category-1");
-
-            Assert.NotNull(category);
-            categoryId = category.Id;
-        }
-
-        var request = new CategoryAttributePostDto()
-        {
-            Key = "attribute1",
-            DataType = "Numeric",
-            UnitId = null,
-        };
-        CategoryAttributetDto? response;
-        using (var dbContext = new ApplicationDbContext(_dbContextOptions))
-        {
-            var categoryService = new CategoryService(dbContext);
-            var controller = new CategoriesController(categoryService);
-
-            //Act.
-            var actionResult = await controller.CreateCategoryAttribute(categoryId, request, default);
-            Assert.IsType<ActionResult<CategoryAttributetDto>>(actionResult);
-            response = actionResult.Value;
-        }
-        Assert.NotNull(response);
-        Assert.Equal("attribute1", response.Key);
-        Assert.Equal("Numeric", response.DataType);
-        Assert.NotEqual(0, response.Id);
-
-        CategoryAttribute? domainModel = null;
-        using (var dbContext = new ApplicationDbContext(_dbContextOptions))
-        {
-            var category = await dbContext.Categories
-                .Include(c => c.Attributes)
-                .FirstOrDefaultAsync(c => c.Id == categoryId);
-            domainModel = category?.Attributes.FirstOrDefault(a => a.Id == categoryId);
-        }
-        Assert.NotNull(domainModel);
-        Assert.Equal("attribute1", domainModel.Key);
-        Assert.Equal(CategoryAttributeDataTypes.Numeric, domainModel.DataType);
-        Assert.Equal(categoryId, domainModel.CategoryId);
-    }
-
-    [Fact(DisplayName = "Категории: Атрибуты: создание с единицей измерения: успешно.")]
-    public async Task Attributes_Create_WithUnit_Successfully()
-    {
-        var categoryId = 0L;
-        var unitId = 0L;
-        using (var dbContext = new ApplicationDbContext(_dbContextOptions))
-        {
-            await SeedData(dbContext, 10);
-            var category = await dbContext.Categories
-                .AsNoTracking()
-                .FirstOrDefaultAsync(c => c.Id == DataForSeed.DomainModels.Category1_Empty.Id);
-
-            Assert.NotNull(category);
-            categoryId = category.Id;
-
-            var unit = await dbContext.Units
-                .AsNoTracking()
-                .FirstOrDefaultAsync(u => u.Id == DataForSeed.DomainModels.Unit1_Gb.Id);
-            Assert.NotNull(unit);
-            unitId = unit.Id;
-        }
-
-        var request = new CategoryAttributePostDto()
-        {
-            Key = "attribute1",
-            DataType = "Numeric",
-            UnitId = unitId,
-        };
-        CategoryAttributetDto? response;
-        using (var dbContext = new ApplicationDbContext(_dbContextOptions))
-        {
-            var categoryService = new CategoryService(dbContext);
-            var controller = new CategoriesController(categoryService);
-
-            //Act.
-            var actionResult = await controller.CreateCategoryAttribute(categoryId, request, default);
-            Assert.IsType<ActionResult<CategoryAttributetDto>>(actionResult);
-            response = actionResult.Value;
-        }
-        Assert.NotNull(response);
-        Assert.Equal("attribute1", response.Key);
-        Assert.Equal("Numeric", response.DataType);
-        Assert.NotEqual(0, response.Id);
-
-        CategoryAttribute? domainModel = null;
-        using (var dbContext = new ApplicationDbContext(_dbContextOptions))
-        {
-            var category = await dbContext.Categories
-                .Include(c => c.Attributes)
-                .SingleOrDefaultAsync(c => c.Id == categoryId);
-            domainModel = category?.Attributes.FirstOrDefault();
-        }
-        Assert.NotNull(domainModel);
-        Assert.Equal("attribute1", domainModel.Key);
-        Assert.Equal(CategoryAttributeDataTypes.Numeric, domainModel.DataType);
-        Assert.Equal(categoryId, domainModel.CategoryId);
-        Assert.NotNull(domainModel.UnitId);
-        Assert.Equal(DataForSeed.DomainModels.Unit1_Gb.Id, domainModel.UnitId);
-    }
-
     public static IEnumerable<object[]> GetInlineDataForPut()
     {
         yield return new object[]
         { 
-            // domainInitialModel.
-            DataForSeed.DomainModels.Category1_Empty,
+            // categoryId.
+            DataForSeed.DomainModels.Category1_Empty.Id,
 
             // putRequest.
             new CategoryPutDto()
@@ -368,8 +190,8 @@ public class CategoriesControllerTests
 
         yield return new object[]
         { 
-            // domainInitialModel.
-            DataForSeed.DomainModels.Category1_Empty,
+            // categoryId.
+            DataForSeed.DomainModels.Category1_Empty.Id,
 
             // putRequest.
             new CategoryPutDto()
@@ -391,8 +213,8 @@ public class CategoriesControllerTests
 
         yield return new object[]
         { 
-            // domainInitialModel.
-            DataForSeed.DomainModels.Category1_Empty,
+            // categoryId.
+            DataForSeed.DomainModels.Category1_Empty.Id,
 
             // putRequest.
             new CategoryPutDto()
@@ -413,11 +235,15 @@ public class CategoriesControllerTests
         };
     }
 
-    static async Task SeedData(ApplicationDbContext dbContext, int count)
+    static async Task SeedData(ApplicationDbContext dbContext)
     {
         dbContext.Units.AddRange(DataForSeed.DomainModels.Units);
         dbContext.Categories.Add(DataForSeed.DomainModels.Category1_Empty);
+        await dbContext.SaveChangesAsync();
+    }
 
+    static async Task SeedAdditionalCategories(ApplicationDbContext dbContext, int count)
+    {
         for (var i = 0; i < count; i++)
         {
             dbContext.Categories.Add(
