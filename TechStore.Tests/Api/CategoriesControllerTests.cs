@@ -68,15 +68,17 @@ public class CategoriesControllerTests
         Assert.Equal("display-name-3", categories[2].DisplayName);
     }
 
-    [Fact(DisplayName = "Категории: получение по Id: успешно.")]
-    public async Task Categories_GetById_ReturnsOk()
+    [Theory(DisplayName = "Категории: получение по Id: успешно.")]
+    [MemberData(nameof(GetInlineDataForGetById))]
+    public async Task Categories_GetById_ReturnsOk(
+        long categoryId,
+        Func<CategoryDto> expectedResponseCallback)
     {
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
         {
             await SeedData(dbContext);
         }
 
-        var categoryId = DataForSeed.DomainModels.Category1_Empty.Id;
         CategoryDto? response = null;
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
         {
@@ -88,10 +90,9 @@ public class CategoriesControllerTests
             Assert.IsType<ActionResult<CategoryDto>>(actionResult);
             response = actionResult.Value;
         }
+        var expectedModel = expectedResponseCallback.Invoke();
         Assert.NotNull(response);
-        Assert.InRange(response.Id, 0, long.MaxValue);
-        Assert.Equal(DataForSeed.DomainModels.Category1_Empty.Key, response.Key);
-        Assert.Equal(DataForSeed.DomainModels.Category1_Empty.DisplayName, response.DisplayName);
+        AssertHelper.Equal(expectedModel, response);
     }
 
     [Fact(DisplayName = "Категории: создание: успешно.")]
@@ -235,14 +236,47 @@ public class CategoriesControllerTests
         };
     }
 
+    public static IEnumerable<object[]> GetInlineDataForGetById()
+    {
+        yield return new object[]
+        { 
+            // categoryId.
+            DataForSeed.DomainModels.Category1_Empty.Id,
+
+            // expectedResponseCallback.
+            () => new CategoryDto() 
+            {
+                Id = DataForSeed.DomainModels.Category1_Empty.Id,
+                Key = DataForSeed.DomainModels.Category1_Empty.Key,
+                DisplayName = DataForSeed.DomainModels.Category1_Empty.DisplayName,
+            },   
+        };
+
+        yield return new object[]
+        { 
+            // categoryId.
+            DataForSeed.DomainModels.Category2_CPUs.Id,
+
+            // expectedResponseCallback.
+            () => new CategoryDto()
+            {
+                Id = DataForSeed.DomainModels.Category2_CPUs.Id,
+                Key = DataForSeed.DomainModels.Category2_CPUs.Key,
+                DisplayName = DataForSeed.DomainModels.Category2_CPUs.DisplayName,
+            },
+        };
+    }
+
     static async Task SeedData(ApplicationDbContext dbContext)
     {
         dbContext.Units.AddRange(DataForSeed.DomainModels.Units);
         dbContext.Categories.Add(DataForSeed.DomainModels.Category1_Empty);
+        dbContext.Categories.Add(DataForSeed.DomainModels.Category2_CPUs);
         await dbContext.SaveChangesAsync();
     }
 
-    static async Task SeedAdditionalCategories(ApplicationDbContext dbContext, int count)
+    static async Task SeedAdditionalCategories(
+        ApplicationDbContext dbContext, int count)
     {
         for (var i = 0; i < count; i++)
         {

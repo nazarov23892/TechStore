@@ -38,7 +38,7 @@ public static class DataForSeed
         };
 
         public static CategoryAttribute Attribute1_Frequency => new()
-        { 
+        {
             Id = 201,
             Key = "1-Frequency",
             DataType = CategoryAttributeDataTypes.Numeric,
@@ -80,7 +80,7 @@ public static class DataForSeed
             Unit6_Cm,
         ];
 
-        public static Category Category1_Empty=> new()
+        public static Category Category1_Empty => new()
         {
             Id = 501,
             Key = "EmptyCategory1",
@@ -96,7 +96,7 @@ public static class DataForSeed
             Attributes = [
                 Attribute1_Frequency,
                 Attribute2_GpuIntegrated,
-                Attribute3_Socket, 
+                Attribute3_Socket,
                 Attribute4_Tdp,
             ],
         };
