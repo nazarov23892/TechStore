@@ -47,7 +47,8 @@ public class CategoriesControllerAttributesTests
             var controller = new CategoriesController(categoryService);
 
             //Act.
-            var actionResult = await controller.GetCategoryAttributes(categoryId, default);
+            var actionResult = await controller.GetCategoryAttributes(
+                categoryId, TestContext.Current.CancellationToken);
             Assert.IsType<ActionResult<IEnumerable<CategoryAttributeListDto>>>(actionResult);
             response = actionResult.Value?.ToList();
         }
@@ -69,100 +70,118 @@ public class CategoriesControllerAttributesTests
 
     }
 
-    [Fact(DisplayName = "Категории: Атрибуты: создание: успешно.")]
-    public async Task Attributes_Create_Successfully()
+    [Theory(DisplayName = "Категории: Атрибуты: создание: успешно.")]
+    [MemberData(nameof(GetInlineDataForCreate))]
+    public async Task Attributes_Create_Successfully(
+        long categoryId,
+        CategoryAttributePostDto request,
+        CategoryAttributetDto expectedResponse,
+        CategoryAttribute expectedDomainModel)
     {
-        var categoryId = DataForSeed.DomainModels.Category1_Empty.Id;
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
         {
             await SeedData(dbContext);
         }
 
-        var request = new CategoryAttributePostDto()
-        {
-            Key = "attribute1",
-            DataType = "Numeric",
-            UnitId = null,
-        };
-        CategoryAttributetDto? response;
+        CategoryAttributetDto? actualResponse;
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
         {
             var categoryService = new CategoryService(dbContext);
             var controller = new CategoriesController(categoryService);
 
             //Act.
-            var actionResult = await controller.CreateCategoryAttribute(categoryId, request, default);
+            var actionResult = await controller.CreateCategoryAttribute(
+                categoryId, request, TestContext.Current.CancellationToken);
             Assert.IsType<ActionResult<CategoryAttributetDto>>(actionResult);
-            response = actionResult.Value;
+            actualResponse = actionResult.Value;
         }
-        Assert.NotNull(response);
-        Assert.Equal("attribute1", response.Key);
-        Assert.Equal("Numeric", response.DataType);
-        Assert.Null(response.UnitId);
-        Assert.NotEqual(0, response.Id);
+        Assert.NotNull(actualResponse);
+        Assert.NotEqual(0, actualResponse.Id);
+        Assert.EquivalentWithExclusions(
+            expectedResponse,
+            actualResponse,
+            exclusionExpressions: r => r.Id);
 
-        CategoryAttribute? domainModel = null;
+        CategoryAttribute? actualDomainModel = null;
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
         {
             var category = await dbContext.Categories
                 .Include(c => c.Attributes)
-                .FirstOrDefaultAsync(c => c.Id == categoryId);
-            domainModel = category?.Attributes.SingleOrDefault();
+                .FirstOrDefaultAsync(c => c.Id == categoryId, TestContext.Current.CancellationToken);
+            actualDomainModel = category?.Attributes.SingleOrDefault();
         }
-        Assert.NotNull(domainModel);
-        Assert.Equal("attribute1", domainModel.Key);
-        Assert.Equal(CategoryAttributeDataTypes.Numeric, domainModel.DataType);
-        Assert.Equal(categoryId, domainModel.CategoryId);
+        Assert.NotNull(actualDomainModel);
+        Assert.EquivalentWithExclusions(
+            expectedDomainModel,
+            actualDomainModel,
+             r => r.Id,
+             r => r.ProductValues,
+             r => r.Unit);
     }
 
-    [Fact(DisplayName = "Категории: Атрибуты: создание с единицей измерения: успешно.")]
-    public async Task Attributes_Create_WithUnit_Successfully()
+    public static IEnumerable<TheoryDataRow<long, CategoryAttributePostDto, CategoryAttributetDto, CategoryAttribute>> GetInlineDataForCreate()
     {
-        var categoryId = DataForSeed.DomainModels.Category1_Empty.Id;
-        var unitId = DataForSeed.DomainModels.Unit1_Gb.Id;
-        using (var dbContext = new ApplicationDbContext(_dbContextOptions))
-        {
-            await SeedData(dbContext);
-        }
+        yield return new TheoryDataRow<long, CategoryAttributePostDto, CategoryAttributetDto, CategoryAttribute>(
 
-        var request = new CategoryAttributePostDto()
-        {
-            Key = "attribute1",
-            DataType = "Numeric",
-            UnitId = unitId,
-        };
-        CategoryAttributetDto? response;
-        using (var dbContext = new ApplicationDbContext(_dbContextOptions))
-        {
-            var categoryService = new CategoryService(dbContext);
-            var controller = new CategoriesController(categoryService);
+            // categoryId.
+            DataForSeed.DomainModels.Category1_Empty.Id,
 
-            //Act.
-            var actionResult = await controller.CreateCategoryAttribute(categoryId, request, default);
-            Assert.IsType<ActionResult<CategoryAttributetDto>>(actionResult);
-            response = actionResult.Value;
-        }
-        Assert.NotNull(response);
-        Assert.Equal("attribute1", response.Key);
-        Assert.Equal("Numeric", response.DataType);
-        Assert.NotEqual(0, response.Id);
-        Assert.NotNull(response.UnitId);
-        Assert.Equal(unitId, response.UnitId);
+            // request.
+            new CategoryAttributePostDto()
+            {
+                Key = "attribute1",
+                DataType = "Numeric",
+                UnitId = null,
+            },
 
-        CategoryAttribute? domainModel = null;
-        using (var dbContext = new ApplicationDbContext(_dbContextOptions))
-        {
-            var category = await dbContext.Categories
-                .Include(c => c.Attributes)
-                .SingleOrDefaultAsync(c => c.Id == categoryId);
-            domainModel = category?.Attributes.FirstOrDefault();
-        }
-        Assert.NotNull(domainModel);
-        Assert.Equal("attribute1", domainModel.Key);
-        Assert.Equal(CategoryAttributeDataTypes.Numeric, domainModel.DataType);
-        Assert.Equal(categoryId, domainModel.CategoryId);
-        Assert.NotNull(domainModel.UnitId);
-        Assert.Equal(DataForSeed.DomainModels.Unit1_Gb.Id, domainModel.UnitId);
+            // expectedResponse.
+            new CategoryAttributetDto()
+            {
+                Key = "attribute1",
+                DataType = "Numeric",
+                UnitId = null,
+            },
+
+            // expectedDomainModel.
+            new CategoryAttribute()
+            {
+                Key = "attribute1",
+                DataType = CategoryAttributeDataTypes.Numeric,
+                UnitId = null,
+                CategoryId = DataForSeed.DomainModels.Category1_Empty.Id,
+            }
+        );
+
+        yield return new TheoryDataRow<long, CategoryAttributePostDto, CategoryAttributetDto, CategoryAttribute>(
+
+            // categoryId.
+            DataForSeed.DomainModels.Category1_Empty.Id,
+
+            // request.
+            new CategoryAttributePostDto()
+            {
+                Key = "attribute1",
+                DataType = "Numeric",
+                UnitId = DataForSeed.DomainModels.Unit1_Gb.Id,
+            },
+
+            // expectedResponse.
+            new CategoryAttributetDto()
+            {
+                Key = "attribute1",
+                DataType = "Numeric",
+                UnitId = DataForSeed.DomainModels.Unit1_Gb.Id,
+            },
+
+            // expectedDomainModel.
+            new CategoryAttribute()
+            {
+                Key = "attribute1",
+                DataType = CategoryAttributeDataTypes.Numeric,
+                CategoryId = DataForSeed.DomainModels.Category1_Empty.Id,
+                UnitId = DataForSeed.DomainModels.Unit1_Gb.Id,
+            }
+        );
     }
 
     static async Task SeedData(ApplicationDbContext dbContext)
