@@ -73,7 +73,7 @@ public class CategoriesControllerTests
     [MemberData(nameof(GetInlineDataForGetById))]
     public async Task Categories_GetById_ReturnsOk(
         long categoryId,
-        Func<CategoryDto> expectedResponseCallback)
+        CategoryDto expectedResponse)
     {
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
         {
@@ -92,7 +92,6 @@ public class CategoriesControllerTests
             Assert.IsType<ActionResult<CategoryDto>>(actionResult);
             actualResponse = actionResult.Value;
         }
-        var expectedResponse = expectedResponseCallback.Invoke();
         Assert.NotNull(actualResponse);
         Assert.Equivalent(expectedResponse, actualResponse);
     }
@@ -170,10 +169,10 @@ public class CategoriesControllerTests
         Assert.Equivalent(expectedDomainModel, actualDomainModel);
     }
 
-    public static IEnumerable<object[]> GetInlineDataForPut()
+    public static IEnumerable<TheoryDataRow<long, CategoryPutDto, CategoryDto, Category>> GetInlineDataForPut()
     {
-        yield return new object[]
-        { 
+        yield return new TheoryDataRow<long, CategoryPutDto, CategoryDto, Category>(
+
             // categoryId.
             DataForSeed.DomainModels.Category1_Empty.Id,
 
@@ -196,13 +195,13 @@ public class CategoriesControllerTests
             new Category()
             {
                 Id = DataForSeed.DomainModels.Category1_Empty.Id,
-                Key ="new-key1",
+                Key = "new-key1",
                 DisplayName = "new-display-name1",
-            },
-        };
+            }
+        );
 
-        yield return new object[]
-        { 
+        yield return new TheoryDataRow<long, CategoryPutDto, CategoryDto, Category>(
+
             // categoryId.
             DataForSeed.DomainModels.Category1_Empty.Id,
 
@@ -227,11 +226,11 @@ public class CategoriesControllerTests
                 Id = DataForSeed.DomainModels.Category1_Empty.Id,
                 Key = DataForSeed.DomainModels.Category1_Empty.Key,
                 DisplayName = "new-display-name1",
-            },
-        };
+            }
+        );
 
-        yield return new object[]
-        { 
+        yield return new TheoryDataRow<long, CategoryPutDto, CategoryDto, Category>(
+
             // categoryId.
             DataForSeed.DomainModels.Category1_Empty.Id,
 
@@ -256,39 +255,39 @@ public class CategoriesControllerTests
                 Id = DataForSeed.DomainModels.Category1_Empty.Id,
                 Key = "new-key1",
                 DisplayName = DataForSeed.DomainModels.Category1_Empty.DisplayName,
-            },
-        };
+            }
+        );
     }
 
-    public static IEnumerable<object[]> GetInlineDataForGetById()
+    public static IEnumerable<TheoryDataRow<long, CategoryDto>> GetInlineDataForGetById()
     {
-        yield return new object[]
-        { 
+        yield return new TheoryDataRow<long, CategoryDto>(
+
             // categoryId.
             DataForSeed.DomainModels.Category1_Empty.Id,
 
-            // expectedResponseCallback.
-            () => new CategoryDto()
+            // expectedResponse.
+            new CategoryDto()
             {
                 Id = DataForSeed.DomainModels.Category1_Empty.Id,
                 Key = DataForSeed.DomainModels.Category1_Empty.Key,
                 DisplayName = DataForSeed.DomainModels.Category1_Empty.DisplayName,
-            },
-        };
+            }
+        );
 
-        yield return new object[]
-        { 
+        yield return new TheoryDataRow<long, CategoryDto>(
+
             // categoryId.
             DataForSeed.DomainModels.Category2_CPUs.Id,
 
-            // expectedResponseCallback.
-            () => new CategoryDto()
+            // expectedResponse.
+            new CategoryDto()
             {
                 Id = DataForSeed.DomainModels.Category2_CPUs.Id,
                 Key = DataForSeed.DomainModels.Category2_CPUs.Key,
                 DisplayName = DataForSeed.DomainModels.Category2_CPUs.DisplayName,
-            },
-        };
+            }
+        );
     }
 
     static async Task SeedData(ApplicationDbContext dbContext)
