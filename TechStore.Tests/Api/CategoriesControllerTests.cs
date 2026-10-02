@@ -50,7 +50,8 @@ public class CategoriesControllerTests
             var controller = new CategoriesController(categoryService);
 
             //Act.
-            var actionResult = await controller.GetCategories(paging, default);
+            var actionResult = await controller.GetCategories(
+                paging, TestContext.Current.CancellationToken);
             Assert.IsType<ActionResult<PagedListResponseDto<CategoryListDto>>>(actionResult);
             response = actionResult.Value;
         }
@@ -79,20 +80,21 @@ public class CategoriesControllerTests
             await SeedData(dbContext);
         }
 
-        CategoryDto? response = null;
+        CategoryDto? actualResponse = null;
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
         {
             var categoryService = new CategoryService(dbContext);
             var controller = new CategoriesController(categoryService);
 
             //Act.
-            var actionResult = await controller.GetCategoryById(categoryId, default);
+            var actionResult = await controller.GetCategoryById(
+                categoryId, TestContext.Current.CancellationToken);
             Assert.IsType<ActionResult<CategoryDto>>(actionResult);
-            response = actionResult.Value;
+            actualResponse = actionResult.Value;
         }
-        var expectedModel = expectedResponseCallback.Invoke();
-        Assert.NotNull(response);
-        AssertHelper.Equal(expectedModel, response);
+        var expectedResponse = expectedResponseCallback.Invoke();
+        Assert.NotNull(actualResponse);
+        Assert.Equivalent(expectedResponse, actualResponse);
     }
 
     [Fact(DisplayName = "Категории: создание: успешно.")]
@@ -110,7 +112,8 @@ public class CategoriesControllerTests
             var controller = new CategoriesController(categoryService);
 
             //Act.
-            var actionResult = await controller.CreateCategory(request, default);
+            var actionResult = await controller.CreateCategory(
+                request, TestContext.Current.CancellationToken);
             Assert.IsType<ActionResult<CategoryDto>>(actionResult);
             response = actionResult.Value;
         }
@@ -121,7 +124,8 @@ public class CategoriesControllerTests
         Category? domainModel = null;
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
         {
-            domainModel = await dbContext.Categories.FirstOrDefaultAsync(c => c.Id == response.Id);
+            domainModel = await dbContext.Categories.FirstOrDefaultAsync(
+                c => c.Id == response.Id, TestContext.Current.CancellationToken);
         }
         Assert.NotNull(domainModel);
         Assert.Equal("cat1", domainModel.Key);
@@ -133,35 +137,37 @@ public class CategoriesControllerTests
     public async Task Categories_Update_Successfully(
         long categoryId,
         CategoryPutDto putRequest,
-        Func<CategoryDto, bool> checkResponseCallback,
-        Func<Category, bool> checkDomainModelCallback)
+        CategoryDto expectedResponse,
+        Category expectedDomainModel)
     {
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
         {
             await SeedData(dbContext);
         }
 
-        CategoryDto? response = null;
+        CategoryDto? actualResponse = null;
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
         {
             var categoryService = new CategoryService(dbContext);
             var controller = new CategoriesController(categoryService);
 
             //Act.
-            var actionResult = await controller.UpdateCategory(categoryId, putRequest, default);
+            var actionResult = await controller.UpdateCategory(
+                categoryId, putRequest, TestContext.Current.CancellationToken);
             Assert.IsType<ActionResult<CategoryDto>>(actionResult);
-            response = actionResult.Value;
+            actualResponse = actionResult.Value;
         }
-        Assert.NotNull(response);
-        checkResponseCallback.Invoke(response);
+        Assert.NotNull(actualResponse);
+        Assert.Equivalent(expectedResponse, actualResponse);
 
-        Category? domainModel = null;
+        Category? actualDomainModel = null;
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
         {
-            domainModel = await dbContext.Categories.FirstOrDefaultAsync(c => c.Id == response.Id);
+            actualDomainModel = await dbContext.Categories
+                .FirstOrDefaultAsync(c => c.Id == actualResponse.Id, TestContext.Current.CancellationToken);
         }
-        Assert.NotNull(domainModel);
-        checkDomainModelCallback.Invoke(domainModel);
+        Assert.NotNull(actualDomainModel);
+        Assert.Equivalent(expectedDomainModel, actualDomainModel);
     }
 
     public static IEnumerable<object[]> GetInlineDataForPut()
@@ -178,15 +184,21 @@ public class CategoriesControllerTests
                 DisplayName = "new-display-name1",
             },
 
-            // checkResponseCallback.
-            (CategoryDto response) =>
-                response.Key == "new-cat1"
-                && response.DisplayName == "new-display-name1",
+            // expectedResponse.
+            new CategoryDto()
+            {
+                Id = DataForSeed.DomainModels.Category1_Empty.Id,
+                Key = "new-key1",
+                DisplayName = "new-display-name1",
+            },
 
-            // checkDomainModelCallback.
-            (Category domain) =>
-                domain.Key == "new-key1"
-                && domain.DisplayName == "new-display-name1"
+            // expectedDomainModel.
+            new Category()
+            {
+                Id = DataForSeed.DomainModels.Category1_Empty.Id,
+                Key ="new-key1",
+                DisplayName = "new-display-name1",
+            },
         };
 
         yield return new object[]
@@ -201,15 +213,21 @@ public class CategoriesControllerTests
                 DisplayName = "new-display-name1",
             },
 
-            // checkResponseCallback.
-            (CategoryDto response) =>
-                response.Key == "processors"
-                && response.DisplayName == "new-display-name1",
+            // expectedResponse.
+            new CategoryDto()
+            {
+                Id = DataForSeed.DomainModels.Category1_Empty.Id,
+                Key = DataForSeed.DomainModels.Category1_Empty.Key,
+                DisplayName = "new-display-name1",
+            },
 
-            // checkDomainModelCallback.
-            (Category domain) =>
-                domain.Key == "processors"
-                && domain.DisplayName == "new-display-name1"
+            // expectedDomainModel.
+            new Category()
+            {
+                Id = DataForSeed.DomainModels.Category1_Empty.Id,
+                Key = DataForSeed.DomainModels.Category1_Empty.Key,
+                DisplayName = "new-display-name1",
+            },
         };
 
         yield return new object[]
@@ -224,15 +242,21 @@ public class CategoriesControllerTests
                 DisplayName = null,
             },
 
-            // checkResponseCallback.
-            (CategoryDto response) =>
-                response.Key == "new-key1"
-                && response.DisplayName == "CPUs",
+            // expectedResponse.
+            new CategoryDto()
+            {
+                Id = DataForSeed.DomainModels.Category1_Empty.Id,
+                Key = "new-key1",
+                DisplayName = DataForSeed.DomainModels.Category1_Empty.DisplayName,
+            },
 
-            // checkDomainModelCallback.
-            (Category domain) =>
-                domain.Key == "new-key1"
-                && domain.DisplayName == "CPUs"
+            // expectedDomainModel.
+            new Category()
+            {
+                Id = DataForSeed.DomainModels.Category1_Empty.Id,
+                Key = "new-key1",
+                DisplayName = DataForSeed.DomainModels.Category1_Empty.DisplayName,
+            },
         };
     }
 
@@ -244,12 +268,12 @@ public class CategoriesControllerTests
             DataForSeed.DomainModels.Category1_Empty.Id,
 
             // expectedResponseCallback.
-            () => new CategoryDto() 
+            () => new CategoryDto()
             {
                 Id = DataForSeed.DomainModels.Category1_Empty.Id,
                 Key = DataForSeed.DomainModels.Category1_Empty.Key,
                 DisplayName = DataForSeed.DomainModels.Category1_Empty.DisplayName,
-            },   
+            },
         };
 
         yield return new object[]
