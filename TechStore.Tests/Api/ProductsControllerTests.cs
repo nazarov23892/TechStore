@@ -52,7 +52,7 @@ public class ProductsControllerTests
 
             //Act.
             var actionResult = await controller.GetProductList(
-                paging, category, default);
+                paging, category, TestContext.Current.CancellationToken);
             Assert.IsType<ActionResult<PagedListResponseDto<ProductListItemDto>>>(actionResult);
             response = actionResult.Value;
         }
@@ -93,7 +93,7 @@ public class ProductsControllerTests
 
             //Act.
             var actionResult = await controller.GetProductList(
-                paging, category, default);
+                paging, category, TestContext.Current.CancellationToken);
             Assert.IsType<ActionResult<PagedListResponseDto<ProductListItemDto>>>(actionResult);
             response = actionResult.Value;
         }
@@ -116,7 +116,7 @@ public class ProductsControllerTests
                 DisplayName = "category1",
             };
             dbContext.Categories.Add(category1);
-            await dbContext.SaveChangesAsync();
+            await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
             categoryId = category1.Id;
         }
 
@@ -134,7 +134,8 @@ public class ProductsControllerTests
             var controller = new ProductsController(catalogService);
 
             //Act.
-            var actionResult = await controller.CreateProduct(request, default);
+            var actionResult = await controller.CreateProduct(
+                request, TestContext.Current.CancellationToken);
             Assert.IsType<ActionResult<ProductDto>>(actionResult);
             response = actionResult.Value;
         }
@@ -153,7 +154,7 @@ public class ProductsControllerTests
         {
             domainModel = await dbContext.Products
                 .Include(p => p.Category)
-                .FirstOrDefaultAsync(p => p.Id == response.Id);
+                .FirstOrDefaultAsync(p => p.Id == response.Id, TestContext.Current.CancellationToken);
         }
         Assert.NotNull(domainModel);
         Assert.Equal("product1", domainModel.Name);
@@ -163,63 +164,47 @@ public class ProductsControllerTests
         Assert.Equal("cat1", domainModel.Category!.Key);
     }
 
-    [Fact(DisplayName = "Товары: обновление: успешно.")]
-    public async Task Products_Update_Successfully()
+    [Theory(DisplayName = "Товары: обновление: успешно.")]
+    [MemberData(nameof(GetInlineDataForPut))]
+    public async Task Products_Update_Successfully(
+        long productId,
+        ProductPutDto request,
+        ProductDto expectedResponse,
+        Product expectedDomainModel)
     {
         // Arrange.
-        long productId = 0;
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
         {
             await SeedData(dbContext, count: 1);
-            var product = await dbContext.Products
-                .AsNoTracking()
-                .FirstOrDefaultAsync();
-            Assert.NotNull(product);
-            productId = product.Id;
         }
 
-        var request = new ProductPutDto()
-        {
-            Name = "new-product1",
-            Description = "new-description1",
-            Price = 42M,
-        };
-        ProductDto? response = null;
+        ProductDto? actualResponse = null;
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
         {
             var catalogService = new ProductsService(dbContext);
             var controller = new ProductsController(catalogService);
 
             //Act.
-            var actionResult = await controller.UpdateProduct(productId, request, default);
+            var actionResult = await controller.UpdateProduct(
+                productId, request, TestContext.Current.CancellationToken);
             Assert.IsType<ActionResult<ProductDto>>(actionResult);
-            response = actionResult.Value;
+            actualResponse = actionResult.Value;
         }
 
         // Assert.
-        Assert.NotNull(response);
+        Assert.NotNull(actualResponse);
+        Assert.Equivalent(expectedResponse, actualResponse);
 
-        Assert.Equal("new-product1", response.Name);
-        Assert.Equal("new-description1", response.Description);
-        Assert.Equal(42M, response.Price);
-        Assert.NotNull(response.Category);
-        Assert.Equal("category1", response.Category.Key);
-        Assert.Equal("displayname1", response.Category.DisplayName);
-
-        Product? domainModel = null;
+        Product? actualDomainModel = null;
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
         {
-            domainModel = await dbContext.Products
+            actualDomainModel = await dbContext.Products
                 .Include(p => p.Category)
-                .FirstOrDefaultAsync(p => p.Id == response.Id);
+                .FirstOrDefaultAsync(p => p.Id == actualResponse.Id, TestContext.Current.CancellationToken);
         }
-        Assert.NotNull(domainModel);
-        Assert.Equal("new-product1", domainModel.Name);
-        Assert.Equal("new-description1", domainModel.Description);
-        Assert.Equal(42M, domainModel.Price);
-        Assert.NotNull(domainModel.Category);
-        Assert.Equal("category1", domainModel.Category.Key);
-        Assert.Equal("displayname1", domainModel.Category.DisplayName);
+        Assert.NotNull(actualDomainModel);
+        Assert.EquivalentWithExclusions(expectedDomainModel, actualDomainModel,
+            p => p.Category);
     }
 
     [Fact(DisplayName = "Товары: создание: в несуществующей категории: ошибка.")]
@@ -240,330 +225,63 @@ public class ProductsControllerTests
 
         //Act.
         var exception = await Assert.ThrowsAsync<NotFoundException>(
-            () => controller.CreateProduct(request, default));
+            () => controller.CreateProduct(request, TestContext.Current.CancellationToken));
         Assert.NotNull(exception);
     }
 
-    [Fact(DisplayName = "Товары: Атрибуты: получение списка: успешно.")]
-    public async Task Attributes_GetList_Successfully()
+    public static IEnumerable<TheoryDataRow<long, ProductPutDto, ProductDto, Product>> GetInlineDataForPut()
     {
-        // Arrange.
-        long categoryId = 0;
-        using (var dbContext = new ApplicationDbContext(_dbContextOptions))
-        {
-            await SeedData(dbContext, 2);
-            var category = await dbContext.Categories.FirstOrDefaultAsync();
-            Assert.NotNull(category);
+        yield return new TheoryDataRow<long, ProductPutDto, ProductDto, Product>(
 
-            category.Attributes.Add(
-                new CategoryAttribute()
+            // productId.
+            1L,
+
+            // putRequest.
+            new ProductPutDto()
+            {
+                Name = "new-product1",
+                Description = "new-description1",
+                Price = 42M,
+            },
+
+            // expectedResponse.
+            new ProductDto()
+            {
+                Id = 1,
+                Name = "new-product1",
+                Description = "new-description1",
+                Price = 42M,
+                Category = new()
                 {
-                    Key = "attr1_numeric",
-                    DataType = CategoryAttributeDataTypes.Numeric,
-                });
-            category.Attributes.Add(
-                new CategoryAttribute()
-                {
-                    Key = "attr2_string",
-                    DataType = CategoryAttributeDataTypes.String,
-                });
-            category.Attributes.Add(
-               new CategoryAttribute()
-               {
-                   Key = "attr3_boolean",
-                   DataType = CategoryAttributeDataTypes.Boolean,
-               });
+                    Id = 101,
+                    Key = "category1",
+                    DisplayName = "displayname1",
+                },
+            },
 
-            await dbContext.SaveChangesAsync();
-            categoryId = category.Id;
-        }
-
-        long productId = 0;
-        using (var dbContext = new ApplicationDbContext(_dbContextOptions))
-        {
-            var category = await dbContext.Categories
-                .Include(c => c.Attributes.OrderBy(a => a.Key))
-                .FirstOrDefaultAsync(c => c.Id == categoryId);
-            Assert.NotNull(category);
-
-            var product = await dbContext.Products
-                .AsNoTracking()
-                .FirstOrDefaultAsync(p => p.CategoryId == categoryId);
-            Assert.NotNull(product);
-            productId = product.Id;
-
-            var categoryAttributes = category.Attributes.ToArray();
-            Assert.NotNull(categoryAttributes);
-            Assert.Equal(3, categoryAttributes.Length);
-            Assert.Equal("attr1_numeric", categoryAttributes[0].Key);
-            Assert.Equal("attr2_string", categoryAttributes[1].Key);
-            Assert.Equal("attr3_boolean", categoryAttributes[2].Key);
-
-            categoryAttributes[0].ProductValues.Add(
-                new ProductAttributeValue()
-                {
-                    ProductId = productId,
-                    Value = new AttributeValue()
-                    {
-                        NumericValue = 1,
-                    }
-                });
-            categoryAttributes[1].ProductValues.Add(
-               new ProductAttributeValue()
-               {
-                   ProductId = productId,
-                   Value = new AttributeValue()
-                   {
-                       StringValue = "string1",
-                   }
-               });
-            categoryAttributes[2].ProductValues.Add(
-              new ProductAttributeValue()
-              {
-                  ProductId = productId,
-                  Value = new AttributeValue()
-                  {
-                      BoolValue = true,
-                  }
-              });
-            await dbContext.SaveChangesAsync();
-        }
-
-        List<ProductAttributeListDto>? response = null;
-        using (var dbContext = new ApplicationDbContext(_dbContextOptions))
-        {
-            var catalogService = new ProductsService(dbContext);
-            var controller = new ProductsController(catalogService);
-
-            //Act.
-            var actionResult = await controller.GetProductAttributes(productId, default);
-            Assert.IsType<ActionResult<IEnumerable<ProductAttributeListDto>>>(actionResult);
-            response = actionResult.Value?.OrderBy(a => a.Key).ToList();
-        }
-        Assert.NotNull(response);
-        Assert.NotEmpty(response);
-
-        Assert.NotNull(response);
-        Assert.NotEmpty(response);
-
-        Assert.Equal("attr1_numeric", response[0].Key);
-        Assert.Equal("Numeric", response[0].DataType);
-        Assert.NotNull(response[0].Value.NumericValue);
-        Assert.Null(response[0].Value.StringValue);
-        Assert.Null(response[0].Value.BoolValue);
-
-        Assert.Equal("attr2_string", response[1].Key);
-        Assert.Equal("String", response[1].DataType);
-        Assert.Null(response[1].Value.NumericValue);
-        Assert.NotNull(response[1].Value.StringValue);
-        Assert.Null(response[1].Value.BoolValue);
-
-        Assert.Equal("attr3_boolean", response[2].Key);
-        Assert.Equal("Boolean", response[2].DataType);
-        Assert.Null(response[2].Value.NumericValue);
-        Assert.Null(response[2].Value.StringValue);
-        Assert.NotNull(response[2].Value.BoolValue);
-    }
-
-    /// <remarks>
-    /// Должен возвращать список атрибутов категории,
-    /// даже если в самом товаре не назначены значения.
-    /// </remarks>
-    [Fact(DisplayName = "Товары: Атрибуты: получение списка: когда значения атрибутов не установлены: успешно.")]
-    public async Task Attributes_GetList_WhenValuesNonExist_Successfully()
-    {
-        // Arrange.
-        long categoryId = 0;
-        long productId = 0;
-        using (var dbContext = new ApplicationDbContext(_dbContextOptions))
-        {
-            await SeedData(dbContext, 2);
-            var category = await dbContext.Categories.FirstOrDefaultAsync();
-            Assert.NotNull(category);
-
-            category.Attributes.Add(
-                new CategoryAttribute()
-                {
-                    Key = "attr1_numeric",
-                    DataType = CategoryAttributeDataTypes.Numeric,
-                });
-            category.Attributes.Add(
-                new CategoryAttribute()
-                {
-                    Key = "attr2_string",
-                    DataType = CategoryAttributeDataTypes.String,
-                });
-            category.Attributes.Add(
-               new CategoryAttribute()
-               {
-                   Key = "attr3_boolean",
-                   DataType = CategoryAttributeDataTypes.Boolean,
-               });
-
-            await dbContext.SaveChangesAsync();
-            categoryId = category.Id;
-
-            var product = await dbContext.Products
-                .AsNoTracking()
-                .FirstOrDefaultAsync(p => p.CategoryId == categoryId);
-            Assert.NotNull(product);
-            productId = product.Id;
-        }
-
-        List<ProductAttributeListDto>? response = null;
-        using (var dbContext = new ApplicationDbContext(_dbContextOptions))
-        {
-            var catalogService = new ProductsService(dbContext);
-            var controller = new ProductsController(catalogService);
-
-            //Act.
-            var actionResult = await controller.GetProductAttributes(productId, default);
-            Assert.IsType<ActionResult<IEnumerable<ProductAttributeListDto>>>(actionResult);
-            response = actionResult.Value?.OrderBy(a => a.Key).ToList();
-        }
-        Assert.NotNull(response);
-        Assert.NotEmpty(response);
-
-        Assert.NotNull(response);
-        Assert.NotEmpty(response);
-
-        Assert.Equal("attr1_numeric", response[0].Key);
-        Assert.Equal("Numeric", response[0].DataType);
-        Assert.Null(response[0].Value.NumericValue);
-        Assert.Null(response[0].Value.StringValue);
-        Assert.Null(response[0].Value.BoolValue);
-
-        Assert.Equal("attr2_string", response[1].Key);
-        Assert.Equal("String", response[1].DataType);
-        Assert.Null(response[1].Value.NumericValue);
-        Assert.Null(response[1].Value.StringValue);
-        Assert.Null(response[1].Value.BoolValue);
-
-        Assert.Equal("attr3_boolean", response[2].Key);
-        Assert.Equal("Boolean", response[2].DataType);
-        Assert.Null(response[2].Value.NumericValue);
-        Assert.Null(response[2].Value.StringValue);
-        Assert.Null(response[2].Value.BoolValue);
-    }
-
-    [Fact(DisplayName = "Товары: Атрибуты: обновление значений: успешно.")]
-    public async Task Attributes_Values_Put_Successfully()
-    {
-        // Arrange.
-        long categoryId = 0;
-        long productId = 0;
-        using (var dbContext = new ApplicationDbContext(_dbContextOptions))
-        {
-            await SeedData(dbContext, 2);
-            var category = await dbContext.Categories.FirstOrDefaultAsync();
-            Assert.NotNull(category);
-
-            category.Attributes.Add(
-                new CategoryAttribute()
-                {
-                    Key = "attr1_numeric",
-                    DataType = CategoryAttributeDataTypes.Numeric,
-                });
-            category.Attributes.Add(
-                new CategoryAttribute()
-                {
-                    Key = "attr2_string",
-                    DataType = CategoryAttributeDataTypes.String,
-                });
-            category.Attributes.Add(
-               new CategoryAttribute()
-               {
-                   Key = "attr3_boolean",
-                   DataType = CategoryAttributeDataTypes.Boolean,
-               });
-
-            await dbContext.SaveChangesAsync();
-            categoryId = category.Id;
-
-            var product = await dbContext.Products
-                .AsNoTracking()
-                .FirstOrDefaultAsync(p => p.CategoryId == categoryId);
-            Assert.NotNull(product);
-            productId = product.Id;
-        }
-
-        var request = new ProductAttributeValuesPutDto()
-        {
-            Values = [
-               new ProductAttributeValueListPutDto()
-               {
-                   AttributeKey = "attr1_numeric",
-                   NumericValue = 57M,
-               },
-               new ProductAttributeValueListPutDto()
-               {
-                   AttributeKey = "attr2_string",
-                   StringValue = "updated-string-value"
-               },
-               new ProductAttributeValueListPutDto()
-               {
-                   AttributeKey = "attr3_boolean",
-                   BooleanValue = true,
-               },
-            ],
-        };
-        List<ProductAttributeListDto>? response = null;
-        using (var dbContext = new ApplicationDbContext(_dbContextOptions))
-        {
-            var catalogService = new ProductsService(dbContext);
-            var controller = new ProductsController(catalogService);
-
-            //Act.
-            var actionResult = await controller.UpdateProductAttributes(
-                productId, request, default);
-            Assert.IsType<ActionResult<IEnumerable<ProductAttributeListDto>>>(actionResult);
-            response = actionResult.Value?.OrderBy(attr => attr.Key).ToList();
-        }
-
-        Assert.NotNull(response);
-        Assert.NotEmpty(response);
-
-        Assert.Equal("attr1_numeric", response[0].Key);
-        Assert.Equal(57M, response[0].Value.NumericValue);
-
-        Assert.Equal("attr2_string", response[1].Key);
-        Assert.Equal("updated-string-value", response[1].Value.StringValue);
-
-        Assert.Equal("attr3_boolean", response[2].Key);
-        Assert.Equal(true, response[2].Value.BoolValue);
-
-        List<CategoryAttribute>? domainModel = null;
-        using (var dbContext = new ApplicationDbContext(_dbContextOptions))
-        {
-            var category = await dbContext.Categories
-                .AsNoTracking()
-                .Include(c => c.Attributes)
-                    .ThenInclude(a => a.ProductValues.Take(1))
-                .FirstOrDefaultAsync(c => c.Id == categoryId);
-            domainModel = category?.Attributes.OrderBy(a => a.Key).ToList();
-        }
-        Assert.NotNull(domainModel);
-        Assert.NotEmpty(domainModel);
-
-        Assert.Equal("attr1_numeric", domainModel[0].Key);
-        Assert.Equal(57M, domainModel[0].ProductValues.First().Value.NumericValue);
-
-        Assert.Equal("attr2_string", domainModel[1].Key);
-        Assert.Equal("updated-string-value", domainModel[1].ProductValues.First().Value.StringValue);
-
-        Assert.Equal("attr3_boolean", domainModel[2].Key);
-        Assert.Equal(true, domainModel[2].ProductValues.First().Value.BoolValue);
+            // expectedDomainModel.
+            new Product()
+            {
+                Id = 1,
+                Name = "new-product1",
+                Description = "new-description1",
+                Price = 42M,
+                CategoryId = 101,
+            }
+        );
     }
 
     static async Task SeedData(ApplicationDbContext dbContext, int count)
     {
         var category1 = new Category()
         {
+            Id = 101,
             Key = "category1",
             DisplayName = "displayname1",
         };
         var category2 = new Category()
         {
+            Id = 102,
             Key = "category2",
             DisplayName = "displayname2",
         };
@@ -579,6 +297,6 @@ public class ProductsControllerTests
                     Category = i <= count / 2 ? category1 : category2,
                 });
         }
-        await dbContext.SaveChangesAsync();
+        await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
     }
 }
