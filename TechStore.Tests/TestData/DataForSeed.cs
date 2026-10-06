@@ -100,5 +100,14 @@ public static class DataForSeed
                 Attribute4_Tdp,
             ],
         };
+
+        public static Product Product1_Intel => new()
+        {
+            Id = 601,
+            Name = "Intel core i7",
+            Description = "",
+            CategoryId = Category2_CPUs.Id,
+            Price = 601.1M,
+        };
     }
 }
