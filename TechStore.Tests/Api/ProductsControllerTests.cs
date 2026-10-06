@@ -45,7 +45,7 @@ public class ProductsControllerTests
             Page = 1,
             PerPage = 3,
         };
-        var category = "category1";
+        var categoryKey = DataForSeed.DomainModels.Category1_Empty.Key;
         PagedListResponseDto<ProductListItemDto>? response = null;
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
         {
@@ -54,7 +54,7 @@ public class ProductsControllerTests
 
             //Act.
             var actionResult = await controller.GetProductList(
-                paging, category, TestContext.Current.CancellationToken);
+                paging, categoryKey, TestContext.Current.CancellationToken);
             Assert.IsType<ActionResult<PagedListResponseDto<ProductListItemDto>>>(actionResult);
             response = actionResult.Value;
         }
@@ -249,9 +249,9 @@ public class ProductsControllerTests
                 Price = 42M,
                 Category = new()
                 {
-                    Id = 101,
-                    Key = "category1",
-                    DisplayName = "displayname1",
+                    Id = DataForSeed.DomainModels.Category1_Empty.Id,
+                    Key = DataForSeed.DomainModels.Category1_Empty.Key,
+                    DisplayName = DataForSeed.DomainModels.Category1_Empty.DisplayName,
                 },
             },
 
@@ -262,7 +262,7 @@ public class ProductsControllerTests
                 Name = "new-product1",
                 Description = "new-description1",
                 Price = 42M,
-                CategoryId = 101,
+                CategoryId = DataForSeed.DomainModels.Category1_Empty.Id,
             }
         );
     }
@@ -279,16 +279,8 @@ public class ProductsControllerTests
     static async Task SeedProducts(
         ApplicationDbContext dbContext, int count, CancellationToken cancellationToken)
     {
-        var category1 = new Category()
-        {
-            Key = "category1",
-            DisplayName = "displayname1",
-        };
-        var category2 = new Category()
-        {
-            Key = "category2",
-            DisplayName = "displayname2",
-        };
+        var category1 = DataForSeed.DomainModels.Category1_Empty;
+        var category2 = DataForSeed.DomainModels.Category2_CPUs;
         for (var i = 0; i < count; i++)
         {
             var product = new Product()
@@ -297,7 +289,7 @@ public class ProductsControllerTests
                 Name = $"product-{1 + i}",
                 Description = $"description-{1 + i}",
                 Price = 1 + i,
-                Category = i <= count / 2 ? category1 : category2,
+                CategoryId = i <= count / 2 ? category1.Id : category2.Id,
             };
             dbContext.Products.Add(product);
         }
