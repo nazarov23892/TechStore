@@ -149,43 +149,14 @@ public class ProductsControllerAttributesTests
     public async Task Attributes_GetList_WhenValuesNonExist_Successfully()
     {
         // Arrange.
-        long categoryId = 0;
-        long productId = 0;
+        var cancellationToken = TestContext.Current.CancellationToken;
+        long categoryId = DataForSeed.DomainModels.Category2_CPUs.Id;
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
         {
-            await SeedData(dbContext, TestContext.Current.CancellationToken);
-            var category = await dbContext.Categories.FirstOrDefaultAsync(TestContext.Current.CancellationToken);
-            Assert.NotNull(category);
-
-            category.Attributes.Add(
-                new CategoryAttribute()
-                {
-                    Key = "attr1_numeric",
-                    DataType = CategoryAttributeDataTypes.Numeric,
-                });
-            category.Attributes.Add(
-                new CategoryAttribute()
-                {
-                    Key = "attr2_string",
-                    DataType = CategoryAttributeDataTypes.String,
-                });
-            category.Attributes.Add(
-               new CategoryAttribute()
-               {
-                   Key = "attr3_boolean",
-                   DataType = CategoryAttributeDataTypes.Boolean,
-               });
-
-            await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
-            categoryId = category.Id;
-
-            var product = await dbContext.Products
-                .AsNoTracking()
-                .FirstOrDefaultAsync(p => p.CategoryId == categoryId, TestContext.Current.CancellationToken);
-            Assert.NotNull(product);
-            productId = product.Id;
+            await SeedData(dbContext, cancellationToken);
         }
 
+        long productId = DataForSeed.DomainModels.Product1_Intel.Id;
         List<ProductAttributeListDto>? response = null;
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
         {
@@ -200,27 +171,31 @@ public class ProductsControllerAttributesTests
         }
         Assert.NotNull(response);
         Assert.NotEmpty(response);
+        Assert.Equal(4, response.Count);
 
-        Assert.NotNull(response);
-        Assert.NotEmpty(response);
-
-        Assert.Equal("attr1_numeric", response[0].Key);
-        Assert.Equal("Numeric", response[0].DataType);
+        Assert.Equal(DataForSeed.DomainModels.Attribute1_Frequency.Key, response[0].Key);
+        Assert.Equal(DataForSeed.DomainModels.Attribute1_Frequency.DataType.ToString(), response[0].DataType);
         Assert.Null(response[0].Value.NumericValue);
         Assert.Null(response[0].Value.StringValue);
         Assert.Null(response[0].Value.BoolValue);
 
-        Assert.Equal("attr2_string", response[1].Key);
-        Assert.Equal("String", response[1].DataType);
+        Assert.Equal(DataForSeed.DomainModels.Attribute2_GpuIntegrated.Key, response[1].Key);
+        Assert.Equal(DataForSeed.DomainModels.Attribute2_GpuIntegrated.DataType.ToString(), response[1].DataType);
         Assert.Null(response[1].Value.NumericValue);
-        Assert.Null(response[1].Value.StringValue);
         Assert.Null(response[1].Value.BoolValue);
+        Assert.Null(response[1].Value.StringValue);
 
-        Assert.Equal("attr3_boolean", response[2].Key);
-        Assert.Equal("Boolean", response[2].DataType);
+        Assert.Equal(DataForSeed.DomainModels.Attribute3_Socket.Key, response[2].Key);
+        Assert.Equal(DataForSeed.DomainModels.Attribute3_Socket.DataType.ToString(), response[2].DataType);
         Assert.Null(response[2].Value.NumericValue);
-        Assert.Null(response[2].Value.StringValue);
         Assert.Null(response[2].Value.BoolValue);
+        Assert.Null(response[2].Value.StringValue);
+
+        Assert.Equal(DataForSeed.DomainModels.Attribute4_Tdp.Key, response[3].Key);
+        Assert.Equal(DataForSeed.DomainModels.Attribute4_Tdp.DataType.ToString(), response[3].DataType);
+        Assert.Null(response[3].Value.NumericValue);
+        Assert.Null(response[3].Value.BoolValue);
+        Assert.Null(response[3].Value.StringValue);
     }
 
     [Fact(DisplayName = "Товары: Атрибуты: обновление значений: успешно.")]
