@@ -56,6 +56,7 @@ public class ProductsService : IProductsService
         var products = await query
             .AsNoTracking()
             .Include(p => p.Category)
+            .OrderBy(p => p.Id)
             .WithPaging(pagingStartsZero, pagingRequest.PerPage)
             .ToListAsync(cancellationToken);
 

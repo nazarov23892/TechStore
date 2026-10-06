@@ -37,7 +37,8 @@ public class ProductsControllerTests
         // Arrange.
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
         {
-            await SeedData(dbContext, 20, TestContext.Current.CancellationToken);
+            await SeedData(dbContext, TestContext.Current.CancellationToken);
+            await SeedProducts(dbContext, count: 20, TestContext.Current.CancellationToken);
         }
         var paging = new PagingRequestDto()
         {
@@ -78,7 +79,8 @@ public class ProductsControllerTests
         // Arrange.
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
         {
-            await SeedData(dbContext, 10, TestContext.Current.CancellationToken);
+            await SeedData(dbContext, TestContext.Current.CancellationToken);
+            await SeedProducts(dbContext, count: 10, TestContext.Current.CancellationToken);
         }
         var paging = new PagingRequestDto()
         {
@@ -111,7 +113,7 @@ public class ProductsControllerTests
         long categoryId = DataForSeed.DomainModels.Category1_Empty.Id;
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
         {
-            await SeedData(dbContext, 0, TestContext.Current.CancellationToken);
+            await SeedData(dbContext, TestContext.Current.CancellationToken);
         }
 
         var request = new ProductPostDto()
@@ -168,7 +170,8 @@ public class ProductsControllerTests
         // Arrange.
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
         {
-            await SeedData(dbContext, count: 1, TestContext.Current.CancellationToken);
+            await SeedData(dbContext, TestContext.Current.CancellationToken);
+            await SeedProducts(dbContext, count: 1, TestContext.Current.CancellationToken);
         }
 
         ProductDto? actualResponse = null;
@@ -264,28 +267,39 @@ public class ProductsControllerTests
         );
     }
 
-    static async Task SeedData(ApplicationDbContext dbContext, int count, CancellationToken cancellationToken)
+    static async Task SeedData(
+        ApplicationDbContext dbContext, CancellationToken cancellationToken)
     {
-        var category1 = DataForSeed.DomainModels.Category1_Empty;
-        var category2 = DataForSeed.DomainModels.Category2_CPUs;
-
-        dbContext.Categories.AddRange(
-            category1,
-            category2);
-
+        dbContext.Units.AddRange(DataForSeed.DomainModels.Units);
+        dbContext.Categories.Add(DataForSeed.DomainModels.Category1_Empty);
+        dbContext.Categories.Add(DataForSeed.DomainModels.Category2_CPUs);
         await dbContext.SaveChangesAsync(cancellationToken);
+    }
 
+    static async Task SeedProducts(
+        ApplicationDbContext dbContext, int count, CancellationToken cancellationToken)
+    {
+        var category1 = new Category()
+        {
+            Key = "category1",
+            DisplayName = "displayname1",
+        };
+        var category2 = new Category()
+        {
+            Key = "category2",
+            DisplayName = "displayname2",
+        };
         for (var i = 0; i < count; i++)
         {
-            dbContext.Products.Add(
-                new Product()
-                {
-                    Id = 1 + i,
-                    Name = $"product-{1 + i}",
-                    Description = $"description-{1 + i}",
-                    Price = 1 + i,
-                    CategoryId = i <= count / 2 ? category1.Id : category2.Id,
-                });
+            var product = new Product()
+            {
+                Id = 1 + i,
+                Name = $"product-{1 + i}",
+                Description = $"description-{1 + i}",
+                Price = 1 + i,
+                Category = i <= count / 2 ? category1 : category2,
+            };
+            dbContext.Products.Add(product);
         }
         await dbContext.SaveChangesAsync(cancellationToken);
     }
