@@ -251,17 +251,77 @@ public class ProductsControllerAttributesTests
         Assert.NotNull(response);
         Assert.NotEmpty(response);
 
-        Assert.Equal(DataForSeed.DomainModels.Attribute1_Frequency.Key, response[0].Key);
-        Assert.Equal(3.3M, response[0].Value.NumericValue);
+        var expectedAttributes = new ProductAttributeListDto[]
+        {
+            new()
+            {
+                Key = DataForSeed.DomainModels.Attribute1_Frequency.Key,
+                DataType = DataForSeed.DomainModels.Attribute1_Frequency.DataType.ToString(),
+                Unit = new UnitShortDto()
+                {
+                    Name = DataForSeed.DomainModels.Unit3_Mhz.Name,
+                },
+                Value = new ProductAttributeValueDto()
+                {
+                    NumericValue = 3.3M,
+                }
+            },
+            new()
+            {
+                Key = DataForSeed.DomainModels.Attribute2_GpuIntegrated.Key,
+                DataType = DataForSeed.DomainModels.Attribute2_GpuIntegrated.DataType.ToString(),
+                Unit = null,
+                Value = new ProductAttributeValueDto()
+                {
+                    BoolValue = true,
+                }
+            },
+            new()
+            {
+                Key = DataForSeed.DomainModels.Attribute3_Socket.Key,
+                DataType = DataForSeed.DomainModels.Attribute3_Socket.DataType.ToString(),
+                Unit = null,
+                Value = new ProductAttributeValueDto()
+                {
+                    StringValue = "LGA1700",
+                }
+            },
+            new()
+            {
+                Key = DataForSeed.DomainModels.Attribute4_Tdp.Key,
+                DataType = DataForSeed.DomainModels.Attribute4_Tdp.DataType.ToString(),
+                Unit = new UnitShortDto()
+                {
+                    Name = DataForSeed.DomainModels.Unit4_W.Name,
+                },
+                Value = new ProductAttributeValueDto()
+                {
+                    NumericValue = 120,
+                }
+            },
+        };
 
-        Assert.Equal(DataForSeed.DomainModels.Attribute2_GpuIntegrated.Key, response[1].Key);
-        Assert.Equal(true, response[1].Value.BoolValue);
+        Assert.Equal(expectedAttributes.Length, response.Count);
 
-        Assert.Equal(DataForSeed.DomainModels.Attribute3_Socket.Key, response[2].Key);
-        Assert.Equal("LGA1700", response[2].Value.StringValue);
+        for (var i = 0; i < expectedAttributes.Length; i++)
+        {
+            var expected = expectedAttributes[i];
+            var actual = response[i];
 
-        Assert.Equal(DataForSeed.DomainModels.Attribute4_Tdp.Key, response[3].Key);
-        Assert.Equal(120, response[3].Value.NumericValue);
+            Assert.EquivalentWithExclusions(
+                expected, actual,
+                attr => attr.Id,
+                attr => attr.Unit,
+                attr => attr.Value);
+
+            if (expected.Unit != null)
+            {
+                Assert.NotNull(actual.Unit);
+                Assert.EquivalentWithExclusions(expected.Unit, actual.Unit, u => u.Id);
+            }
+            Assert.EquivalentWithExclusions(
+                expected.Value, actual.Value);
+        }
     }
 
     static async Task SeedData(
