@@ -7,6 +7,7 @@ using TechStore.BLL.Entities;
 using TechStore.BLL.Exceptions;
 using TechStore.Contracts.DTOs;
 using TechStore.DAL.DbContexts;
+using TechStore.Tests.TestData;
 using TechStore.WebApi.Controllers;
 
 namespace TechStore.Tests.Api;
@@ -36,7 +37,7 @@ public class ProductsControllerTests
         // Arrange.
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
         {
-            await SeedData(dbContext, 20);
+            await SeedData(dbContext, 20, TestContext.Current.CancellationToken);
         }
         var paging = new PagingRequestDto()
         {
@@ -77,7 +78,7 @@ public class ProductsControllerTests
         // Arrange.
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
         {
-            await SeedData(dbContext, 10);
+            await SeedData(dbContext, 10, TestContext.Current.CancellationToken);
         }
         var paging = new PagingRequestDto()
         {
@@ -107,17 +108,10 @@ public class ProductsControllerTests
     public async Task Products_Create_Successfully()
     {
         // Arrange.
-        long categoryId = 0;
+        long categoryId = DataForSeed.DomainModels.Category1_Empty.Id;
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
         {
-            var category1 = new Category()
-            {
-                Key = "cat1",
-                DisplayName = "category1",
-            };
-            dbContext.Categories.Add(category1);
-            await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
-            categoryId = category1.Id;
+            await SeedData(dbContext, 0, TestContext.Current.CancellationToken);
         }
 
         var request = new ProductPostDto()
@@ -146,8 +140,8 @@ public class ProductsControllerTests
         Assert.Equal("description1", response.Description);
         Assert.Equal(999.9M, response.Price);
         Assert.NotNull(response.Category);
-        Assert.Equal("cat1", response.Category!.Key);
-        Assert.Equal("category1", response.Category.DisplayName);
+        Assert.Equal(DataForSeed.DomainModels.Category1_Empty.Key, response.Category.Key);
+        Assert.Equal(DataForSeed.DomainModels.Category1_Empty.DisplayName, response.Category.DisplayName);
 
         Product? domainModel = null;
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
@@ -160,8 +154,7 @@ public class ProductsControllerTests
         Assert.Equal("product1", domainModel.Name);
         Assert.Equal("description1", domainModel.Description);
         Assert.Equal(999.9M, domainModel.Price);
-        Assert.NotNull(domainModel.Category);
-        Assert.Equal("cat1", domainModel.Category!.Key);
+        Assert.Equal(categoryId, domainModel.CategoryId);
     }
 
     [Theory(DisplayName = "Товары: обновление: успешно.")]
@@ -175,7 +168,7 @@ public class ProductsControllerTests
         // Arrange.
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
         {
-            await SeedData(dbContext, count: 1);
+            await SeedData(dbContext, count: 1, TestContext.Current.CancellationToken);
         }
 
         ProductDto? actualResponse = null;
@@ -271,20 +264,17 @@ public class ProductsControllerTests
         );
     }
 
-    static async Task SeedData(ApplicationDbContext dbContext, int count)
+    static async Task SeedData(ApplicationDbContext dbContext, int count, CancellationToken cancellationToken)
     {
-        var category1 = new Category()
-        {
-            Id = 101,
-            Key = "category1",
-            DisplayName = "displayname1",
-        };
-        var category2 = new Category()
-        {
-            Id = 102,
-            Key = "category2",
-            DisplayName = "displayname2",
-        };
+        var category1 = DataForSeed.DomainModels.Category1_Empty;
+        var category2 = DataForSeed.DomainModels.Category2_CPUs;
+
+        dbContext.Categories.AddRange(
+            category1,
+            category2);
+
+        await dbContext.SaveChangesAsync(cancellationToken);
+
         for (var i = 0; i < count; i++)
         {
             dbContext.Products.Add(
@@ -294,9 +284,9 @@ public class ProductsControllerTests
                     Name = $"product-{1 + i}",
                     Description = $"description-{1 + i}",
                     Price = 1 + i,
-                    Category = i <= count / 2 ? category1 : category2,
+                    CategoryId = i <= count / 2 ? category1.Id : category2.Id,
                 });
         }
-        await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
+        await dbContext.SaveChangesAsync(cancellationToken);
     }
 }
