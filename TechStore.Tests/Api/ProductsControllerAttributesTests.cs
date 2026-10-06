@@ -202,43 +202,12 @@ public class ProductsControllerAttributesTests
     public async Task Attributes_Values_Put_Successfully()
     {
         // Arrange.
-        long categoryId = 0;
-        long productId = 0;
+        var cancellationToken = TestContext.Current.CancellationToken;
+        long categoryId = DataForSeed.DomainModels.Category2_CPUs.Id;
+        long productId = DataForSeed.DomainModels.Product1_Intel.Id;
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
         {
-            await SeedData(dbContext, TestContext.Current.CancellationToken);
-
-            var category = await dbContext.Categories
-                .FirstOrDefaultAsync(TestContext.Current.CancellationToken);
-            Assert.NotNull(category);
-
-            category.Attributes.Add(
-                new CategoryAttribute()
-                {
-                    Key = "attr1_numeric",
-                    DataType = CategoryAttributeDataTypes.Numeric,
-                });
-            category.Attributes.Add(
-                new CategoryAttribute()
-                {
-                    Key = "attr2_string",
-                    DataType = CategoryAttributeDataTypes.String,
-                });
-            category.Attributes.Add(
-               new CategoryAttribute()
-               {
-                   Key = "attr3_boolean",
-                   DataType = CategoryAttributeDataTypes.Boolean,
-               });
-
-            await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
-            categoryId = category.Id;
-
-            var product = await dbContext.Products
-                .AsNoTracking()
-                .FirstOrDefaultAsync(p => p.CategoryId == categoryId, TestContext.Current.CancellationToken);
-            Assert.NotNull(product);
-            productId = product.Id;
+            await SeedData(dbContext, cancellationToken);
         }
 
         var request = new ProductAttributeValuesPutDto()
@@ -246,18 +215,23 @@ public class ProductsControllerAttributesTests
             Values = [
                new ProductAttributeValueListPutDto()
                {
-                   AttributeKey = "attr1_numeric",
-                   NumericValue = 57M,
+                   AttributeKey = DataForSeed.DomainModels.Attribute1_Frequency.Key,
+                   NumericValue = 3.3M,
                },
                new ProductAttributeValueListPutDto()
                {
-                   AttributeKey = "attr2_string",
-                   StringValue = "updated-string-value"
-               },
-               new ProductAttributeValueListPutDto()
-               {
-                   AttributeKey = "attr3_boolean",
+                   AttributeKey = DataForSeed.DomainModels.Attribute2_GpuIntegrated.Key,
                    BooleanValue = true,
+               },
+               new ProductAttributeValueListPutDto()
+               {
+                   AttributeKey = DataForSeed.DomainModels.Attribute3_Socket.Key,
+                   StringValue = "LGA1700",
+               },
+               new ProductAttributeValueListPutDto()
+               {
+                   AttributeKey = DataForSeed.DomainModels.Attribute4_Tdp.Key,
+                   NumericValue = 120,
                },
             ],
         };
@@ -269,7 +243,7 @@ public class ProductsControllerAttributesTests
 
             //Act.
             var actionResult = await controller.UpdateProductAttributes(
-                productId, request, TestContext.Current.CancellationToken);
+                productId, request, cancellationToken);
             Assert.IsType<ActionResult<IEnumerable<ProductAttributeListDto>>>(actionResult);
             response = actionResult.Value?.OrderBy(attr => attr.Key).ToList();
         }
@@ -277,36 +251,17 @@ public class ProductsControllerAttributesTests
         Assert.NotNull(response);
         Assert.NotEmpty(response);
 
-        Assert.Equal("attr1_numeric", response[0].Key);
-        Assert.Equal(57M, response[0].Value.NumericValue);
+        Assert.Equal(DataForSeed.DomainModels.Attribute1_Frequency.Key, response[0].Key);
+        Assert.Equal(3.3M, response[0].Value.NumericValue);
 
-        Assert.Equal("attr2_string", response[1].Key);
-        Assert.Equal("updated-string-value", response[1].Value.StringValue);
+        Assert.Equal(DataForSeed.DomainModels.Attribute2_GpuIntegrated.Key, response[1].Key);
+        Assert.Equal(true, response[1].Value.BoolValue);
 
-        Assert.Equal("attr3_boolean", response[2].Key);
-        Assert.Equal(true, response[2].Value.BoolValue);
+        Assert.Equal(DataForSeed.DomainModels.Attribute3_Socket.Key, response[2].Key);
+        Assert.Equal("LGA1700", response[2].Value.StringValue);
 
-        List<CategoryAttribute>? domainModel = null;
-        using (var dbContext = new ApplicationDbContext(_dbContextOptions))
-        {
-            var category = await dbContext.Categories
-                .AsNoTracking()
-                .Include(c => c.Attributes)
-                    .ThenInclude(a => a.ProductValues.Take(1))
-                .FirstOrDefaultAsync(c => c.Id == categoryId, TestContext.Current.CancellationToken);
-            domainModel = category?.Attributes.OrderBy(a => a.Key).ToList();
-        }
-        Assert.NotNull(domainModel);
-        Assert.NotEmpty(domainModel);
-
-        Assert.Equal("attr1_numeric", domainModel[0].Key);
-        Assert.Equal(57M, domainModel[0].ProductValues.First().Value.NumericValue);
-
-        Assert.Equal("attr2_string", domainModel[1].Key);
-        Assert.Equal("updated-string-value", domainModel[1].ProductValues.First().Value.StringValue);
-
-        Assert.Equal("attr3_boolean", domainModel[2].Key);
-        Assert.Equal(true, domainModel[2].ProductValues.First().Value.BoolValue);
+        Assert.Equal(DataForSeed.DomainModels.Attribute4_Tdp.Key, response[3].Key);
+        Assert.Equal(120, response[3].Value.NumericValue);
     }
 
     static async Task SeedData(
