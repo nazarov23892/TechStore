@@ -128,7 +128,7 @@ namespace TechStore.DAL.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductAttributeValue");
+                    b.ToTable("ProductAttributeValues");
                 });
 
             modelBuilder.Entity("TechStore.BLL.Entities.Unit", b =>
@@ -271,7 +271,7 @@ namespace TechStore.DAL.Migrations
 
                             b1.HasKey("ProductAttributeValueId");
 
-                            b1.ToTable("ProductAttributeValue");
+                            b1.ToTable("ProductAttributeValues");
 
                             b1.WithOwner()
                                 .HasForeignKey("ProductAttributeValueId");
