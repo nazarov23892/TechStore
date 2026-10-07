@@ -35,66 +35,14 @@ public class ProductsControllerAttributesTests
     {
         // Arrange.
         var cancellationToken = TestContext.Current.CancellationToken;
-        long categoryId = DataForSeed.DomainModels.Category2_CPUs.Id;
+        long productId = DataForSeed.DomainModels.Product1_IntelCore_i3.Id;
+
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
         {
             await SeedData(dbContext, cancellationToken);
         }
 
-        long productId = DataForSeed.DomainModels.Product1_IntelCore_i3.Id;
-        using (var dbContext = new ApplicationDbContext(_dbContextOptions))
-        {
-            var category = await dbContext.Categories
-                .Include(c => c.Attributes).ThenInclude(a => a.ProductValues)
-                .FirstOrDefaultAsync(c => c.Id == categoryId, cancellationToken);
-            Assert.NotNull(category);
-
-            var attributesByKey = category.Attributes.ToDictionary(a => a.Key);
-            var attrFrequency = attributesByKey[DataForSeed.DomainModels.Attribute1_Frequency.Key];
-            var attrGpuIntegrated = attributesByKey[DataForSeed.DomainModels.Attribute2_GpuIntegrated.Key];
-            var attrSocket = attributesByKey[DataForSeed.DomainModels.Attribute3_Socket.Key];
-            var attrTdp = attributesByKey[DataForSeed.DomainModels.Attribute4_Tdp.Key];
-
-            attrFrequency.ProductValues.Add(
-                new()
-                {
-                    ProductId = productId,
-                    Value = new AttributeValue()
-                    {
-                        NumericValue = 3.3M,
-                    },
-                });
-            attrGpuIntegrated.ProductValues.Add(
-                new()
-                {
-                    ProductId = productId,
-                    Value = new AttributeValue()
-                    {
-                        BoolValue = true,
-                    },
-                });
-            attrSocket.ProductValues.Add(
-               new()
-               {
-                   ProductId = productId,
-                   Value = new AttributeValue()
-                   {
-                       StringValue = "LGA1700",
-                   },
-               });
-            attrTdp.ProductValues.Add(
-                new()
-                {
-                    ProductId = productId,
-                    Value = new AttributeValue()
-                    {
-                        NumericValue = 120,
-                    },
-                });
-            await dbContext.SaveChangesAsync(cancellationToken);
-        }
-
-        List<ProductAttributeListDto>? response = null;
+        ProductAttributeListDto[]? response = null;
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
         {
             var catalogService = new ProductsService(dbContext);
@@ -104,41 +52,64 @@ public class ProductsControllerAttributesTests
             var actionResult = await controller.GetProductAttributes(
                 productId, cancellationToken);
             Assert.IsType<ActionResult<IEnumerable<ProductAttributeListDto>>>(actionResult);
-            response = actionResult.Value?.OrderBy(a => a.Key).ToList();
+            response = actionResult.Value?.OrderBy(a => a.Key).ToArray();
         }
         Assert.NotNull(response);
-        Assert.NotEmpty(response);
 
-        Assert.NotNull(response);
-        Assert.NotEmpty(response);
-
-        Assert.Equal(DataForSeed.DomainModels.Attribute1_Frequency.Key, response[0].Key);
-        Assert.Equal(DataForSeed.DomainModels.Attribute1_Frequency.DataType.ToString(), response[0].DataType);
-        Assert.NotNull(response[0].Value.NumericValue);
-        Assert.Null(response[0].Value.StringValue);
-        Assert.Null(response[0].Value.BoolValue);
-        Assert.Equal(3.3M, response[0].Value.NumericValue);
-
-        Assert.Equal(DataForSeed.DomainModels.Attribute2_GpuIntegrated.Key, response[1].Key);
-        Assert.Equal(DataForSeed.DomainModels.Attribute2_GpuIntegrated.DataType.ToString(), response[1].DataType);
-        Assert.Null(response[1].Value.NumericValue);
-        Assert.NotNull(response[1].Value.BoolValue);
-        Assert.Null(response[1].Value.StringValue);
-        Assert.Equal(true, response[1].Value.BoolValue);
-
-        Assert.Equal(DataForSeed.DomainModels.Attribute3_Socket.Key, response[2].Key);
-        Assert.Equal(DataForSeed.DomainModels.Attribute3_Socket.DataType.ToString(), response[2].DataType);
-        Assert.Null(response[2].Value.NumericValue);
-        Assert.Null(response[2].Value.BoolValue);
-        Assert.NotNull(response[2].Value.StringValue);
-        Assert.Equal("LGA1700", response[2].Value.StringValue);
-
-        Assert.Equal(DataForSeed.DomainModels.Attribute4_Tdp.Key, response[3].Key);
-        Assert.Equal(DataForSeed.DomainModels.Attribute4_Tdp.DataType.ToString(), response[3].DataType);
-        Assert.NotNull(response[3].Value.NumericValue);
-        Assert.Null(response[3].Value.BoolValue);
-        Assert.Null(response[3].Value.StringValue);
-        Assert.Equal(120, response[3].Value.NumericValue);
+        var expectedResponseItems = new ProductAttributeListDto[]
+        {
+            new()
+            {
+                Id = DataForSeed.DomainModels.Attribute1_Frequency.Id,
+                Key = DataForSeed.DomainModels.Attribute1_Frequency.Key,
+                DataType = DataForSeed.DomainModels.Attribute1_Frequency.DataType.ToString(),
+                Unit = new UnitShortDto() { Name = DataForSeed.DomainModels.Unit3_Mhz.Name, },
+                Value = new ProductAttributeValueDto() { NumericValue =  3.3M },
+            },
+            new()
+            {
+                Id = DataForSeed.DomainModels.Attribute2_GpuIntegrated.Id,
+                Key = DataForSeed.DomainModels.Attribute2_GpuIntegrated.Key,
+                DataType = DataForSeed.DomainModels.Attribute2_GpuIntegrated.DataType.ToString(),
+                Unit = null,
+                Value = new ProductAttributeValueDto() { BoolValue = true, },
+            },
+            new()
+            {
+                Id = DataForSeed.DomainModels.Attribute3_Socket.Id,
+                Key = DataForSeed.DomainModels.Attribute3_Socket.Key,
+                DataType = DataForSeed.DomainModels.Attribute3_Socket.DataType.ToString(),
+                Unit = null,
+                Value = new ProductAttributeValueDto() { StringValue = "LGA1700", },
+            },
+            new()
+            {
+                Id = DataForSeed.DomainModels.Attribute4_Tdp.Id,
+                Key = DataForSeed.DomainModels.Attribute4_Tdp.Key,
+                DataType = DataForSeed.DomainModels.Attribute4_Tdp.DataType.ToString(),
+                Unit = new UnitShortDto() { Name = DataForSeed.DomainModels.Unit4_W.Name, },
+                Value = new ProductAttributeValueDto() { NumericValue = 120, },
+            },
+        };
+        Assert.Equal(expectedResponseItems.Length, response.Length);
+        for (var i = 0; i < response.Length; i++)
+        {
+            var expected = expectedResponseItems[i];
+            var actual = response[i];
+            Assert.EquivalentWithExclusions(expected, actual,
+                attr => attr.Unit,
+                attr => attr.Value);
+            Assert.Equivalent(expected.Value, actual.Value);
+            if (expected.Unit == null)
+            {
+                Assert.Null(actual.Unit);
+            }
+            else
+            {
+                Assert.NotNull(actual.Unit);
+                Assert.Equivalent(expected.Unit, actual.Unit);
+            }
+        }
     }
 
     /// <remarks>
