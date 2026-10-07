@@ -524,6 +524,65 @@ public class ProductsControllerAttributesTests
                 },
             ]
         );
+
+        //********************************************************************
+
+        yield return new TheoryDataRow<long, ProductAttributeValueListPutDto[], ProductAttributeListDto[], ProductAttributeValue[]>(
+
+            // productId.
+            DataForSeed.DomainModels.Product3_IntelCore_i7.Id,
+
+            // requestValues.
+            [
+               new ProductAttributeValueListPutDto()
+               {
+                   AttributeKey = DataForSeed.DomainModels.Attribute3_Socket.Key,
+                   StringValue = "LGA1703",
+               },
+            ],
+
+            // expectedResponseItems.
+            [
+                new()
+                {
+                    Key = DataForSeed.DomainModels.Attribute1_Frequency.Key,
+                    DataType = DataForSeed.DomainModels.Attribute1_Frequency.DataType.ToString(),
+                    Unit = new UnitShortDto() { Name = DataForSeed.DomainModels.Unit3_Mhz.Name },
+                    Value = new ProductAttributeValueDto() { }
+                },
+                new()
+                {
+                    Key = DataForSeed.DomainModels.Attribute2_GpuIntegrated.Key,
+                    DataType = DataForSeed.DomainModels.Attribute2_GpuIntegrated.DataType.ToString(),
+                    Unit = null,
+                    Value = new ProductAttributeValueDto() { }
+                },
+                new()
+                {
+                    Key = DataForSeed.DomainModels.Attribute3_Socket.Key,
+                    DataType = DataForSeed.DomainModels.Attribute3_Socket.DataType.ToString(),
+                    Unit = null,
+                    Value = new ProductAttributeValueDto() { StringValue = "LGA1703" },
+                },
+                new()
+                {
+                    Key = DataForSeed.DomainModels.Attribute4_Tdp.Key,
+                    DataType = DataForSeed.DomainModels.Attribute4_Tdp.DataType.ToString(),
+                    Unit = new UnitShortDto() { Name = DataForSeed.DomainModels.Unit4_W.Name, },
+                    Value = new ProductAttributeValueDto() { }
+                },
+            ],
+
+            // expectedDomainItems.
+            [
+                new ProductAttributeValue()
+                {
+                    ProductId = DataForSeed.DomainModels.Product3_IntelCore_i7.Id,
+                    CategoryAttributeId = DataForSeed.DomainModels.Attribute3_Socket.Id,
+                    Value = new AttributeValue() { StringValue = "LGA1703" },
+                },
+            ]
+        );
     }
 
     static async Task SeedData(
@@ -534,6 +593,7 @@ public class ProductsControllerAttributesTests
         dbContext.Categories.Add(DataForSeed.DomainModels.Category2_CPUs);
         dbContext.Products.Add(DataForSeed.DomainModels.Product1_IntelCore_i3);
         dbContext.Products.Add(DataForSeed.DomainModels.Product2_IntelCore_i5);
+        dbContext.Products.Add(DataForSeed.DomainModels.Product3_IntelCore_i7);
         dbContext.ProductAttributeValues.AddRange(DataForSeed.DomainModels.Product1_IntelCore_i3_AttributeValues);
         await dbContext.SaveChangesAsync(cancellationToken);
     }

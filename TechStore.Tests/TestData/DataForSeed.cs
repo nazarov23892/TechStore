@@ -119,6 +119,15 @@ public static class DataForSeed
             Price = 13500,
         };
 
+        public static Product Product3_IntelCore_i7 => new()
+        {
+            Id = 603,
+            Name = "Intel Core i7-12700K",
+            Description = "",
+            CategoryId = Category2_CPUs.Id,
+            Price = 28500,
+        };
+
         public static ProductAttributeValue[] Product1_IntelCore_i3_AttributeValues => [
             new()
             {
