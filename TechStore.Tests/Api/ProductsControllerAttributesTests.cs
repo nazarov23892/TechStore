@@ -243,7 +243,11 @@ public class ProductsControllerAttributesTests
                 attr => attr.Unit,
                 attr => attr.Value);
 
-            if (expected.Unit != null)
+            if (expected.Unit == null)
+            {
+                Assert.Null(actual.Unit);
+            }
+            else
             {
                 Assert.NotNull(actual.Unit);
                 Assert.EquivalentWithExclusions(expected.Unit, actual.Unit, u => u.Id);
@@ -394,6 +398,128 @@ public class ProductsControllerAttributesTests
                     Value = new AttributeValue()
                     {
                         NumericValue = 121,
+                    },
+                },
+            ]
+        );
+
+        //********************************************************************
+
+        yield return new TheoryDataRow<long, ProductAttributeValueListPutDto[], ProductAttributeListDto[], ProductAttributeValue[]>(
+
+            // productId.
+            DataForSeed.DomainModels.Product2_IntelCore_i5.Id,
+
+            // requestValues.
+            [
+               new ProductAttributeValueListPutDto()
+               {
+                   AttributeKey = DataForSeed.DomainModels.Attribute1_Frequency.Key,
+                   NumericValue = 4.33M,
+               },
+               new ProductAttributeValueListPutDto()
+               {
+                   AttributeKey = DataForSeed.DomainModels.Attribute2_GpuIntegrated.Key,
+                   BooleanValue = false,
+               },
+               new ProductAttributeValueListPutDto()
+               {
+                   AttributeKey = DataForSeed.DomainModels.Attribute3_Socket.Key,
+                   StringValue = "LGA1702",
+               },
+               new ProductAttributeValueListPutDto()
+               {
+                   AttributeKey = DataForSeed.DomainModels.Attribute4_Tdp.Key,
+                   NumericValue = 132,
+               },
+            ],
+
+            // expectedResponseItems.
+            [
+                new()
+                {
+                    Key = DataForSeed.DomainModels.Attribute1_Frequency.Key,
+                    DataType = DataForSeed.DomainModels.Attribute1_Frequency.DataType.ToString(),
+                    Unit = new UnitShortDto()
+                    {
+                        Name = DataForSeed.DomainModels.Unit3_Mhz.Name,
+                    },
+                    Value = new ProductAttributeValueDto()
+                    {
+                        NumericValue = 4.33M,
+                    }
+                },
+                new()
+                {
+                    Key = DataForSeed.DomainModels.Attribute2_GpuIntegrated.Key,
+                    DataType = DataForSeed.DomainModels.Attribute2_GpuIntegrated.DataType.ToString(),
+                    Unit = null,
+                    Value = new ProductAttributeValueDto()
+                    {
+                        BoolValue = false,
+                    }
+                },
+                new()
+                {
+                    Key = DataForSeed.DomainModels.Attribute3_Socket.Key,
+                    DataType = DataForSeed.DomainModels.Attribute3_Socket.DataType.ToString(),
+                    Unit = null,
+                    Value = new ProductAttributeValueDto()
+                    {
+                        StringValue = "LGA1702",
+                    }
+                },
+                new()
+                {
+                    Key = DataForSeed.DomainModels.Attribute4_Tdp.Key,
+                    DataType = DataForSeed.DomainModels.Attribute4_Tdp.DataType.ToString(),
+                    Unit = new UnitShortDto()
+                    {
+                        Name = DataForSeed.DomainModels.Unit4_W.Name,
+                    },
+                    Value = new ProductAttributeValueDto()
+                    {
+                        NumericValue = 132,
+                    }
+                },
+            ],
+
+            // expectedDomainItems.
+            [
+                new ProductAttributeValue()
+                {
+                    ProductId = DataForSeed.DomainModels.Product2_IntelCore_i5.Id,
+                    CategoryAttributeId = DataForSeed.DomainModels.Attribute1_Frequency.Id,
+                    Value = new AttributeValue()
+                    {
+                        NumericValue = 4.33M,
+                    },
+                },
+                new ProductAttributeValue()
+                {
+                    ProductId = DataForSeed.DomainModels.Product2_IntelCore_i5.Id,
+                    CategoryAttributeId = DataForSeed.DomainModels.Attribute2_GpuIntegrated.Id,
+                    Value = new AttributeValue()
+                    {
+                        BoolValue = false,
+                    },
+                },
+                new ProductAttributeValue()
+                {
+                    ProductId = DataForSeed.DomainModels.Product2_IntelCore_i5.Id,
+                    CategoryAttributeId = DataForSeed.DomainModels.Attribute3_Socket.Id,
+                    Value = new AttributeValue()
+                    {
+                        StringValue = "LGA1702",
+                    },
+                },
+                new ProductAttributeValue()
+                {
+                    ProductId = DataForSeed.DomainModels.Product2_IntelCore_i5.Id,
+                    CategoryAttributeId = DataForSeed.DomainModels.Attribute4_Tdp.Id,
+                    Value = new AttributeValue()
+                    {
+                        NumericValue = 132,
                     },
                 },
             ]
