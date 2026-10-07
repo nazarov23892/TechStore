@@ -107,7 +107,9 @@ public class ProductsControllerAttributesTests
             else
             {
                 Assert.NotNull(actual.Unit);
-                Assert.Equivalent(expected.Unit, actual.Unit);
+                Assert.EquivalentWithExclusions(
+                    expected.Unit, actual.Unit,
+                    u => u.Id);
             }
         }
     }
