@@ -150,13 +150,12 @@ public class ProductsControllerAttributesTests
     {
         // Arrange.
         var cancellationToken = TestContext.Current.CancellationToken;
-        long categoryId = DataForSeed.DomainModels.Category2_CPUs.Id;
+        long productId = DataForSeed.DomainModels.Product2_IntelCore_i5.Id;
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
         {
             await SeedData(dbContext, cancellationToken);
         }
 
-        long productId = DataForSeed.DomainModels.Product1_IntelCore_i3.Id;
         List<ProductAttributeListDto>? response = null;
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
         {
@@ -408,6 +407,8 @@ public class ProductsControllerAttributesTests
         dbContext.Categories.Add(DataForSeed.DomainModels.Category1_Empty);
         dbContext.Categories.Add(DataForSeed.DomainModels.Category2_CPUs);
         dbContext.Products.Add(DataForSeed.DomainModels.Product1_IntelCore_i3);
+        dbContext.Products.Add(DataForSeed.DomainModels.Product2_IntelCore_i5);
+        dbContext.ProductAttributeValues.AddRange(DataForSeed.DomainModels.Product1_IntelCore_i3_AttributeValues);
         await dbContext.SaveChangesAsync(cancellationToken);
     }
 

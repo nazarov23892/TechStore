@@ -110,6 +110,15 @@ public static class DataForSeed
             Price = 7500M,
         };
 
+        public static Product Product2_IntelCore_i5 => new()
+        {
+            Id = 602,
+            Name = "Intel Core i5-12400F",
+            Description = "",
+            CategoryId = Category2_CPUs.Id,
+            Price = 13500,
+        };
+
         public static ProductAttributeValue[] Product1_IntelCore_i3_AttributeValues => [
             new()
             {
