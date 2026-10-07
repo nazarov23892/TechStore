@@ -19,6 +19,8 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
 
     public DbSet<Unit> Units => Set<Unit>();
 
+    public DbSet<ProductAttributeValue> ProductAttributeValues => Set<ProductAttributeValue>();
+
     /// <inheritdoc/>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
