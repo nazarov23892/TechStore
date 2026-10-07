@@ -101,13 +101,57 @@ public static class DataForSeed
             ],
         };
 
-        public static Product Product1_Intel => new()
+        public static Product Product1_IntelCore_i3 => new()
         {
             Id = 601,
-            Name = "Intel core i7",
+            Name = "Intel Core i3-12100F",
             Description = "",
             CategoryId = Category2_CPUs.Id,
-            Price = 601.1M,
+            Price = 7500M,
         };
+
+        public static ProductAttributeValue[] Product1_IntelCore_i3_AttributeValues => [
+            new()
+            {
+                Id = 701,
+                CategoryAttributeId = Attribute1_Frequency.Id,
+                ProductId = Product1_IntelCore_i3.Id,
+                Value = new AttributeValue()
+                {
+                    NumericValue = 3.3M,
+                },
+            },
+            new()
+            {
+                Id = 702,
+                CategoryAttributeId = Attribute2_GpuIntegrated.Id,
+                ProductId = Product1_IntelCore_i3.Id,
+                Value = new AttributeValue()
+                {
+                    BoolValue = true,
+                },
+            },
+            new()
+            {
+                Id = 703,
+                CategoryAttributeId = Attribute3_Socket.Id,
+                ProductId = Product1_IntelCore_i3.Id,
+                Value = new AttributeValue()
+                {
+                    StringValue = "LGA1700",
+                },
+            },
+            new()
+            {
+                Id = 704,
+                CategoryAttributeId = Attribute4_Tdp.Id,
+                ProductId = Product1_IntelCore_i3.Id,
+                Value = new AttributeValue()
+                {
+                    NumericValue = 120M,
+                },
+            },
+        ];
+
     }
 }

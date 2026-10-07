@@ -41,7 +41,7 @@ public class ProductsControllerAttributesTests
             await SeedData(dbContext, cancellationToken);
         }
 
-        long productId = DataForSeed.DomainModels.Product1_Intel.Id;
+        long productId = DataForSeed.DomainModels.Product1_IntelCore_i3.Id;
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
         {
             var category = await dbContext.Categories
@@ -156,7 +156,7 @@ public class ProductsControllerAttributesTests
             await SeedData(dbContext, cancellationToken);
         }
 
-        long productId = DataForSeed.DomainModels.Product1_Intel.Id;
+        long productId = DataForSeed.DomainModels.Product1_IntelCore_i3.Id;
         List<ProductAttributeListDto>? response = null;
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
         {
@@ -202,8 +202,9 @@ public class ProductsControllerAttributesTests
     [MemberData(nameof(GetInlineDataForPut))]
     public async Task Attributes_Values_Put_Successfully(
         long productId,
-        ProductAttributeValueListPutDto[] requestValues,
-        ProductAttributeListDto[] expectedValues)
+        ProductAttributeValueListPutDto[] requestItems,
+        ProductAttributeListDto[] expectedResponseItems,
+        ProductAttributeValue[] expectedDomainItems)
     {
         // Arrange.
         var cancellationToken = TestContext.Current.CancellationToken;
@@ -214,7 +215,7 @@ public class ProductsControllerAttributesTests
 
         var request = new ProductAttributeValuesPutDto()
         {
-            Values = requestValues,
+            Values = requestItems,
         };
         ProductAttributeListDto[]? responseValues = null;
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
@@ -230,11 +231,11 @@ public class ProductsControllerAttributesTests
         }
 
         Assert.NotNull(responseValues);
-        Assert.Equal(expectedValues.Length, responseValues.Length);
+        Assert.Equal(expectedResponseItems.Length, responseValues.Length);
 
-        for (var i = 0; i < expectedValues.Length; i++)
+        for (var i = 0; i < expectedResponseItems.Length; i++)
         {
-            var expected = expectedValues[i];
+            var expected = expectedResponseItems[i];
             var actual = responseValues[i];
 
             Assert.EquivalentWithExclusions(
@@ -248,24 +249,48 @@ public class ProductsControllerAttributesTests
                 Assert.NotNull(actual.Unit);
                 Assert.EquivalentWithExclusions(expected.Unit, actual.Unit, u => u.Id);
             }
-            Assert.EquivalentWithExclusions(
-                expected.Value, actual.Value);
+            Assert.Equivalent(expected.Value, actual.Value);
+        }
+
+        ProductAttributeValue[]? actualDomainItems;
+        using (var dbContext = new ApplicationDbContext(_dbContextOptions))
+        {
+            actualDomainItems = await dbContext.ProductAttributeValues
+                .AsNoTracking()
+                .Include(av => av.CategoryAttribute)
+                .Where(av => av.ProductId == productId)
+                .ToArrayAsync(cancellationToken);
+        }
+        Assert.NotNull(actualDomainItems);
+        Assert.Equal(expectedDomainItems.Length, actualDomainItems.Length);
+        for (var i = 0; i < expectedDomainItems.Length; i++)
+        {
+            var expected = expectedDomainItems[i];
+            var actual = actualDomainItems[i];
+            Assert.EquivalentWithExclusions(actual, expected,
+                av => av.Id,
+                av => av.Value,
+                av => av.CategoryAttribute,
+                av => av.Product
+                );
+            Assert.Equivalent(expected.Value, actual.Value);
         }
     }
 
-    public static IEnumerable<TheoryDataRow<long, ProductAttributeValueListPutDto[], ProductAttributeListDto[]>> GetInlineDataForPut()
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "xUnit1047:Avoid using TheoryDataRow arguments that might not be serializable", Justification = "<Ожидание>")]
+    public static IEnumerable<TheoryDataRow<long, ProductAttributeValueListPutDto[], ProductAttributeListDto[], ProductAttributeValue[]>> GetInlineDataForPut()
     {
-        yield return new TheoryDataRow<long, ProductAttributeValueListPutDto[], ProductAttributeListDto[]>(
+        yield return new TheoryDataRow<long, ProductAttributeValueListPutDto[], ProductAttributeListDto[], ProductAttributeValue[]>(
 
             // productId.
-            DataForSeed.DomainModels.Product1_Intel.Id,
+            DataForSeed.DomainModels.Product1_IntelCore_i3.Id,
 
             // requestValues.
             [
                new ProductAttributeValueListPutDto()
                {
                    AttributeKey = DataForSeed.DomainModels.Attribute1_Frequency.Key,
-                   NumericValue = 3.3M,
+                   NumericValue = 3.7M,
                },
                new ProductAttributeValueListPutDto()
                {
@@ -275,16 +300,16 @@ public class ProductsControllerAttributesTests
                new ProductAttributeValueListPutDto()
                {
                    AttributeKey = DataForSeed.DomainModels.Attribute3_Socket.Key,
-                   StringValue = "LGA1700",
+                   StringValue = "LGA1701",
                },
                new ProductAttributeValueListPutDto()
                {
                    AttributeKey = DataForSeed.DomainModels.Attribute4_Tdp.Key,
-                   NumericValue = 120,
+                   NumericValue = 121,
                },
             ],
 
-            // expectedValues.
+            // expectedResponseItems.
             [
                 new()
                 {
@@ -296,7 +321,7 @@ public class ProductsControllerAttributesTests
                     },
                     Value = new ProductAttributeValueDto()
                     {
-                        NumericValue = 3.3M,
+                        NumericValue = 3.7M,
                     }
                 },
                 new()
@@ -316,7 +341,7 @@ public class ProductsControllerAttributesTests
                     Unit = null,
                     Value = new ProductAttributeValueDto()
                     {
-                        StringValue = "LGA1700",
+                        StringValue = "LGA1701",
                     }
                 },
                 new()
@@ -329,8 +354,48 @@ public class ProductsControllerAttributesTests
                     },
                     Value = new ProductAttributeValueDto()
                     {
-                        NumericValue = 120,
+                        NumericValue = 121,
                     }
+                },
+            ],
+
+            // expectedDomainItems.
+            [
+                new ProductAttributeValue()
+                {
+                    ProductId = DataForSeed.DomainModels.Product1_IntelCore_i3.Id,
+                    CategoryAttributeId = DataForSeed.DomainModels.Attribute1_Frequency.Id,
+                    Value = new AttributeValue()
+                    {
+                        NumericValue = 3.7M,
+                    },
+                },
+                new ProductAttributeValue()
+                {
+                    ProductId = DataForSeed.DomainModels.Product1_IntelCore_i3.Id,
+                    CategoryAttributeId = DataForSeed.DomainModels.Attribute2_GpuIntegrated.Id,
+                    Value = new AttributeValue()
+                    {
+                        BoolValue = true,
+                    },
+                },
+                new ProductAttributeValue()
+                {
+                    ProductId = DataForSeed.DomainModels.Product1_IntelCore_i3.Id,
+                    CategoryAttributeId = DataForSeed.DomainModels.Attribute3_Socket.Id,
+                    Value = new AttributeValue()
+                    {
+                        StringValue = "LGA1701",
+                    },
+                },
+                new ProductAttributeValue()
+                {
+                    ProductId = DataForSeed.DomainModels.Product1_IntelCore_i3.Id,
+                    CategoryAttributeId = DataForSeed.DomainModels.Attribute4_Tdp.Id,
+                    Value = new AttributeValue()
+                    {
+                        NumericValue = 121,
+                    },
                 },
             ]
         );
@@ -342,7 +407,7 @@ public class ProductsControllerAttributesTests
         dbContext.Units.AddRange(DataForSeed.DomainModels.Units);
         dbContext.Categories.Add(DataForSeed.DomainModels.Category1_Empty);
         dbContext.Categories.Add(DataForSeed.DomainModels.Category2_CPUs);
-        dbContext.Products.Add(DataForSeed.DomainModels.Product1_Intel);
+        dbContext.Products.Add(DataForSeed.DomainModels.Product1_IntelCore_i3);
         await dbContext.SaveChangesAsync(cancellationToken);
     }
 
