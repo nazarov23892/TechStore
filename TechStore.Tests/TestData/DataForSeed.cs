@@ -69,6 +69,29 @@ public static class DataForSeed
             UnitId = Unit4_W.Id,
         };
 
+        public static CategoryAttribute Attribute5_Numeric => new()
+        {
+            Id = 205,
+            Key = "1_Attr_Numeric",
+            DataType = CategoryAttributeDataTypes.Numeric,
+            UnitId = null
+        };
+
+        public static CategoryAttribute Attribute6_Boolean => new()
+        {
+            Id = 206,
+            Key = "2_Attr_Boolean",
+            DataType = CategoryAttributeDataTypes.Boolean,
+            UnitId = null
+        };
+
+        public static CategoryAttribute Attribute7_String => new()
+        {
+            Id = 207,
+            Key = "3_Attr_String",
+            DataType = CategoryAttributeDataTypes.String,
+            UnitId = null
+        };
 
         public static IEnumerable<Unit> Units =>
             [
@@ -101,6 +124,16 @@ public static class DataForSeed
             ],
         };
 
+        public static Category Category3_SingleNumeric => new()
+        {
+            Id = 503,
+            Key = "SingleNumeric",
+            DisplayName = "Single Numeric",
+            Attributes = [
+                Attribute5_Numeric,
+            ],
+        };
+
         public static Product Product1_IntelCore_i3 => new()
         {
             Id = 601,
@@ -126,6 +159,15 @@ public static class DataForSeed
             Description = "",
             CategoryId = Category2_CPUs.Id,
             Price = 28500,
+        };
+
+        public static Product Product4_SingleNumeric => new()
+        {
+            Id = 605,
+            Name = "SingleNumeric",
+            Description = null,
+            CategoryId = Category3_SingleNumeric.Id,
+            Price = 605,
         };
 
         public static ProductAttributeValue[] Product1_IntelCore_i3_AttributeValues => [
