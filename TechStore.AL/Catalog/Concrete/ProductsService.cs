@@ -14,10 +14,14 @@ namespace TechStore.AL.Catalog.Concrete;
 public class ProductsService : IProductsService
 {
     readonly IApplicationDbContext _context;
+    readonly IAttributePutValueReaderFactory _attributePutValueReaderFactory;
 
-    public ProductsService(IApplicationDbContext context)
+    public ProductsService(
+        IApplicationDbContext context, 
+        IAttributePutValueReaderFactory attributePutValueReaderFactory)
     {
         _context = context;
+        _attributePutValueReaderFactory = attributePutValueReaderFactory;
     }
 
     /// <inheritdoc/>
@@ -170,25 +174,9 @@ public class ProductsService : IProductsService
                     });
 
             var attributeValue = attribute.ProductValues.First().Value;
-            attributeValue.NumericValue = null;
-            attributeValue.StringValue = null;
-            attributeValue.BoolValue = null;
-
-            switch (attribute.DataType)
-            {
-                case CategoryAttributeDataTypes.Numeric:
-                    attributeValue.NumericValue = attributePutDto.NumericValue;
-                    break;
-                case CategoryAttributeDataTypes.String:
-                    attributeValue.StringValue = attributePutDto.StringValue;
-                    break;
-                case CategoryAttributeDataTypes.Boolean:
-                    attributeValue.BoolValue = attributePutDto.BooleanValue;
-                    break;
-                default:
-                    throw new NotSupportedException(
-                        $"Unexpected data type: '{attribute.DataType}'");
-            }
+            var reader = _attributePutValueReaderFactory.GetReader(attribute.DataType);
+            var actualAttributeValue = reader.Read(attributePutDto);
+            actualAttributeValue.Adapt(attributeValue);
         }
         await _context.SaveChangesAsync(cancellationToken);
         var dtos = attributesByKeyMap.Values.Adapt<List<ProductAttributeListDto>>();

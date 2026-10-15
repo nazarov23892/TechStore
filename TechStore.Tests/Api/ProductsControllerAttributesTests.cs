@@ -1,7 +1,9 @@
 ﻿using Mapster;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using TechStore.AL.Catalog;
 using TechStore.AL.Catalog.Concrete;
 using TechStore.BLL.Entities;
 using TechStore.Contracts.DTOs;
@@ -11,12 +13,14 @@ using TechStore.WebApi.Controllers;
 
 namespace TechStore.Tests.Api;
 
-public class ProductsControllerAttributesTests
+public class ProductsControllerAttributesTests : IClassFixture<WebApplicationFactory<Program>>
 {
     readonly DbContextOptions<ApplicationDbContext> _dbContextOptions;
+    readonly WebApplicationFactory<Program> _factory;
 
-    public ProductsControllerAttributesTests()
+    public ProductsControllerAttributesTests(WebApplicationFactory<Program> factory)
     {
+        _factory = factory;
         TypeAdapterConfig.GlobalSettings.Scan(typeof(AL.Configuration.AppConstants).Assembly);
 
         var serviceCollection = new ServiceCollection();
@@ -34,6 +38,7 @@ public class ProductsControllerAttributesTests
     public async Task Attributes_GetList_Successfully()
     {
         // Arrange.
+        using var scope = _factory.Services.CreateScope();
         var cancellationToken = TestContext.Current.CancellationToken;
         long productId = DataForSeed.DomainModels.Product1_IntelCore_i3.Id;
 
@@ -45,7 +50,8 @@ public class ProductsControllerAttributesTests
         ProductAttributeListDto[]? response = null;
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
         {
-            var catalogService = new ProductsService(dbContext);
+            var attributePutValueReaderFactory = scope.ServiceProvider.GetRequiredService<IAttributePutValueReaderFactory>();
+            var catalogService = new ProductsService(dbContext, attributePutValueReaderFactory);
             var controller = new ProductsController(catalogService);
 
             //Act.
@@ -122,6 +128,7 @@ public class ProductsControllerAttributesTests
     public async Task Attributes_GetList_WhenValuesNonExist_Successfully()
     {
         // Arrange.
+        using var scope = _factory.Services.CreateScope();
         var cancellationToken = TestContext.Current.CancellationToken;
         long productId = DataForSeed.DomainModels.Product2_IntelCore_i5.Id;
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
@@ -132,7 +139,8 @@ public class ProductsControllerAttributesTests
         List<ProductAttributeListDto>? response = null;
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
         {
-            var catalogService = new ProductsService(dbContext);
+            var attributePutValueReaderFactory = scope.ServiceProvider.GetRequiredService<IAttributePutValueReaderFactory>();
+            var catalogService = new ProductsService(dbContext, attributePutValueReaderFactory);
             var controller = new ProductsController(catalogService);
 
             //Act.
@@ -179,6 +187,7 @@ public class ProductsControllerAttributesTests
         ProductAttributeValue[] expectedDomainItems)
     {
         // Arrange.
+        using var scope = _factory.Services.CreateScope();
         var cancellationToken = TestContext.Current.CancellationToken;
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
         {
@@ -192,7 +201,8 @@ public class ProductsControllerAttributesTests
         ProductAttributeListDto[]? responseValues = null;
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
         {
-            var catalogService = new ProductsService(dbContext);
+            var attributePutValueReaderFactory = scope.ServiceProvider.GetRequiredService<IAttributePutValueReaderFactory>();
+            var catalogService = new ProductsService(dbContext, attributePutValueReaderFactory);
             var controller = new ProductsController(catalogService);
 
             //Act.

@@ -1,7 +1,9 @@
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using TechStore.AL.Catalog;
 using TechStore.AL.Catalog.Concrete;
 using TechStore.BLL.Entities;
 using TechStore.BLL.Exceptions;
@@ -12,12 +14,14 @@ using TechStore.WebApi.Controllers;
 
 namespace TechStore.Tests.Api;
 
-public class ProductsControllerTests
+public class ProductsControllerTests : IClassFixture<WebApplicationFactory<Program>>
 {
     readonly DbContextOptions<ApplicationDbContext> _dbContextOptions;
+    readonly WebApplicationFactory<Program> _factory;
 
-    public ProductsControllerTests()
+    public ProductsControllerTests(WebApplicationFactory<Program> factory)
     {
+        _factory = factory;
         TypeAdapterConfig.GlobalSettings.Scan(typeof(AL.Configuration.AppConstants).Assembly);
 
         var serviceCollection = new ServiceCollection();
@@ -35,6 +39,7 @@ public class ProductsControllerTests
     public async Task Products_GetList_Paged_ByCategory_ReturnsOk()
     {
         // Arrange.
+        using var scope = _factory.Services.CreateScope();
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
         {
             await SeedData(dbContext, TestContext.Current.CancellationToken);
@@ -49,7 +54,8 @@ public class ProductsControllerTests
         PagedListResponseDto<ProductListItemDto>? response = null;
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
         {
-            var catalogService = new ProductsService(dbContext);
+            var attributePutValueReaderFactory = scope.ServiceProvider.GetRequiredService<IAttributePutValueReaderFactory>();
+            var catalogService = new ProductsService(dbContext, attributePutValueReaderFactory);
             var controller = new ProductsController(catalogService);
 
             //Act.
@@ -77,6 +83,7 @@ public class ProductsControllerTests
     public async Task Products_GetList_Paged_WithoutCategory_ReturnsEmpty()
     {
         // Arrange.
+        using var scope = _factory.Services.CreateScope();
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
         {
             await SeedData(dbContext, TestContext.Current.CancellationToken);
@@ -91,7 +98,8 @@ public class ProductsControllerTests
         PagedListResponseDto<ProductListItemDto>? response = null;
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
         {
-            var catalogService = new ProductsService(dbContext);
+            var attributePutValueReaderFactory = scope.ServiceProvider.GetRequiredService<IAttributePutValueReaderFactory>();
+            var catalogService = new ProductsService(dbContext, attributePutValueReaderFactory);
             var controller = new ProductsController(catalogService);
 
             //Act.
@@ -110,6 +118,7 @@ public class ProductsControllerTests
     public async Task Products_Create_Successfully()
     {
         // Arrange.
+        using var scope = _factory.Services.CreateScope();
         long categoryId = DataForSeed.DomainModels.Category1_Empty.Id;
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
         {
@@ -126,7 +135,8 @@ public class ProductsControllerTests
         ProductDto? response = null;
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
         {
-            var catalogService = new ProductsService(dbContext);
+            var attributePutValueReaderFactory = scope.ServiceProvider.GetRequiredService<IAttributePutValueReaderFactory>();
+            var catalogService = new ProductsService(dbContext, attributePutValueReaderFactory);
             var controller = new ProductsController(catalogService);
 
             //Act.
@@ -168,6 +178,7 @@ public class ProductsControllerTests
         Product expectedDomainModel)
     {
         // Arrange.
+        using var scope = _factory.Services.CreateScope();
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
         {
             await SeedData(dbContext, TestContext.Current.CancellationToken);
@@ -177,7 +188,8 @@ public class ProductsControllerTests
         ProductDto? actualResponse = null;
         using (var dbContext = new ApplicationDbContext(_dbContextOptions))
         {
-            var catalogService = new ProductsService(dbContext);
+            var attributePutValueReaderFactory = scope.ServiceProvider.GetRequiredService<IAttributePutValueReaderFactory>();
+            var catalogService = new ProductsService(dbContext, attributePutValueReaderFactory);
             var controller = new ProductsController(catalogService);
 
             //Act.
@@ -207,6 +219,7 @@ public class ProductsControllerTests
     public async Task Products_Create_NonExistingCategory_Error()
     {
         // Arrange.
+        using var scope = _factory.Services.CreateScope();
         long nonExistingCategoryId = 501;
         var request = new ProductPostDto()
         {
@@ -216,7 +229,8 @@ public class ProductsControllerTests
             CategoryId = nonExistingCategoryId,
         };
         using var dbContext = new ApplicationDbContext(_dbContextOptions);
-        var catalogService = new ProductsService(dbContext);
+        var attributePutValueReaderFactory = scope.ServiceProvider.GetRequiredService<IAttributePutValueReaderFactory>();
+        var catalogService = new ProductsService(dbContext, attributePutValueReaderFactory);
         var controller = new ProductsController(catalogService);
 
         //Act.
@@ -225,6 +239,7 @@ public class ProductsControllerTests
         Assert.NotNull(exception);
     }
 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "xUnit1047:Avoid using TheoryDataRow arguments that might not be serializable", Justification = "<Ожидание>")]
     public static IEnumerable<TheoryDataRow<long, ProductPutDto, ProductDto, Product>> GetInlineDataForPut()
     {
         yield return new TheoryDataRow<long, ProductPutDto, ProductDto, Product>(

@@ -34,6 +34,11 @@ builder.Services.AddScoped<IUnitsService, UnitsService>();
 builder.Services.AddScoped<IApplicationDbContext>(
     provider => provider.GetRequiredService<ApplicationDbContext>());
 
+builder.Services.AddSingleton<IAttributePutValueReader, NumericAttributePutValueReader>();
+builder.Services.AddSingleton<IAttributePutValueReader, StringAttributePutValueReader>();
+builder.Services.AddSingleton<IAttributePutValueReader, BooleanAttributePutValueReader>();
+builder.Services.AddSingleton<IAttributePutValueReaderFactory, AttributePutValueReaderFactory>();
+
 // Mapster.
 TypeAdapterConfig.GlobalSettings.Scan(typeof(TechStore.AL.Configuration.AppConstants).Assembly);
 
@@ -72,3 +77,5 @@ if (app.Environment.IsDevelopment())
 }
 
 await app.RunAsync();
+
+public partial class Program { }
